@@ -1,7 +1,7 @@
 
-import 'package:app_ovedebatef/Globals/Colors.dart';
-import 'package:app_ovedebatef/Screens/Rounds.dart';
-import 'package:app_ovedebatef/Utils/HexColor.dart';
+import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:lovedebate/Modules/PreMatches/Rounds/Rounds.dart';
+import 'package:lovedebate/Utils/HexColor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';

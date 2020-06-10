@@ -1,16 +1,12 @@
-import 'package:app_ovedebatef/Globals/Colors.dart';
-import 'package:app_ovedebatef/Screens/Catagories.dart';
-import 'package:app_ovedebatef/Screens/Login.dart';
-import 'package:app_ovedebatef/Screens/Matched.dart';
-import 'package:app_ovedebatef/Screens/MyPreferences.dart';
-import 'package:app_ovedebatef/Screens/PreMatches.dart';
-import 'package:app_ovedebatef/Screens/Profile.dart';
-import 'package:app_ovedebatef/Screens/Stats.dart';
-import 'package:app_ovedebatef/Screens/TabStyleRounds.dart';
-import 'package:app_ovedebatef/Screens/UserChatList.dart';
+import 'package:lovedebate/Modules/Profile/Profile.dart';
+import 'package:lovedebate/Modules/Matched/Matched.dart';
+import 'package:lovedebate/Modules/Prefrences/MyPreferences.dart';
+import 'package:lovedebate/Modules/PreMatches/PreMatches.dart';
+import 'package:lovedebate/Modules/Stats/Stats.dart';
 import 'package:flutter/material.dart';
+import 'package:lovedebate/Utils/Globals/Colors.dart';
 
-import 'Rounds.dart';
+import '../Modules/PreMatches/Rounds/Rounds.dart';
 
 
 class TabBarControllerPage extends StatefulWidget {
@@ -88,7 +84,7 @@ class _TabBarControllerPageState extends State<TabBarControllerPage> {
         barItem(icon: Icons.people, title:'Stats', ),
         barItem(icon:Icons.person_outline,title: 'Matched'),
         barItem(title:""),
-        barItem(icon:Icons.person,title: 'Profile'),
+        barItem(icon:Icons.person,title: 'Modules.Profile'),
         barItem(icon:Icons.settings, title:'Settings'),
       ]
   );

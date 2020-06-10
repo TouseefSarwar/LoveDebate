@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lovedebate/Screens/SplashScreen.dart';
 
-import 'Screens/Login.dart';
+import 'Modules/LoginSignup/Login.dart';
 
 void main() => runApp(MyApp());
 

@@ -1,11 +1,8 @@
-import 'package:app_ovedebatef/Globals/Colors.dart';
-import 'package:app_ovedebatef/ProfileSubScreens/BasicInfo.dart';
+import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:flutter/material.dart';
-
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
+import 'package:lovedebate/Modules/Profile/BasicInfo.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -22,7 +19,7 @@ class _ProfileState extends State<Profile> {
       appBar: GradientAppBar(
         backgroundColorStart: GlobalColors.firstColor,
         backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('Profile',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
+        title:  Text('Modules.Profile',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
         centerTitle: true,
       ),
 

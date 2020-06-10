@@ -1,6 +1,6 @@
-import 'package:app_ovedebatef/Globals/Colors.dart';
-import 'package:app_ovedebatef/Widgets/CustomButtons.dart';
-import 'package:app_ovedebatef/Widgets/CustomTextFeilds.dart';
+import 'package:lovedebate/Widgets/CustomButtons.dart';
+import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 
