@@ -1,5 +1,5 @@
-import 'package:lovedebate/Globals/Colors.dart';
-import 'package:lovedebate/Utils/HexColor.dart';
+import 'package:app_ovedebatef/Globals/Colors.dart';
+import 'package:app_ovedebatef/Utils/HexColor.dart';
 import 'package:flutter/material.dart';
 
 import 'Login.dart';

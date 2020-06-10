@@ -3,7 +3,7 @@
 
 import 'dart:async';
 
-import 'package:lovedebate/Screens/Login.dart';
+import 'package:app_ovedebatef/Screens/Login.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
