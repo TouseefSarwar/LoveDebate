@@ -1,5 +1,6 @@
-import 'package:lovedebate/Globals/Colors.dart';
-import 'package:lovedebate/Screens/Catagories.dart';
+import 'package:app_ovedebatef/Globals/Colors.dart';
+import 'package:app_ovedebatef/Screens/Catagories.dart';
+import 'package:app_ovedebatef/Screens/Rounds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
