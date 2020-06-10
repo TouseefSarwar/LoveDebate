@@ -13,7 +13,6 @@ class UnderLineTextField extends StatelessWidget {
   final TextEditingController txtController;
   final VoidCallback onTapFunc;
 
-
   UnderLineTextField({
     this.focusNode,
     this.txtHint,

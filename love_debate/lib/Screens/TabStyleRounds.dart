@@ -1,9 +1,9 @@
 
-import 'package:app_ovedebatef/Globals/Colors.dart';
-import 'package:app_ovedebatef/Screens/Matched.dart';
-import 'package:app_ovedebatef/Screens/Rounds.dart';
-import 'package:app_ovedebatef/Widgets/CustomButtons.dart';
-import 'package:app_ovedebatef/Widgets/CustomTextFeilds.dart';
+import 'package:lovedebate/Globals/Colors.dart';
+import 'package:lovedebate/Screens/Matched.dart';
+import 'package:lovedebate/Screens/Rounds.dart';
+import 'package:lovedebate/Widgets/CustomButtons.dart';
+import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
 import 'package:bubble/bubble.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';

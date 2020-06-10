@@ -1,5 +1,4 @@
-import 'package:app_ovedebatef/Globals/Colors.dart';
-import 'package:app_ovedebatef/ProfileSubScreens/BasicInfo.dart';
+import 'package:lovedebate/Globals/Colors.dart';
 import 'package:flutter/material.dart';
 
 
@@ -66,6 +65,7 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
+
                     Positioned(
                       top: ((30/100)*height) / 2 - 70,
                       left: width / 2 - 70,
@@ -82,46 +82,28 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
+
+
                   ]
               ),
-              ProfileListItems("Basic Info",Icon(Icons.info_outline)),
-              ProfileListItems("Ethnicity/Religion",Icon(Icons.info_outline)),
-              ProfileListItems("Education/Job",Icon(Icons.info_outline)),
-              ProfileListItems("Family/Contact",Icon(Icons.info_outline)),
-              ProfileListItems("About me/Life Style",Icon(Icons.info_outline)),
-              ProfileListItems("Photos",Icon(Icons.info_outline)),
+
+
+              InfoRow("Date of Birth","12 December, 1992"),
+              SizedBox(height: 12,),
+              InfoRow("email","touseef@gmail.com"),
+              SizedBox(height: 12,),
+              InfoRow("Contact","+1 233322233"),
+              SizedBox(height: 12,),
+              InfoRow("Address","Los Angles, USA"),
+
+
+
+
+
             ],
           ),
         ),
       ),
-    );
-  }
-
-  InkWell ProfileListItems(String text,Icon icon,) {
-    return InkWell(
-      onTap: (){
-        setState(() {
-          Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
-
-        });
-      },
-      child: Container(
-//                height: 60,
-//                width: width,
-//                color: Colors.pink,
-              margin: EdgeInsets.all(16),
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(width: 4,),
-                    Icon(Icons.info_outline,size: 28,),
-                    SizedBox(width: 12,),
-                    Expanded(child: Text(text,style: TextStyle(fontSize: 17),)),
-                    SizedBox(width: 8,),
-                    Icon(Icons.edit,size: 24,color: Colors.blueGrey,),
-                    SizedBox(width: 8,),
-                  ],
-                ),
-              ),
     );
   }
 
