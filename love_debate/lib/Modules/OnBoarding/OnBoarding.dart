@@ -129,7 +129,6 @@ class _OnBoardingState extends State<OnBoarding> {
       ),
     );
   }
-<<<<<<< HEAD
 //  callEmailService() {
 //    Map<String, dynamic> body = {
 //      'email': txtEmailController.text,
@@ -173,6 +172,4 @@ class _OnBoardingState extends State<OnBoarding> {
 //      Toast.show(e.toString(), context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
 //    }
 //  }
-=======
->>>>>>> origin/master
 }
