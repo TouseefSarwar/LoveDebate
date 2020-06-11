@@ -65,7 +65,7 @@
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Profile"
+      buildConfiguration = "Modules.Profile"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
