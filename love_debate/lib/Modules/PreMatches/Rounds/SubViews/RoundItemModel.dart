@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 class RoundItemModel{
   String title;
@@ -5,4 +6,13 @@ class RoundItemModel{
   bool  expanded;
   int roundNo;
   RoundItemModel({this.title,this.expanded,this.roundNo}){}
+=======
+
+class RoundItemModel{
+  String title;
+//  String  detail;
+  bool  expanded;
+  int roundNo;
+  RoundItemModel({this.title,this.expanded,this.roundNo}){}
+>>>>>>> origin/master
 }
