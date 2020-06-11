@@ -130,4 +130,47 @@ class _OnBoardingState extends State<OnBoarding> {
       ),
     );
   }
+//  callEmailService() {
+//    Map<String, dynamic> body = {
+//      'email': txtEmailController.text,
+//    };
+//    try {
+//      ApiBaseHelper().post(url: WebService.isRegistered, body: body, isFormData: true).then((
+//          response) {
+//        setState(() {
+//          apiCall = false;
+//        });
+//        var loginObject = Email.fromJson(response);
+//        //var obj=loginObject.description;
+//        if (loginObject.result.status == 'true') {
+//          //Save Waiter Info
+//          // sharedPref.save(SessionKeys.currentUser, loginObject.loginData);
+//
+//          //Navigator.push(context, FadeRoute(page: SelectOrderType()));
+//          Navigator.push(
+//            context,
+//            MaterialPageRoute(builder: (context) => PasswordPage(email: txtEmailController.text,isRegistered: true)),
+//          );
+//        }
+//        else {
+//          Toast.show("${loginObject.result.description}", context,
+//              duration: Toast.LENGTH_LONG);
+//          Navigator.push(
+//            context,
+//            MaterialPageRoute(builder: (context) => PasswordPage(email: txtEmailController.text,isRegistered: false,)),
+//          );
+//        }
+//      }, onError: (error) {
+//        setState(() {
+//          apiCall = false;
+//        });
+//        Toast.show(error.toString(), context, duration: Toast.LENGTH_LONG);
+//      });
+//    } on FetchDataException catch(e) {
+//      setState(() {
+//        apiCall = false;
+//      });
+//      Toast.show(e.toString(), context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
+//    }
+//  }
 }
