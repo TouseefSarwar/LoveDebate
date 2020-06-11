@@ -1,3 +1,5 @@
+import 'package:lovedebate/Utils/Constants/WebService.dart';
+import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
@@ -11,6 +13,10 @@ class OnBoarding extends StatefulWidget {
 }
 
 class _OnBoardingState extends State<OnBoarding> {
+
+  bool apiCall = false;
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -70,7 +76,6 @@ class _OnBoardingState extends State<OnBoarding> {
                             },
                           ),
                         ),
-
                       ],
                     ),
                   ),
@@ -130,17 +135,18 @@ class _OnBoardingState extends State<OnBoarding> {
       ),
     );
   }
-//  callEmailService() {
+
+//  callOnBoardingQuestions() {
 //    Map<String, dynamic> body = {
-//      'email': txtEmailController.text,
+//      //'email': txtEmailController.text,
 //    };
 //    try {
-//      ApiBaseHelper().post(url: WebService.isRegistered, body: body, isFormData: true).then((
+//      ApiBaseHelper().post(url: WebService.onBoardingApi, body: body, isFormData: true).then((
 //          response) {
 //        setState(() {
 //          apiCall = false;
 //        });
-//        var loginObject = Email.fromJson(response);
+//        var loginObject = .fromJson(response);
 //        //var obj=loginObject.description;
 //        if (loginObject.result.status == 'true') {
 //          //Save Waiter Info
