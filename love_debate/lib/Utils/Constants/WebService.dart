@@ -1,9 +1,13 @@
 class WebService{
-  static var baseURL = 'https://lovedebate.co/api/';
-  static var onBoardingApi = 'questions/1';
-  static var login = 'login_signup';
-  static var products = 'products_listing';
-  static var modifiers = 'modifiers_listing';
-  static var submitOrder = 'order_submit';
-  static var myOrders = 'my_orders';
+
+  static var baseURL = "https://lovedebate.co/api/";
+  static var register = "is_registered";
+  static var login = "login";
+  static var onboardingApi = "questions/1";
+
+}
+
+class HttpMethod{
+  static String post = "post";
+  static String get = 'get';
 }

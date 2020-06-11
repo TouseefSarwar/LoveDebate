@@ -7,20 +7,38 @@ import 'AppExceptions.dart';
 class ApiBaseHelper {
  final String _baseUrl = WebService.baseURL;
   //String _baseUrl ;
-  Future<dynamic> post({String url, dynamic body, bool isFormData}) async {
+  Future<dynamic> fetchService({String method,String url, dynamic body, bool isFormData}) async {
     var _header = {'Content-Type' : (isFormData) ? 'application/x-www-form-urlencoded' : 'application/json'};
-    if(isFormData != true){
-      body = json.encode(body);
+    if (method == HttpMethod.post){
+      if(isFormData != true){
+        body = json.encode(body);
+      }
+      var responseJson;
+      try {
+        final response = await http.post(_baseUrl + url, headers: _header, body: body);
+        responseJson = _returnResponse(response);
+      } on SocketException {
+        throw FetchDataException('No Internet connection');
+      }
+      return responseJson ;
+    }else if (method == HttpMethod.get){
+      var responseJson;
+      try {
+        final response = await http.get(_baseUrl + url, headers: _header);
+        responseJson = _returnResponse(response);
+      } on SocketException {
+        throw FetchDataException('No Internet connection');
+      }
+      return responseJson;
     }
-    var responseJson;
-    try {
-      final response = await http.post(_baseUrl + url, headers: _header, body: body);
-      responseJson = _returnResponse(response);
-    } on SocketException {
-      throw FetchDataException('No Internet connection');
-    }
-    return responseJson;
+
   }
+
+
+
+
+
+
 }
 dynamic _returnResponse(http.Response response) {
   switch (response.statusCode) {

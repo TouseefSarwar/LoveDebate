@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:lovedebate/Utils/Constants/WebService.dart';
+import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
+import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Modules/LoginSignup/SignUp.dart';
 import 'package:lovedebate/Screens/TabBarcontroller.dart';
@@ -21,13 +24,16 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   Color _textcolor=Colors.white;
+  TextEditingController txtEmailController = TextEditingController();
+  TextEditingController txtPasswordController = TextEditingController();
+  FocusNode txtEmailFocusNode = FocusNode();
+  FocusNode txtPasswordFocusNode = FocusNode();
+
 
   @override
   Widget build(BuildContext context) {
     double _height=MediaQuery.of(context).size.height;
     double _width=MediaQuery.of(context).size.width;
-    TextEditingController txtEmailController = TextEditingController();
-    FocusNode txtEmailFocusNode = FocusNode();
     return Scaffold(
       body: SafeArea(
         top: false,
@@ -40,7 +46,7 @@ class _LoginState extends State<Login> {
               ListView(
                 children: <Widget>[
                   TopSection(_height),
-                  CenterSection(_height, txtEmailFocusNode, txtEmailController),
+                  CenterSection(_height),
                   BottomSection(_height)
                 ],
               )
@@ -73,7 +79,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Container CenterSection(double _height, FocusNode txtEmailFocusNode, TextEditingController txtEmailController) {
+  Container CenterSection(double _height) {
     return Container(
       height: (15/100)*_height,
       //color: Colors.blue,
@@ -83,7 +89,7 @@ class _LoginState extends State<Login> {
         children: <Widget>[
           emailTextField(txtEmailFocusNode,txtEmailController,'Email'),
           SizedBox(height: 9,),
-          emailTextField(txtEmailFocusNode,txtEmailController,'Password'),
+          emailTextField(txtPasswordFocusNode, txtPasswordController, "Password"),
           SizedBox(height: 8,),
 
         ],
@@ -108,19 +114,19 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget emailTextField( FocusNode txtEmailFocusNode, TextEditingController txtEmailController,String text) {
+  Widget emailTextField( FocusNode focusNode, TextEditingController txtFeild,String text) {
     return UnderLineTextField(
-      focusNode: txtEmailFocusNode,
+      focusNode: focusNode,
       txtHint: text,
       isSecure: false,
       keyboardType: TextInputType.emailAddress,
       enableBorderColor: Colors.white,
       focusBorderColor: Colors.white,
       textColor: Colors.white,
-      txtController: txtEmailController,
+      txtController: txtFeild,
       onTapFunc: () {
         setState(() {
-          FocusScope.of(context).requestFocus(txtEmailFocusNode);
+          FocusScope.of(context).requestFocus(focusNode);
         });
       },
     );
@@ -139,15 +145,25 @@ class _LoginState extends State<Login> {
         action: (){
           setState(() {
 
-            String jsonString = '{"success" :  {"array": [1,2,3]}}';
-            Map<String, dynamic> jsonResponse = jsonDecode(jsonString);
-            if(jsonResponse.containsKey('success')){
-              print('Success');
-            }else{
-              print('error');
+            Map<String, dynamic> body = {
+              'email': txtEmailController.text,
+              'password' : txtPasswordController.text,
+            };
+            try {
+              ApiBaseHelper().fetchService(method: HttpMethod.get, url: WebService.login,body: body,isFormData: true).then(
+                  (response) => {
+                   if (response is String){
+
+                   }
+              });
+
+            } on FetchDataException catch(e) {
+              setState(() {
+
+              });
             }
 
-//            Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+
           });
 //
         },

@@ -1,6 +1,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lovedebate/Modules/LoginSignup/SignUpform.dart';
+import 'package:lovedebate/Modules/OnBoarding/OnBoarding.dart';
 import 'package:lovedebate/Screens/SplashScreen.dart';
 
 import 'Modules/LoginSignup/Login.dart';
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
           '/Login': (BuildContext context) =>  Login(),
         }
 //    home: TabBarControllerPage(),
-//      home: Lo(),
+//      home: SignUpForm(),
     );
   }
 }
