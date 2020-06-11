@@ -150,7 +150,7 @@ class _LoginState extends State<Login> {
               'password' : txtPasswordController.text,
             };
             try {
-              ApiBaseHelper().fetchService(method: HttpMethod.get, url: WebService.login,body: body,isFormData: true).then(
+              ApiBaseHelper().fetchService(method: HttpMethod.post, url: WebService.login,body: body,isFormData: true).then(
                   (response) => {
                    if (response is String){
 
