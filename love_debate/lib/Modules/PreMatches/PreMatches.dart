@@ -4,6 +4,7 @@ import 'package:lovedebate/Modules/PreMatches/Rounds/Rounds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
+import 'package:lovedebate/Utils/Globals/Fonts.dart';
 
 class PreMatches extends StatefulWidget {
   @override
@@ -20,7 +21,7 @@ class _PreMatchesState extends State<PreMatches> {
       appBar: GradientAppBar(
         backgroundColorStart: GlobalColors.firstColor,
         backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('Pre Matches',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
+        title:  Text('Pre Matches',style:TextStyle(color: Colors.white ,fontSize: GlobalFont.navFontSize, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
         centerTitle: true,
         //leading:  Icon(Icons.search,color: Colors.white,),
       ),

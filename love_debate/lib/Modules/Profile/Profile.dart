@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:lovedebate/Modules/Profile/BasicInfo.dart';
+import 'package:lovedebate/Utils/Globals/Fonts.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -12,21 +13,24 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
+
     double height=(MediaQuery.of(context).size.height-MediaQuery.of(context).padding.vertical)-AppBar().preferredSize.height;
     double width=MediaQuery.of(context).size.width;
+
+
+
 
     return Scaffold(
       appBar: GradientAppBar(
         backgroundColorStart: GlobalColors.firstColor,
         backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('Modules.Profile',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
+        title:  Text('Modules.Profile',style:TextStyle(color: Colors.white ,fontSize: GlobalFont.navFontSize, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
         centerTitle: true,
       ),
-
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               // Upper Body
               Stack(
@@ -57,8 +61,8 @@ class _ProfileState extends State<Profile> {
                           "Muhammad Touseef",
                           style: TextStyle(
                               color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18
+                              fontWeight: FontWeight.bold,
+                              fontSize: GlobalFont.textFontSize,
                           ),
                         ),
                       ),
@@ -82,16 +86,30 @@ class _ProfileState extends State<Profile> {
                   ]
               ),
               ProfileListItems("Basic Info",Icon(Icons.info_outline)),
+              ProfileDivider(context),
               ProfileListItems("Ethnicity/Religion",Icon(Icons.info_outline)),
+              ProfileDivider(context),
               ProfileListItems("Education/Job",Icon(Icons.info_outline)),
+              ProfileDivider(context),
               ProfileListItems("Family/Contact",Icon(Icons.info_outline)),
+              ProfileDivider(context),
               ProfileListItems("About me/Life Style",Icon(Icons.info_outline)),
+              ProfileDivider(context),
               ProfileListItems("Photos",Icon(Icons.info_outline)),
+              ProfileDivider(context),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Container ProfileDivider(BuildContext context) {
+    return Container(
+              height: 1,
+              width: MediaQuery.of(context).size.width - 32,
+              color: GlobalColors.firstColor,
+            );
   }
 
   InkWell ProfileListItems(String text,Icon icon,) {
@@ -110,12 +128,14 @@ class _ProfileState extends State<Profile> {
                 child: Row(
                   children: <Widget>[
                     SizedBox(width: 4,),
-                    Icon(Icons.info_outline,size: 28,),
+                    Icon(Icons.info_outline,size: 28,color: GlobalColors.firstColor,),
                     SizedBox(width: 12,),
-                    Expanded(child: Text(text,style: TextStyle(fontSize: 17),)),
+                    Expanded(child: Text(text,style: TextStyle(fontSize: GlobalFont.textFontSize),)),
                     SizedBox(width: 8,),
                     Icon(Icons.edit,size: 24,color: Colors.blueGrey,),
                     SizedBox(width: 8,),
+
+
                   ],
                 ),
               ),
@@ -131,7 +151,7 @@ class _ProfileState extends State<Profile> {
           child: Text(
             _heading,
             style: TextStyle(
-              fontSize: 17,
+              fontSize: GlobalFont.textFontSize,
               color: Colors.grey,
             ),
           ),
@@ -142,7 +162,7 @@ class _ProfileState extends State<Profile> {
             info,
             textAlign: TextAlign.left,
             style: TextStyle(
-              fontSize: 17,
+              fontSize: GlobalFont.textFontSize,
               fontWeight: FontWeight.bold,
             ),
           ),

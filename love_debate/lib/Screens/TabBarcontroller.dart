@@ -84,7 +84,7 @@ class _TabBarControllerPageState extends State<TabBarControllerPage> {
         barItem(icon: Icons.people, title:'Stats', ),
         barItem(icon:Icons.person_outline,title: 'Matched'),
         barItem(title:""),
-        barItem(icon:Icons.person,title: 'Modules.Profile'),
+        barItem(icon:Icons.person,title: 'Profile'),
         barItem(icon:Icons.settings, title:'Settings'),
       ]
   );

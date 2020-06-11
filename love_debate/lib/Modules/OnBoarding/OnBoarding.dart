@@ -1,3 +1,4 @@
+import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
@@ -24,7 +25,7 @@ class _OnBoardingState extends State<OnBoarding> {
       appBar: GradientAppBar(
         backgroundColorStart: GlobalColors.firstColor,
         backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('OnBaording',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
+        title:  Text('OnBaording',style:TextStyle(color: Colors.white ,fontSize: GlobalFont.navFontSize, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
         centerTitle: true,
       ),
       body: SafeArea(

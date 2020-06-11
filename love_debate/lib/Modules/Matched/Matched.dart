@@ -1,5 +1,6 @@
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Screens/TabBarcontroller.dart';
+import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class _MatchedState extends State<Matched> {
       appBar: GradientAppBar(
         backgroundColorStart: GlobalColors.firstColor,
         backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('Matched',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
+        title:  Text('Matched',style:TextStyle(color: Colors.white ,fontSize: GlobalFont.navFontSize, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
         centerTitle: true,
       ),
 
@@ -61,7 +62,7 @@ class _MatchedState extends State<Matched> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         CustomRaisedButton(
-                          buttonText: 'View Modules.Profile',
+                          buttonText: 'View    Profile',
                           cornerRadius: 5,
                           textColor: Colors.white,
                           backgroundColor:GlobalColors.firstColor,
@@ -131,36 +132,38 @@ class _MatchedState extends State<Matched> {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8,right: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CustomRaisedButton(
-                    buttonText: 'View Modules.Profile',
-                    cornerRadius: 5,
-                    textColor: Colors.white,
-                    backgroundColor:GlobalColors.firstColor,
-                    borderWith: 0,
-                    action: (){
-                      setState(() {
-                        Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
-                      });
+              child: Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    CustomRaisedButton(
+                      buttonText: 'View Modules.Profile',
+                      cornerRadius: 5,
+                      textColor: Colors.white,
+                      backgroundColor:GlobalColors.firstColor,
+                      borderWith: 0,
+                      action: (){
+                        setState(() {
+                          Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+                        });
 //
-                    },
-                  ),
-                  SizedBox(width: 8,),
-                  CustomRaisedButton(
-                    buttonText: 'Request another',
-                    cornerRadius: 5,
-                    textColor: Colors.white,
-                    backgroundColor:GlobalColors.firstColor,                    borderWith: 0,
-                    action: (){
-                      setState(() {
-                        Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
-                      });
+                      },
+                    ),
+                    SizedBox(width: 8,),
+                    CustomRaisedButton(
+                      buttonText: 'Request another',
+                      cornerRadius: 5,
+                      textColor: Colors.white,
+                      backgroundColor:GlobalColors.firstColor,                    borderWith: 0,
+                      action: (){
+                        setState(() {
+                          Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+                        });
 //
-                    },
-                  ),
-                ],
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

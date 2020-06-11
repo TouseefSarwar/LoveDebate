@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Modules/LoginSignup/SignUp.dart';
 import 'package:lovedebate/Screens/TabBarcontroller.dart';
@@ -5,11 +7,6 @@ import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-
-
-import '../../Utils/HexColor.dart';
-
 
 class Login extends StatefulWidget {
   @override
@@ -65,7 +62,7 @@ class _LoginState extends State<Login> {
 
                   });
                 },
-                child: Text('Signup or Create account',style: TextStyle(color: _textcolor,fontSize: 18),)),
+                child: Text('SignUp or Create account',style: TextStyle(color: _textcolor,fontSize: 18),)),
           ],
         )
     );
@@ -83,7 +80,6 @@ class _LoginState extends State<Login> {
           SizedBox(height: 9,),
           emailTextField(txtEmailFocusNode,txtEmailController,'Password'),
           SizedBox(height: 8,),
-
         ],
       ),
     );
@@ -145,3 +141,4 @@ class _LoginState extends State<Login> {
   }
 
 }
+

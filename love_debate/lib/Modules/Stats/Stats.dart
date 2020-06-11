@@ -1,6 +1,7 @@
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
+import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class Stats extends StatefulWidget {
@@ -33,7 +34,7 @@ class _StatsState extends State<Stats> {
       appBar: GradientAppBar(
         backgroundColorStart: GlobalColors.firstColor,
         backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('Stats',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
+        title:  Text('Stats',style:TextStyle(color: Colors.white ,fontSize: GlobalFont.navFontSize, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
         centerTitle: true,
       ),
       body: Container(

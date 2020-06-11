@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lovedebate/Screens/SplashScreen.dart';
 
 import 'Modules/LoginSignup/Login.dart';
+import 'Screens/TabStyleRounds.dart';
 
 void main() => runApp(MyApp());
 
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
           '/Login': (BuildContext context) =>  Login(),
         }
 //    home: TabBarControllerPage(),
-     // home: CurrentRounds(),
+//      home: Lo(),
     );
   }
 }

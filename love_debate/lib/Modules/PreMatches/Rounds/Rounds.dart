@@ -1,6 +1,7 @@
 
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Modules/Matched/Matched.dart';
+import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
 import 'package:bubble/bubble.dart';
@@ -66,7 +67,7 @@ class _RoundsState extends State<Rounds> {
     return Scaffold(
       appBar: GradientAppBar(
         centerTitle: true,
-        title: Text('Rounds',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
+        title: Text('Rounds',style:TextStyle(color: Colors.white ,fontSize: GlobalFont.navFontSize, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
         backgroundColorStart: GlobalColors.firstColor,
         backgroundColorEnd: GlobalColors.secondColor,
       ),
