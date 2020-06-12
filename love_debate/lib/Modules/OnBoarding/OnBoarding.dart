@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:lovedebate/Models/OnBoardingModel.dart';
+import 'package:lovedebate/Modules/OnBoarding/OnBoardingDialogBox/OnBoardingDialogBox.dart';
+import 'package:lovedebate/Screens/TabBarcontroller.dart';
 import 'package:lovedebate/Utils/Constants/WebService.dart';
 import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
+import 'package:lovedebate/Utils/Controllers/Loader.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
@@ -13,24 +16,31 @@ import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
 import 'dart:io';
 
 
-int index=0;
-
 class OnBoarding extends StatefulWidget {
   @override
   _OnBoardingState createState() => _OnBoardingState();
 }
-
 class _OnBoardingState extends State<OnBoarding> {
-
   //bool apiCall = false;
+  int index=0;
+  int apiCall = 0;
+  List<Success> _Questions = List<Success>();
+
+  double _value = 0.0;
+  void _setvalue(double value) => setState(() => _value = value);
+
+  int _questionType=0;
+
+  FocusNode _focusNode = new FocusNode();
+
+
 
   @override
   void initState() {
-
+    super.initState();
     callOnBoardingQuestions();
+    apiCall=1;
   }
-  List<Success> _Questions = List<Success>();
-
   @override
   Widget build(BuildContext context) {
 
@@ -45,28 +55,27 @@ class _OnBoardingState extends State<OnBoarding> {
       appBar: GradientAppBar(
         backgroundColorStart: GlobalColors.firstColor,
         backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('OnBaording',style:TextStyle(color: Colors.white ,fontSize: GlobalFont.navFontSize, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
+        title:  Text('OnBoarding',style:TextStyle(color: Colors.white ,fontSize: GlobalFont.navFontSize, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Container(
+        child:(apiCall==0)? Container(
           height: _height,
           width: _width,
           color: Colors.grey.withOpacity(0.1),
-          child: Column(
+          child: _Questions.length > 0 ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              QuestionsContainer(_height, _width, txtEmailFocusNode, txtEmailController, context,_Questions[index].qaQuestion),
-              QuestionControlBar(_width,index),
+              QuestionsContainer(_height, _width, txtEmailFocusNode, txtEmailController, context,_Questions[index].qaQuestion,_questionType,_Questions[index].qaFieldType),
+              QuestionControlBar(_width),
             ],
-          ),
-        ),
+          ) : Container(),
+        ):Center(child: Loading()),
       ),
     );
   }
-
-  Container QuestionControlBar(double _width,int index) {
+  Container QuestionControlBar(double _width) {
     return Container(
               height: (20/100)*_width,
               width: _width,
@@ -75,53 +84,59 @@ class _OnBoardingState extends State<OnBoarding> {
                // mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(width: 16,),
-                 btnOnBoarding("Skip",index),
+                 btnOnBoarding("Skip"),
                   Expanded(child: SizedBox(width: 16,)),
                   onBoardingQANo(),
                   Expanded(child: SizedBox(width: 16,)),
-                  btnOnBoarding("Next",index),
+                  btnOnBoarding("Next"),
                   SizedBox(width: 16,),
                 ],
               ),
             );
   }
-
-  Container QuestionsContainer(double _height, double _width, FocusNode txtEmailFocusNode, TextEditingController txtEmailController, BuildContext context,String questiontext) {
+  Container QuestionsContainer(double _height, double _width, FocusNode txtEmailFocusNode, TextEditingController txtEmailController, BuildContext context,String questiontext,int _questionType,String fieldtype) {
     return Container(
-              height: (50/100)*_height,
+             // height: (50/100)*_height,
               width: _width,
               //color: Colors.blue,
               child:Card(
                 elevation: 1,
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                     // SizedBox(height: 16,),
-                      Text(questiontext,style: TextStyle(fontSize: 24),),
-                      //SizedBox(height: 16,),
-                      Container(
-                        height: 50,
-                        margin: EdgeInsets.all(16),
-                        child: UnderLineTextField(
-                          focusNode: txtEmailFocusNode,
-                          txtHint: "Your Height",
-                          isSecure: false,
-                          keyboardType: TextInputType.emailAddress,
-                          enableBorderColor: Colors.white,
-                          focusBorderColor: Colors.white,
-                          textColor: Colors.white,
-                          txtController: txtEmailController,
-                          onTapFunc: () {
-                            setState(() {
-                              FocusScope.of(context).requestFocus(txtEmailFocusNode);
-                            });
-                          },
-                        ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(height: 24,),
+                    Text(questiontext,style: TextStyle(fontSize: 24),),
+                    SizedBox(height: 16,),
+                    (fieldtype!="Slider")?Container(
+                      height: 120,
+                      margin: EdgeInsets.all(16),
+                      child: UnderLineTextField(
+                        focusNode: _focusNode,
+                        txtHint: "Your State and city",
+                        isSecure: false,
+                       // keyboardType: TextInputType.emailAddress,
+                        enableBorderColor: Colors.white,
+                        focusBorderColor: Colors.white,
+                        textColor: Colors.white,
+                        txtController: txtEmailController,
+
+
+                        onTapFunc: () {
+                          setState(() {
+                            if(fieldtype!="Slider"){
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return OnBoardingDialogBox();
+                                  }
+                              );
+                            }
+                          });
+                        },
                       ),
-                    ],
-                  ),
+                    ):OnBoardingSlider(_width),
+                  ],
                 ),
               ) ,
             );
@@ -135,13 +150,13 @@ class _OnBoardingState extends State<OnBoarding> {
         color: Colors.black.withOpacity(0.25),
         borderRadius: BorderRadius.all(Radius.circular(22.5))
       ),
-      child:Center(child: Text("$index/25",style: TextStyle(fontSize: 18),)),
+      child:Center(child: Text("${index+1}/25",style: TextStyle(fontSize: 18),)),
     );
   }
-  Widget btnOnBoarding(String text,index) {
+  Widget btnOnBoarding(String text) {
+    var localIndex = index;
     return SizedBox(
       height: 45,
-      //width: double.infinity,
       child: CustomRaisedButton(
         buttonText:text ,
         cornerRadius: 22.5,
@@ -149,12 +164,27 @@ class _OnBoardingState extends State<OnBoarding> {
         backgroundColor:GlobalColors.firstColor,
         borderWith: 0,
         action: (){
-          setState(() {
-   //         Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
-            index=index+1;
-          });
-//
+          if(++localIndex > 24){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => TabBarControllerPage()));
+          }else {
+            setState(() {
+              index = localIndex;
+            });
+          }
         },
+      ),
+    );
+  }
+
+  Container OnBoardingSlider(double width) {
+    return Container(
+      height: 75,
+      width: width,
+      child: Column(
+        children: <Widget>[
+          Slider(value: _value, onChanged: _setvalue,activeColor: GlobalColors.firstColor,),
+          Text('Value: ${(_value * 100).round()}',style: TextStyle(fontSize:GlobalFont.textFontSize),),
+        ],
       ),
     );
   }
@@ -166,13 +196,16 @@ class _OnBoardingState extends State<OnBoarding> {
     try {
       ApiBaseHelper().fetchService(method: HttpMethod.get, url: WebService.onboardingApi,body: body,isFormData: true).then(
               (response) {
+                var data = List<Success>();
                 Map<String, dynamic> responseJson = json.decode(response);
                 if(responseJson.containsKey('success')){
-
                   responseJson['success'].forEach((v) {
-                  _Questions.add(Success.fromJson(v));
+                  data.add(Success.fromJson(v));
                 });
-
+                setState(() {
+                  _Questions = data;
+                  apiCall=0;
+                });
                // print(_Questions.first);
 
                 }else{

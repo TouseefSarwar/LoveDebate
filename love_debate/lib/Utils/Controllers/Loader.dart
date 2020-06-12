@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:lovedebate/Utils/Globals/Colors.dart';
 
 class Loading extends StatelessWidget {
   @override
@@ -18,7 +19,7 @@ class Loading extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                valueColor: AlwaysStoppedAnimation<Color>(GlobalColors.firstColor),
               ),
             ),
           )
