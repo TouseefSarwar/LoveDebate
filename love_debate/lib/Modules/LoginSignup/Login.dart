@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:lovedebate/Utils/Constants/WebService.dart';
 import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
+import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Modules/LoginSignup/SignUp.dart';
 import 'package:lovedebate/Screens/TabBarcontroller.dart';
@@ -13,7 +14,9 @@ import 'package:flutter/material.dart';
 
 
 
+import '../../Screens/TabBarcontroller.dart';
 import '../../Utils/HexColor.dart';
+import 'SignUpform.dart';
 
 
 class Login extends StatefulWidget {
@@ -23,7 +26,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
-  Color _textcolor=Colors.white;
+  Color _textcolor = Colors.white;
   TextEditingController txtEmailController = TextEditingController();
   TextEditingController txtPasswordController = TextEditingController();
   FocusNode txtEmailFocusNode = FocusNode();
@@ -37,9 +40,10 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: SafeArea(
         top: false,
+        bottom: false,
         child:DecoratedBox(
           decoration: BoxDecoration(
-            image: DecorationImage(image: AssetImage('images/BackGround.jpeg'), fit: BoxFit.fill),
+            image: DecorationImage(image: AssetImage('images/BackGround.jpeg'), fit: BoxFit.fitHeight),
           ),
           child: Stack(
             children: <Widget>[
@@ -69,8 +73,8 @@ class _LoginState extends State<Login> {
             InkWell(
                 onTap: (){
                   setState(() {
-                    Navigator.push(context, CupertinoPageRoute(builder: (context) => LaunchScreen()));
 
+                    Navigator.push(context, CupertinoPageRoute(builder: (context) => LaunchScreen()));
                   });
                 },
                 child: Text('Signup or Create account',style: TextStyle(color: _textcolor,fontSize: 18),)),
@@ -87,9 +91,9 @@ class _LoginState extends State<Login> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          emailTextField(txtEmailFocusNode,txtEmailController,'Email'),
+          emailTextField(txtEmailFocusNode,txtEmailController,'Email',false),
           SizedBox(height: 9,),
-          emailTextField(txtPasswordFocusNode, txtPasswordController, "Password"),
+          emailTextField(txtPasswordFocusNode, txtPasswordController, "Password",true),
           SizedBox(height: 8,),
 
         ],
@@ -114,11 +118,11 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget emailTextField( FocusNode focusNode, TextEditingController txtFeild,String text) {
+  Widget emailTextField( FocusNode focusNode, TextEditingController txtFeild,String text, bool isSecure ) {
     return UnderLineTextField(
       focusNode: focusNode,
       txtHint: text,
-      isSecure: false,
+      isSecure: isSecure,
       keyboardType: TextInputType.emailAddress,
       enableBorderColor: Colors.white,
       focusBorderColor: Colors.white,
@@ -138,37 +142,55 @@ class _LoginState extends State<Login> {
       width: double.infinity,
       child: CustomRaisedButton(
         buttonText: 'Login',
-        cornerRadius: 22.5,
+        cornerRadius: 5,
         textColor: Colors.white,
         backgroundColor:GlobalColors.firstColor,
         borderWith: 0,
         action: (){
           setState(() {
 
-            Map<String, dynamic> body = {
-              'email': txtEmailController.text,
-              'password' : txtPasswordController.text,
-            };
-            try {
-              ApiBaseHelper().fetchService(method: HttpMethod.post, url: WebService.login,body: body,isFormData: true).then(
-                  (response) => {
-                   if (response is String){
+            if (txtEmailController.text == "" || txtEmailController.text==null){
+              Toast.show("Empty Email", context, duration: Toast.LENGTH_LONG);
+            }else if (txtPasswordController.text == "" || txtPasswordController.text==null){
+              Toast.show("Empty Password", context, duration: Toast.LENGTH_LONG);
+            }else{
+//              LoginUser();
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
 
-                   }
-              });
-
-            } on FetchDataException catch(e) {
-              setState(() {
-
-              });
             }
-
-
           });
 //
         },
       ),
     );
   }
+
+
+  void LoginUser(){
+    Map<String, dynamic> body = {
+      'email': txtEmailController.text,
+      'password' : txtPasswordController.text,
+    };
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.post, url: WebService.login,body: body,isFormData: true).then(
+              (response){
+              Map<String, dynamic> responseJson = json.decode(response);
+              if(responseJson.containsKey('success')){
+                print("hereee");
+//                responseJson['success'].forEach((v) {
+//                  data.add(Success.fromJson(v));
+//                });
+              }else{
+                print(responseJson);
+              }
+            });
+
+    } on FetchDataException catch(e) {
+      setState(() {
+
+      });
+    }
+  }
+
 
 }

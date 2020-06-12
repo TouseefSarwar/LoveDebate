@@ -49,6 +49,7 @@ dynamic _returnResponse(http.Response response) {
     case 400:
       throw BadRequestException(response.body.toString());
     case 401:
+      return response.reasonPhrase;
     case 403:
       throw UnauthorisedException(response.body.toString());
     case 500:

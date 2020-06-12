@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'Login.dart';
+import 'SignUpform.dart';
 
 
 class LaunchScreen extends StatefulWidget {
@@ -21,6 +22,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
       ),
       body:SafeArea(
         top: false,
+        bottom: false,
         child: DecoratedBox(
           decoration: BoxDecoration(
 //              gradient: LinearGradient(
@@ -80,16 +82,16 @@ InkWell SignupMethod(BuildContext context,double height, double width,String tex
     onTap: (){
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Login()),
+        MaterialPageRoute(builder: (context) => SignUpForm()),
       );
     },
     child: Container(
       height: 45,
       decoration: BoxDecoration(
           color:bgColor,
-        borderRadius: BorderRadius.all(Radius.circular(22.5))
+        borderRadius: BorderRadius.all(Radius.circular(5))
       ),
-      margin: EdgeInsets.all(16),
+      margin: EdgeInsets.all(8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[

@@ -4,6 +4,8 @@ class WebService{
   static var register = "is_registered";
   static var login = "login";
   static var onboardingApi = "questions/1";
+  static var data = "data";
+  static var rounds = "questions/2";
 
 }
 

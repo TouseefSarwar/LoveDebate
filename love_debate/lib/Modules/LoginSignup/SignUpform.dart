@@ -1,9 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
+import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
 import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
+
+import '../../Utils/Constants/WebService.dart';
+import '../../Utils/Controllers/ApiBaseHelper.dart';
+import '../../Utils/Controllers/AppExceptions.dart';
+import '../OnBoarding/OnBoarding.dart';
 
 class SignUpForm extends StatefulWidget {
   @override
@@ -12,10 +21,17 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
 
-  TextEditingController txtEmailController = TextEditingController();
-  TextEditingController txtPasswordController = TextEditingController();
-  FocusNode txtEmailFocusNode = FocusNode();
-  FocusNode txtPasswordFocusNode = FocusNode();
+  TextEditingController nameTF = TextEditingController();
+  TextEditingController passTF = TextEditingController();
+  TextEditingController confirmTF = TextEditingController();
+  TextEditingController emailTF = TextEditingController();
+  TextEditingController dobTF = TextEditingController();
+
+  FocusNode nameFN = FocusNode();
+  FocusNode passFN = FocusNode();
+  FocusNode confirmFN = FocusNode();
+  FocusNode emailFN = FocusNode();
+  FocusNode dobFN = FocusNode();
 
   TextEditingController txtOpenTime = TextEditingController();
 
@@ -26,7 +42,7 @@ class _SignUpFormState extends State<SignUpForm> {
     localizations.formatTimeOfDay(picked, alwaysUse24HourFormat: true);
     setState(() {
 
-      txtOpenTime.text = localizations.formatTimeOfDay(picked, alwaysUse24HourFormat: true);
+      dobTF.text = localizations.formatTimeOfDay(picked, alwaysUse24HourFormat: true);
 //      if(no=='open'){
 //        txtOpenTime.text = localizations.formatTimeOfDay(picked, alwaysUse24HourFormat: true);}
 //      else{
@@ -67,13 +83,15 @@ class _SignUpFormState extends State<SignUpForm> {
           margin: EdgeInsets.all(16),
           child: ListView(
             children: <Widget>[
-              emailTextField(txtEmailFocusNode,txtEmailController,'Name'),
+              emailTextField(nameFN,nameTF,'Name',false),
               SizedBox(height: 16,),
-              emailTextField(txtEmailFocusNode,txtEmailController,'Password'),
+              emailTextField(passFN,passTF,'Password', true),
               SizedBox(height: 16,),
-              emailTextField(txtEmailFocusNode,txtEmailController,'Confirm Password'),
+              emailTextField(confirmFN,confirmTF,'Confirm Password',true),
               SizedBox(height: 16,),
-              dateTime(txtEmailFocusNode,txtOpenTime,'Date of Birth'),
+              emailTextField(emailFN,emailTF,'Email Address',false),
+              SizedBox(height: 16,),
+              dateTime(dobFN,dobTF,'Date of Birth'),
               SizedBox(height: 16,),
               btnSignUp(),
 
@@ -85,15 +103,15 @@ class _SignUpFormState extends State<SignUpForm> {
       ),
     );
   }
-  Widget emailTextField( FocusNode focusNode, TextEditingController txtFeild,String text) {
+  Widget emailTextField( FocusNode focusNode, TextEditingController txtFeild,String text ,bool isSecure ) {
     return UnderLineTextField(
       focusNode: focusNode,
       txtHint: text,
-      isSecure: false,
+      isSecure: isSecure,
       keyboardType: TextInputType.emailAddress,
       enableBorderColor: Colors.white,
-      focusBorderColor: Colors.white,
-      textColor: Colors.white,
+      focusBorderColor: Colors.grey,
+      textColor: Colors.black,
       txtController: txtFeild,
       onTapFunc: () {
         setState(() {
@@ -180,37 +198,84 @@ class _SignUpFormState extends State<SignUpForm> {
       height: 45,
       width: double.infinity,
       child: CustomRaisedButton(
-        buttonText: 'Login',
-        cornerRadius: 22.5,
+        buttonText: 'Sign Up',
+        cornerRadius: 5,
         textColor: Colors.white,
         backgroundColor:GlobalColors.firstColor,
         borderWith: 0,
         action: (){
           setState(() {
-//
-//            Map<String, dynamic> body = {
-//              'email': txtEmailController.text,
-//              'password' : txtPasswordController.text,
-//            };
-//            try {
-//              ApiBaseHelper().fetchService(method: HttpMethod.post, url: WebService.login,body: body,isFormData: true).then(
-//                      (response) => {
-//                    if (response is String){
-//
-//                    }
-//                  });
-//
-//            } on FetchDataException catch(e) {
-//              setState(() {
-//
-//              });
-//            }
-
-
+            ValidateFields();
           });
-//
         },
       ),
     );
   }
+
+
+  void SignUpUser(){
+    Map<String, dynamic> body = {
+      'name': nameTF.text,
+      'email': emailTF.text,
+      'password' : passTF.text,
+      'c_password' : passTF.text,
+      'gender': emailTF.text,
+      'dob' : passTF.text,
+    };
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.post, url: WebService.login,body: body,isFormData: true).then(
+              (response){
+            Map<String, dynamic> responseJson = json.decode(response);
+            if(responseJson.containsKey('success')){
+              print("hereee");
+//                responseJson['success'].forEach((v) {
+//                  data.add(Success.fromJson(v));
+//                });
+            }else{
+              print(responseJson);
+            }
+          });
+
+    } on FetchDataException catch(e) {
+      setState(() {
+
+      });
+    }
+  }
+
+  void ValidateFields(){
+    print("This"+nameTF.text+"is");
+    if (nameTF.text != "" && nameTF.text!=null){
+      if (passTF.text != "" && passTF.text != null){
+        if (confirmTF.text != "" && confirmTF.text != null){
+          if (passTF.text == confirmTF.text){
+            if (emailTF.text != "" && emailTF.text != null){
+              if (GFunction.validateEmail(emailTF.text)){
+//                if (dobTF.text != "" && dobTF.text != null){
+//                  print("Your validations are succeeded");
+//
+//                }else{
+//                  Toast.show("Select DOB", context, duration: Toast.LENGTH_LONG);
+//                }
+                Navigator.push(context, CupertinoPageRoute(builder: (context) => OnBoarding()));
+              }else{
+                Toast.show("Invalid Email Formate", context, duration: Toast.LENGTH_LONG);
+              }
+            }else{
+              Toast.show("Enter Email Address", context, duration: Toast.LENGTH_LONG);
+            }
+          }else{
+            Toast.show("Password and Confirm Password should be same", context, duration: Toast.LENGTH_LONG);
+          }
+        }else{
+          Toast.show("Enter Confirm Password", context, duration: Toast.LENGTH_LONG);
+        }
+      }else{
+        Toast.show("Enter Password", context, duration: Toast.LENGTH_LONG);
+      }
+    }else{
+      Toast.show("Enter Name", context, duration: Toast.LENGTH_LONG);
+    }
+  }
+
 }
