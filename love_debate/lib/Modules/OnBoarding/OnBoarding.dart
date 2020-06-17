@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:lovedebate/Models/OnBoardingModel.dart';
 import 'package:lovedebate/Modules/OnBoarding/OnBoardingDialogBox/OnBoardingDialogBox.dart';
+import 'package:lovedebate/Modules/OnBoarding/OnBoardingDialogBox/OnBoardingModels/CheckBoxDataModel.dart';
 import 'package:lovedebate/Screens/TabBarcontroller.dart';
 import 'package:lovedebate/Utils/Constants/WebService.dart';
 import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
@@ -26,12 +28,17 @@ class _OnBoardingState extends State<OnBoarding> {
   int apiCall = 0;
   List<Success> _Questions = List<Success>();
 
+  String answer=" ";
+
   double _value = 0.0;
   void _setvalue(double value) => setState(() => _value = value);
 
   int _questionType=0;
 
   FocusNode _focusNode = new FocusNode();
+
+  TextEditingController txtAnswerController = TextEditingController();
+  FocusNode txtEmailFocusNode = FocusNode();
 
 
 
@@ -48,8 +55,6 @@ class _OnBoardingState extends State<OnBoarding> {
     double _width=MediaQuery.of(context).size.width;
     //MediaQuery.of(context).padding.vertical
 
-    TextEditingController txtEmailController = TextEditingController();
-    FocusNode txtEmailFocusNode = FocusNode();
 
     return Scaffold(
       appBar: GradientAppBar(
@@ -67,7 +72,7 @@ class _OnBoardingState extends State<OnBoarding> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              QuestionsContainer(_height, _width, txtEmailFocusNode, txtEmailController, context,_Questions[index].qaQuestion,_questionType,_Questions[index].qaFieldType),
+              QuestionsContainer(_height, _width, txtEmailFocusNode, txtAnswerController, context,_Questions[index].qaQuestion,_questionType,_Questions[index].qaFieldType,_Questions[index]),
               QuestionControlBar(_width),
             ],
           ) : Container(),
@@ -94,7 +99,7 @@ class _OnBoardingState extends State<OnBoarding> {
               ),
             );
   }
-  Container QuestionsContainer(double _height, double _width, FocusNode txtEmailFocusNode, TextEditingController txtEmailController, BuildContext context,String questiontext,int _questionType,String fieldtype) {
+  Container QuestionsContainer(double _height, double _width, FocusNode txtEmailFocusNode, TextEditingController txtAnswerController, BuildContext context,String questiontext,int _questionType,String fieldtype,Success QuestionObj) {
     return Container(
              // height: (50/100)*_height,
               width: _width,
@@ -111,37 +116,87 @@ class _OnBoardingState extends State<OnBoarding> {
                     (fieldtype!="Slider")?Container(
                       height: 120,
                       margin: EdgeInsets.all(16),
-                      child: UnderLineTextField(
-                        focusNode: _focusNode,
-                        txtHint: "Your State and city",
-                        isSecure: false,
-                       // keyboardType: TextInputType.emailAddress,
-                        enableBorderColor: Colors.white,
-                        focusBorderColor: Colors.white,
-                        textColor: Colors.white,
-                        txtController: txtEmailController,
-
-
-                        onTapFunc: () {
-                          setState(() {
-                            if(fieldtype!="Slider"){
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return OnBoardingDialogBox();
-                                  }
-                              );
-                            }
-                          });
-                        },
-                      ),
+                       child: Container(
+                         child: Column(
+                           mainAxisAlignment: MainAxisAlignment.center,
+                           crossAxisAlignment: CrossAxisAlignment.center,
+                           children: <Widget>[
+                             (fieldtype=="Dropdown"||fieldtype=="Checkbox")? AnswerContainer(_width,"Enter Required value",QuestionObj):
+                              NumberTextFeildContainer(txtAnswerController, fieldtype, context, QuestionObj),
+                           ],
+                         ),
+                       ),
                     ):OnBoardingSlider(_width),
                   ],
                 ),
               ) ,
             );
+            }
+  UnderLineTextField NumberTextFeildContainer(TextEditingController txtAnswerController, String fieldtype, BuildContext context, Success QuestionObj) {
+    return UnderLineTextField(
+                      focusNode: _focusNode,
+                      txtHint: "Your State and city",
+                      isSecure: false,
+                      keyboardType: TextInputType.emailAddress,
+                      enableBorderColor: Colors.white,
+                      focusBorderColor: Colors.white,
+                      textColor: Colors.grey,
+                      txtController: txtAnswerController,
+//                      onTapFunc: () {
+//                        setState(() {
+//                          if(fieldtype!="Slider"&&fieldtype!="Number"){
+//                            showDialog(
+//                                context: context,
+//                                builder: (BuildContext context) {
+//                                  return OnBoardingDialogBox(Question: QuestionObj,txtAnswerController: txtAnswerController,);
+//                                }
+//                            ).then((value){
+//                              txtAnswerController=value;
+//                            });
+//                          }
+//                        });
+//                      },
+                    );
   }
 
+  InkWell AnswerContainer(double _width,String answerText,Success QuestionObj,) {
+    return InkWell(
+      onTap: (){
+        setState(() {
+          showDialog(
+            barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return OnBoardingDialogBox(Question: QuestionObj,txtAnswerController: txtAnswerController,);
+              }
+          ).then((value){
+            setState(() {
+              answer=value;
+            });
+
+          });
+
+        });
+      }, child:
+              //   Row(
+                //      children: <Widget>[
+                             Column(
+                               mainAxisAlignment: MainAxisAlignment.center,
+                               crossAxisAlignment: CrossAxisAlignment.start,
+                               children: <Widget>[
+                                 Container(
+                                   child: Text((answer==" ")?answerText:answer,style: TextStyle(fontSize: GlobalFont.textFontSize),  textAlign: TextAlign.justify,
+                                     overflow: TextOverflow.ellipsis,maxLines: 2,),
+                                 ),
+                                 SizedBox(height: 8,),
+                                 Container(height: 2,width:_width-50 ,color:Colors.grey,),
+                               ],
+                             ),
+                      //       SizedBox(width:8,),
+                    //       ],
+                  //       ),
+    );
+  }
   Container onBoardingQANo() {
     return Container(
       height: 45,
@@ -165,9 +220,11 @@ class _OnBoardingState extends State<OnBoarding> {
         borderWith: 0,
         action: (){
           if(++localIndex > 24){
+            answer=" ";
             Navigator.push(context, MaterialPageRoute(builder: (context) => TabBarControllerPage()));
           }else {
             setState(() {
+              answer=" ";
               index = localIndex;
             });
           }
@@ -175,7 +232,6 @@ class _OnBoardingState extends State<OnBoarding> {
       ),
     );
   }
-
   Container OnBoardingSlider(double width) {
     return Container(
       height: 75,
@@ -205,6 +261,9 @@ class _OnBoardingState extends State<OnBoarding> {
                 setState(() {
                   _Questions = data;
                   apiCall=0;
+                  //var qOptions = Autogenerated.fromJson(json.decode('{"MyKey" : [{"text":"api","value":"data/professions"}]}'));
+//                  var qOptions = Autogenerated.fromJson(json.decode(_Questions[3].qaOptions));
+//                  print(qOptions.myKey.first.value);
                 });
                // print(_Questions.first);
 
@@ -220,3 +279,5 @@ class _OnBoardingState extends State<OnBoarding> {
     }
   }
 }
+
+
