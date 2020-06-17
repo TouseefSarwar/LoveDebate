@@ -33,23 +33,17 @@ class ApiBaseHelper {
     }
 
   }
-
-
-
-
-
-
 }
+
 dynamic _returnResponse(http.Response response) {
   switch (response.statusCode) {
     case 200:
-      Map<String, dynamic> responseJson = json.decode(response.body.toString());
-     return json.encode(responseJson);
+      return response;
       break;
     case 400:
       throw BadRequestException(response.body.toString());
     case 401:
-      return response.reasonPhrase;
+      return response;
     case 403:
       throw UnauthorisedException(response.body.toString());
     case 500:

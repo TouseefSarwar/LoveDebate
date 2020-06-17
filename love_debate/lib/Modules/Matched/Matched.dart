@@ -40,55 +40,91 @@ class _MatchedState extends State<Matched> {
 
   Container MatchedScreensItem(BuildContext context) {
     return Container(
-            height: 110,
+            height: 90,
            // color: Colors.blue,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
               children: <Widget>[
-                ProfileImageContainer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: 16,),
-                    Row(
-                      children: <Widget>[
-                        Text("Completed Rounds : 1",style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),),
-                       //5 Icon(Icons.chat,size: 25,)
-                      ],
-                    ),
-                    SizedBox(height: 8,),
-                    Row(
+                    ProfileImageContainer(),
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        CustomRaisedButton(
-                          buttonText: 'View Modules.Profile',
-                          cornerRadius: 5,
-                          textColor: Colors.white,
-                          backgroundColor:GlobalColors.firstColor,
-                          borderWith: 0,
-                          action: (){
-                            setState(() {
-                              Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
-                            });
-//
-                          },
+                        Row(
+                          children: <Widget>[
+                            Text("Completed Rounds : 1",style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),),
+                           //5 Icon(Icons.chat,size: 25,)
+                          ],
                         ),
-                        SizedBox(width: 8,),
-                        CustomRaisedButton(
-                          buttonText: 'Request another',
-                          cornerRadius: 5,
-                          textColor: Colors.white,
-                          backgroundColor:GlobalColors.firstColor,                    borderWith: 0,
-                          action: (){
-                            setState(() {
-                              Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
-                            });
-//
-                          },
+                        SizedBox(height: 12,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              width: MediaQuery.of(context).size.width / 4 - 2 ,
+                              height: 28,
+                              child: CustomRaisedButton(
+                                buttonText: 'Modules',
+                                cornerRadius: 5,
+                                textColor: Colors.white,
+                                backgroundColor:GlobalColors.firstColor,
+                                borderWith: 0,
+                                action: (){
+                                  setState(() {
+                                    Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 4,),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 4 - 2,
+                              height: 28,
+                              child: CustomRaisedButton(
+                                buttonText: 'Request',
+                                cornerRadius: 5,
+                                textColor: Colors.white,
+                                backgroundColor:GlobalColors.firstColor,
+                                borderWith: 0,
+                                action: (){
+                                  setState(() {
+                                    Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 4,),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 4 - 2,
+                              height: 28,
+                              child: CustomRaisedButton(
+                                buttonText: 'Chat',
+                                cornerRadius: 5,
+                                textColor: Colors.white,
+                                backgroundColor:GlobalColors.firstColor,
+                                borderWith: 0,
+                                action: (){
+                                  setState(() {
+                                    Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
                         ),
+
                       ],
                     ),
                   ],
+                ),
+                Container(
+                  height: 1,
+                  width: MediaQuery.of(context).size.width - 24,
+                  padding: const EdgeInsets.only(left: 12, right: 12),
+                  color: GlobalColors.firstColor,
+
                 )
               ],
             ),
@@ -171,8 +207,8 @@ class _MatchedState extends State<Matched> {
 
   Container ProfileImageContainer() {
     return Container(
-        width: 75,
-        height:75,
+        width: 60,
+        height:60,
         margin: EdgeInsets.all(12),
         decoration: new BoxDecoration(
             shape: BoxShape.circle,

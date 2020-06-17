@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
 import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
@@ -18,7 +19,7 @@ class SignUpForm extends StatefulWidget {
   @override
   _SignUpFormState createState() => _SignUpFormState();
 }
-
+enum Gender { male, female}
 class _SignUpFormState extends State<SignUpForm> {
 
   TextEditingController nameTF = TextEditingController();
@@ -26,6 +27,7 @@ class _SignUpFormState extends State<SignUpForm> {
   TextEditingController confirmTF = TextEditingController();
   TextEditingController emailTF = TextEditingController();
   TextEditingController dobTF = TextEditingController();
+  Gender _genderValue = Gender.male;
 
   FocusNode nameFN = FocusNode();
   FocusNode passFN = FocusNode();
@@ -55,7 +57,7 @@ class _SignUpFormState extends State<SignUpForm> {
     return CupertinoDatePicker(
       initialDateTime: DateTime.now(),
       onDateTimeChanged: (DateTime date){
-        //txtCloseTime.text=TimeOfDay.now().toString();
+        dobTF.text=TimeOfDay.now().toString();
       },
       use24hFormat: true,
     );
@@ -66,7 +68,6 @@ class _SignUpFormState extends State<SignUpForm> {
 
     double _height=(MediaQuery.of(context).size.height-MediaQuery.of(context).padding.vertical)-AppBar().preferredSize.height;
     double _width=MediaQuery.of(context).size.width;
-    double _itemheight=(10/100)*_height;
 
     return Scaffold(
       appBar: GradientAppBar(
@@ -93,8 +94,43 @@ class _SignUpFormState extends State<SignUpForm> {
               SizedBox(height: 16,),
               dateTime(dobFN,dobTF,'Date of Birth'),
               SizedBox(height: 16,),
-              btnSignUp(),
 
+              Text(
+                "Select your gender:",
+                style: TextStyle(
+                  fontSize: GlobalFont.textFontSize,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+
+              ListTile(
+                title: Text('Male',style: TextStyle(fontSize: GlobalFont.textFontSize,),),
+                leading: Radio(
+                  value: Gender.male,
+                  groupValue: _genderValue,
+                  onChanged: (Gender value) {
+                    setState(() {
+                      _genderValue = value;
+                    });
+                  },
+                ),
+              ),
+
+              ListTile(
+                title: Text('Female',style: TextStyle(fontSize: GlobalFont.textFontSize,),),
+                leading: Radio(
+                  value: Gender.female,
+                  groupValue: _genderValue,
+                  onChanged: (Gender value) {
+                    setState(() {
+                      _genderValue = value;
+                    });
+                  },
+                ),
+              ),
+
+
+              btnSignUp(),
 
             ],
 
@@ -214,23 +250,27 @@ class _SignUpFormState extends State<SignUpForm> {
 
 
   void SignUpUser(){
+    var gnd = "";
+    if ( _genderValue  == Gender.male){
+      gnd = "1";
+    }else{
+      gnd = "2";
+    }
     Map<String, dynamic> body = {
       'name': nameTF.text,
       'email': emailTF.text,
       'password' : passTF.text,
-      'c_password' : passTF.text,
-      'gender': emailTF.text,
-      'dob' : passTF.text,
+      'c_password' : confirmTF.text,
+      'gender': gnd,
+      'dob' : dobTF.text,
     };
+    print(body);
     try {
       ApiBaseHelper().fetchService(method: HttpMethod.post, url: WebService.login,body: body,isFormData: true).then(
               (response){
             Map<String, dynamic> responseJson = json.decode(response);
             if(responseJson.containsKey('success')){
-              print("hereee");
-//                responseJson['success'].forEach((v) {
-//                  data.add(Success.fromJson(v));
-//                });
+
             }else{
               print(responseJson);
             }
@@ -257,7 +297,8 @@ class _SignUpFormState extends State<SignUpForm> {
 //                }else{
 //                  Toast.show("Select DOB", context, duration: Toast.LENGTH_LONG);
 //                }
-                Navigator.push(context, CupertinoPageRoute(builder: (context) => OnBoarding()));
+                  SignUpUser();
+//                Navigator.push(context, CupertinoPageRoute(builder: (context) => OnBoarding()));
               }else{
                 Toast.show("Invalid Email Formate", context, duration: Toast.LENGTH_LONG);
               }

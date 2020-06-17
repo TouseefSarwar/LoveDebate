@@ -19,7 +19,7 @@ class _ProfileState extends State<Profile> {
       appBar: GradientAppBar(
         backgroundColorStart: GlobalColors.firstColor,
         backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('Modules.Profile',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
+        title:  Text('Profile',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
         centerTitle: true,
       ),
 
@@ -65,10 +65,10 @@ class _ProfileState extends State<Profile> {
                     ),
                     Positioned(
                       top: ((30/100)*height) / 2 - 70,
-                      left: width / 2 - 70,
+                      left: width / 2 - 60,
                       child: Container(
-                        height: 140,
-                        width: 140,
+                        height: 120,
+                        width: 120,
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.white),
                           shape: BoxShape.circle,
@@ -82,11 +82,11 @@ class _ProfileState extends State<Profile> {
                   ]
               ),
               ProfileListItems("Basic Info",Icon(Icons.info_outline)),
-              ProfileListItems("Ethnicity/Religion",Icon(Icons.info_outline)),
-              ProfileListItems("Education/Job",Icon(Icons.info_outline)),
-              ProfileListItems("Family/Contact",Icon(Icons.info_outline)),
-              ProfileListItems("About me/Life Style",Icon(Icons.info_outline)),
-              ProfileListItems("Photos",Icon(Icons.info_outline)),
+              ProfileListItems("Ethnicity/Religion",Icon(Icons.info_outline,)),
+              ProfileListItems("Education/Job",Icon(Icons.info_outline,)),
+              ProfileListItems("Family/Contact",Icon(Icons.info_outline,)),
+              ProfileListItems("About me/Life Style",Icon(Icons.info_outline,)),
+              ProfileListItems("Photos",Icon(Icons.info_outline,)),
             ],
           ),
         ),
@@ -102,60 +102,33 @@ class _ProfileState extends State<Profile> {
 
         });
       },
-      child: Container(
-//                height: 60,
-//                width: width,
-//                color: Colors.pink,
-              margin: EdgeInsets.all(16),
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(width: 4,),
-                    Icon(Icons.info_outline,size: 28,),
-                    SizedBox(width: 12,),
-                    Expanded(child: Text(text,style: TextStyle(fontSize: 17),)),
-                    SizedBox(width: 8,),
-                    Icon(Icons.edit,size: 24,color: Colors.blueGrey,),
-                    SizedBox(width: 8,),
-                  ],
-                ),
+      child: Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.all(16),
+              child: Row(
+                children: <Widget>[
+                  SizedBox(width: 4,),
+                  Icon(Icons.info_outline,color: GlobalColors.firstColor,size: 28,),
+                  SizedBox(width: 12,),
+                  Expanded(child: Text(text,style: TextStyle(fontSize: 17),)),
+                  SizedBox(width: 8,),
+                  Icon(Icons.edit,size: 24,color: Colors.blueGrey,),
+                  SizedBox(width: 8,),
+                ],
               ),
+            ),
+
+          Padding(
+            padding: const EdgeInsets.only(right: 16, left: 16),
+            child: Container(
+              height: 1,
+              color:  GlobalColors.firstColor,//Colors.grey,
+            ),
+          )
+        ],
+      ),
     );
   }
 
-  Column InfoRow(String _heading, String info) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(left: 12, top: 20),
-          child: Text(
-            _heading,
-            style: TextStyle(
-              fontSize: 17,
-              color: Colors.grey,
-            ),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 12, top: 12) ,
-          child: Text(
-            info,
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        SizedBox(height: 12,),
-        Center(
-          child: Container(
-            height: 1,
-            width: MediaQuery.of(context).size.width - 32,
-            color: Colors.grey,
-          ),
-        ),
-      ],
-    );
-  }
 }

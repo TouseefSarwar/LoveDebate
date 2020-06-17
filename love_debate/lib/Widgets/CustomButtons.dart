@@ -23,7 +23,7 @@ class CustomRaisedButton extends StatelessWidget {
           buttonText,
           style: TextStyle(
             color: textColor,
-            fontSize: 16,
+            fontSize: 13,
           ),
           textAlign: TextAlign.center,
         ));
