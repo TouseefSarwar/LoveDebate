@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:lovedebate/Models/LoginModel.dart';
 
 import 'package:lovedebate/Utils/Constants/WebService.dart';
 import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
@@ -48,6 +50,7 @@ class _LoginState extends State<Login> {
           child: Stack(
             children: <Widget>[
               ListView(
+                padding: const EdgeInsets.all(16),
                 children: <Widget>[
                   TopSection(_height),
                   CenterSection(_height),
@@ -85,14 +88,14 @@ class _LoginState extends State<Login> {
 
   Container CenterSection(double _height) {
     return Container(
-      height: (15/100)*_height,
+      height: (20/100)*_height,
       //color: Colors.blue,
       margin: EdgeInsets.all(16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           emailTextField(txtEmailFocusNode,txtEmailController,'Email',false),
-          SizedBox(height: 9,),
+          SizedBox(height: 8,),
           emailTextField(txtPasswordFocusNode, txtPasswordController, "Password",true),
           SizedBox(height: 8,),
 
@@ -154,9 +157,11 @@ class _LoginState extends State<Login> {
             }else if (txtPasswordController.text == "" || txtPasswordController.text==null){
               Toast.show("Empty Password", context, duration: Toast.LENGTH_LONG);
             }else{
+
+
+
 //              LoginUser();
               Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
-
             }
           });
 //
@@ -171,17 +176,24 @@ class _LoginState extends State<Login> {
       'email': txtEmailController.text,
       'password' : txtPasswordController.text,
     };
+
     try {
       ApiBaseHelper().fetchService(method: HttpMethod.post, url: WebService.login,body: body,isFormData: true).then(
               (response){
-              Map<String, dynamic> responseJson = json.decode(response);
-              if(responseJson.containsKey('success')){
-                print("hereee");
-//                responseJson['success'].forEach((v) {
-//                  data.add(Success.fromJson(v));
-//                });
+              var res = response as http.Response;
+              if (res.statusCode == 200){
+                Map<String, dynamic> responseJson = json.decode(res.body);
+                if(responseJson.containsKey('success')){
+                  var loginresponse = LoginModel.fromJson(responseJson["success"]);
+                  print(loginresponse.user.email);
+                }else{
+                  print("Oh no response");
+                }
+
+              }else if (res.statusCode == 401){
+                Toast.show(res.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
               }else{
-                print(responseJson);
+                Toast.show(res.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
               }
             });
 
@@ -193,4 +205,24 @@ class _LoginState extends State<Login> {
   }
 
 
+}
+
+
+class QaOptions {
+  String text;
+  String value;
+
+  QaOptions({this.text, this.value});
+
+  QaOptions.fromJson(Map<String, dynamic> json) {
+    text = json['text'];
+    value = json['value'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['text'] = this.text;
+    data['value'] = this.value;
+    return data;
+  }
 }
