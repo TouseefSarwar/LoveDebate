@@ -1,7 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lovedebate/Modules/LoginSignup/SignUpform.dart';
+import 'package:lovedebate/Modules/LoginSignup/SUPersonalInfo.dart';
 import 'package:lovedebate/Modules/OnBoarding/OnBoarding.dart';
 import 'package:lovedebate/Screens/SplashScreen.dart';
 

@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 
 import '../../Screens/TabBarcontroller.dart';
 import '../../Utils/HexColor.dart';
-import 'SignUpform.dart';
+import 'SUPersonalInfo.dart';
 
 
 class Login extends StatefulWidget {

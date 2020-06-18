@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'Login.dart';
-import 'SignUpform.dart';
+import 'SUPersonalInfo.dart';
 
 
 class LaunchScreen extends StatefulWidget {
@@ -82,7 +82,7 @@ InkWell SignupMethod(BuildContext context,double height, double width,String tex
     onTap: (){
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SignUpForm()),
+        MaterialPageRoute(builder: (context) => SUPersonalInfo()),
       );
     },
     child: Container(

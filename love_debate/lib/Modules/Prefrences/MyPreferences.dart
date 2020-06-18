@@ -43,8 +43,6 @@ class _MyPreferencesState extends State<MyPreferences> {
     );
   }
 
-
-
   InkWell ProfileListItems(String text,IconData icon,) {
     return InkWell(
       onTap: (){
@@ -80,6 +78,7 @@ class _MyPreferencesState extends State<MyPreferences> {
       ),
     );
   }
+
 }
 
 
