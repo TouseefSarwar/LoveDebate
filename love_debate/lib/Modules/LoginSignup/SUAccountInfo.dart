@@ -93,7 +93,6 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
               ),
               SizedBox(height: 16,),
               btnSignUp(),
-
             ],
 
           ),
