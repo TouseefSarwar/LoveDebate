@@ -1,4 +1,5 @@
 
+import 'package:lovedebate/Modules/PreMatches/Rounds/CurrentRounds.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Modules/PreMatches/Rounds/Rounds.dart';
 import 'package:lovedebate/Utils/HexColor.dart';
@@ -51,7 +52,7 @@ class _CatagoriesState extends State<Catagories> {
   InkWell CatagoryItem(String text,BuildContext context) {
     return InkWell(
       onTap: (){
-        Navigator.push(context, CupertinoPageRoute(builder: (context) => Rounds()));
+        Navigator.push(context, CupertinoPageRoute(builder: (context) => CurrentRounds()));
 
       },
       child: Container(

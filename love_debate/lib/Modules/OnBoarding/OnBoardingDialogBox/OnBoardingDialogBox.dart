@@ -3,13 +3,17 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lovedebate/Models/OnBoardingModel.dart';
+import 'package:lovedebate/Modules/LoginSignup/Login.dart';
 import 'package:lovedebate/Modules/OnBoarding/OnBoardingDialogBox/OnBoardingDropDown.dart';
 import 'package:lovedebate/Modules/OnBoarding/OnBoardingDialogBox/OnBoardingModels/CheckBoxDataModel.dart';
 import 'package:lovedebate/Utils/Constants/WebService.dart';
+import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
+import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
+import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
 
 
 var qOptions;
@@ -40,9 +44,7 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
   void _value1Changed(bool value) => setState(() => _value1 = value);
   void _value2Changed(bool value) => setState(() => _value2 = value);
 
-
-
-
+  int apiCall = 0;
 
  String DialogApi=WebService.baseURL;
 
@@ -58,6 +60,7 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
   void initState() {
     super.initState();
 
+    int apiCall = 0;
     print(widget.Question.qaOptions);
 //
   if (widget.Question.qaId !=null){
@@ -66,17 +69,16 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
   }
   for(int i=0;i<qOptions.myKey.length;i++)
     {
-      var itm = CheckBoxDataModel(id: widget.Question.qaId,checkboxText: qOptions.myKey[i].text,checkvalue: false,value: qOptions.myKey[i].text);
+      var itm = CheckBoxDataModel(id: widget.Question.qaId,checkboxText: qOptions.myKey[i].text,checkvalue: false,value: qOptions.myKey[i].value);
       questionsCheckBox.add(itm);
     }
 
   print(questionsCheckBox.length);
 
-    if(qOptions.myKey.first.text=="Api"){
-      DialogApi=WebService.baseURL+""+qOptions.myKey.first.value;
-
+    if(qOptions.myKey.first.text=="api"){
+      DialogApi=qOptions.myKey.first.value;
+      callOnBoardingSubOptions(DialogApi);
     }
-
   }
 
 
@@ -121,7 +123,6 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
                  //itemCount:((opt.myKey.length)),
                   itemBuilder: (BuildContext context,int index,){
                    String itm = opt.myKey[index].text.toString();
-
                     return OnBoardingCheckBox(itm,totalDialogWidth,questionsCheckBox,index);
                   }),
             ),
@@ -229,25 +230,56 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
     );
   }
 
-//  Widget OnBoardingTextFeild( FocusNode focusNode, TextEditingController txtFeild,String text) {
-//    return UnderLineTextField(
-//      focusNode: focusNode,
-//      txtHint: text,
-//      isSecure: false,
-//      keyboardType: TextInputType.emailAddress,
-//      enableBorderColor: Colors.white,
-//      focusBorderColor: Colors.white,
-//      textColor: Colors.white,
-//
-//      txtController: txtFeild,
-//      onTapFunc: () {
-//        setState(() {
-//          FocusScope.of(context).requestFocus(focusNode);
-//        });
-//      },
-//    );
-//  }
 
+  callOnBoardingSubOptions(String webserviceUrl) {
+    Map<String, dynamic> body = {
+    };
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.get, url: webserviceUrl,body: body,isFormData: true).then(
+              (response) {
+            var data = List<QaOptions>();
+            if (response.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(response.body);
+              if(responseJson.containsKey('success')) {
+                responseJson['success'].forEach((v){
+                  print(v["pro_name"]);
+                  print(v[0]);
+                  var itm = QaOptions(text: v['pro_name'], value: v['pro_'] );
+                  print(itm);
+                  data.add(itm);
+                  for(int i=0;i<responseJson.values.length;i++) {
+                    var itm = CheckBoxDataModel(id: widget.Question.qaId,checkboxText: data[i].text,checkvalue: false,value: data[i].value);
+                    questionsCheckBox.add(itm);
+                  }
+                  print(questionsCheckBox);
+                });
+                setState(() {
+                  //_Questions=data;
+
+                 // if(qOptions.myKey.first.text=="api"){
+//                  for(int i=0;i<qOptions.myKey.length;i++) {
+//                    var itm = CheckBoxDataModel(id: widget.Question.qaId,checkboxText: data[i].text,checkvalue: false,value: data[i].value);
+//                    questionsCheckBox.add(itm);
+//                  }
+                 // }
+                  apiCall=0;
+                });
+              } else{
+                print("Oh no response");
+              }
+            }else if (response.statusCode == 401){
+              Toast.show(response.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+            }else{
+              Toast.show(response.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+            }
+          });
+
+    } on FetchDataException catch(e) {
+      setState(() {
+
+      });
+    }
+  }
 }
 
 class Autogenerated {
@@ -291,6 +323,8 @@ class MyKey {
     return data;
   }
 }
+
+
 //DropdownButton(
 //            hint: Text('Please choose a location'), // Not necessary for Option 1
 //            value: _selectedLocation,
