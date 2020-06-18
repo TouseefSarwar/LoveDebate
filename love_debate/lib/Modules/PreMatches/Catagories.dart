@@ -2,6 +2,7 @@
 import 'package:lovedebate/Modules/PreMatches/Rounds/CurrentRounds.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Modules/PreMatches/Rounds/Rounds.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/HexColor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,12 +26,7 @@ class _CatagoriesState extends State<Catagories> {
 
 
     return Scaffold(
-      appBar: GradientAppBar(
-        centerTitle: true,
-        title: Text('Catagories',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
-        backgroundColorStart: GlobalColors.firstColor,
-        backgroundColorEnd: GlobalColors.secondColor,
-      ),
+      appBar: CustomAppbar.setNavigation("Catagories"),
       body: SafeArea(
         top: true,
         child: ListView(

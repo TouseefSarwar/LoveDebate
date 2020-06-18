@@ -1,6 +1,7 @@
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class Stats extends StatefulWidget {
@@ -30,12 +31,7 @@ class _StatsState extends State<Stats> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GradientAppBar(
-        backgroundColorStart: GlobalColors.firstColor,
-        backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('Stats',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
-        centerTitle: true,
-      ),
+      appBar: CustomAppbar.setNavigation("Stats"),
       body: Container(
         child: Center(
           child: PieChart(

@@ -1,4 +1,5 @@
 import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
@@ -39,12 +40,8 @@ class _BasicInfoState extends State<BasicInfo> {
     double height=(MediaQuery.of(context).size.height-MediaQuery.of(context).padding.vertical)-AppBar().preferredSize.height;
     double width=MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: GradientAppBar(
-        backgroundColorStart: GlobalColors.firstColor,
-        backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('Basic Info',style:TextStyle(color: Colors.white ,fontSize: GlobalFont.navFontSize, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
-        centerTitle: true,
-      ),body: Container(
+      appBar: CustomAppbar.setNavigation("Basic Info"),
+      body: Container(
       height: height,
       width: width,
       margin: EdgeInsets.all(16),

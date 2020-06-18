@@ -1,11 +1,10 @@
-import 'dart:developer';
-import 'dart:math';
-import 'package:flutter/cupertino.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
-import 'package:lovedebate/Utils/HexColor.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
+
+
 class UserChatList extends StatefulWidget {
   @override
   _UserChatListState createState() => _UserChatListState();
@@ -18,12 +17,7 @@ class _UserChatListState extends State<UserChatList> {
     double _height=(MediaQuery.of(context).size.height)-AppBar().preferredSize.height;
     double _width=MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: GradientAppBar(
-        backgroundColorStart: GlobalColors.firstColor,
-        backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('Chats',style:TextStyle(color: Colors.white ,fontSize: GlobalFont.navFontSize, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
-        centerTitle: true,
-      ),
+      appBar: CustomAppbar.setNavigation("Chats"),
       body: SafeArea(
         child:Container(
           height: _height,

@@ -5,6 +5,7 @@ import 'package:lovedebate/Modules/PreMatches/Rounds/Rounds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 
 class PreMatches extends StatefulWidget {
   @override
@@ -18,13 +19,7 @@ class _PreMatchesState extends State<PreMatches> {
     double _width=MediaQuery.of(context).size.width-90;
     double _itemheight =(15/100)*_height;
     return Scaffold(
-      appBar: GradientAppBar(
-        backgroundColorStart: GlobalColors.firstColor,
-        backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('Pre Matches',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
-        centerTitle: true,
-        //leading:  Icon(Icons.search,color: Colors.white,),
-      ),
+      appBar: CustomAppbar.setNavigation("Pre Matches"),
 
       body: SafeArea(
         child: Container(

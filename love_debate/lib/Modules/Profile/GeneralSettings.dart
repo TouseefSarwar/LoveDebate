@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
 
@@ -26,12 +27,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GradientAppBar(
-        backgroundColorStart: GlobalColors.firstColor,
-        backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('General Settings',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
-        centerTitle: true,
-      ),
+      appBar: CustomAppbar.setNavigation("General Settings"),
       body: SafeArea(
         bottom: false,
         top: false,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:lovedebate/Modules/Matched/Matched.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
 
@@ -53,12 +54,7 @@ class _CurrentRoundsState extends State<CurrentRounds> {
     TextEditingController txtEmailController = TextEditingController();
     FocusNode txtEmailFocusNode = FocusNode();
     return Scaffold(
-      appBar: GradientAppBar(
-        centerTitle: true,
-        title: Text('Rounds',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
-        backgroundColorStart: GlobalColors.firstColor,
-        backgroundColorEnd: GlobalColors.secondColor,
-      ),
+      appBar: CustomAppbar.setNavigation("Current Round"),
       body: Column(
         children: <Widget>[
           Container(

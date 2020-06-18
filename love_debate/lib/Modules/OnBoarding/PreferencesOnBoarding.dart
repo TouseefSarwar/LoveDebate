@@ -9,6 +9,7 @@ import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:lovedebate/Utils/Controllers/Loader.dart';
 import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
 import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
@@ -50,12 +51,8 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
     double _height=(MediaQuery.of(context).size.height)-AppBar().preferredSize.height;
     double _width=MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: GradientAppBar(
-        backgroundColorStart: GlobalColors.firstColor,
-        backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('OnBoarding',style:TextStyle(color: Colors.white ,fontSize: GlobalFont.navFontSize, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
-        centerTitle: true,
-      ),body: SafeArea(
+      appBar: CustomAppbar.setNavigation("Preferences"),
+      body: SafeArea(
       child: (apiCall==0)?ListView.separated(
 //        separatorBuilder: (BuildContext context, int index) => Padding(
 //          padding: const EdgeInsets.only(left: 8,right: 8,top: 12,bottom: 12),
@@ -85,7 +82,6 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
               if(responseJson.containsKey('success')) {
                 responseJson['success'].forEach((v) {
                   data.add(Success.fromJson(v));
-
                 });
                 setState(() {
                   _Questions=data;

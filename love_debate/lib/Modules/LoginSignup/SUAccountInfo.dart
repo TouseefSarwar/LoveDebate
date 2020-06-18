@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
 import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
@@ -43,13 +44,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
     double _width=MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-        backgroundColor: Colors.white,
-      ),
+      appBar: CustomAppbar.setNavigation(""),
       body: SafeArea(
         top: true,
         child: Container(

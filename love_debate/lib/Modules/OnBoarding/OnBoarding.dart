@@ -9,6 +9,7 @@ import 'package:lovedebate/Utils/Constants/WebService.dart';
 import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:lovedebate/Utils/Controllers/Loader.dart';
 import 'package:lovedebate/Utils/Designables/Toast.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
@@ -60,12 +61,7 @@ class _OnBoardingState extends State<OnBoarding> {
 
 
     return Scaffold(
-      appBar: GradientAppBar(
-        backgroundColorStart: GlobalColors.firstColor,
-        backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('OnBoarding',style:TextStyle(color: Colors.white ,fontSize: GlobalFont.navFontSize, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
-        centerTitle: true,
-      ),
+      appBar: CustomAppbar.setNavigation("OnBoarding"),
       body: SafeArea(
         child:(apiCall==0)? Container(
           height: _height,

@@ -3,6 +3,7 @@ import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 
 
 class MyPreferences extends StatefulWidget {
@@ -17,12 +18,7 @@ class _MyPreferencesState extends State<MyPreferences> {
     double _width=MediaQuery.of(context).size.width;
     double _itemheight =(15/100)*_height;
     return Scaffold(
-      appBar: GradientAppBar(
-        backgroundColorStart: GlobalColors.firstColor,
-        backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('Preferences',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
-        centerTitle: true,
-      ),
+      appBar: CustomAppbar.setNavigation("Preferences"),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

@@ -1,8 +1,13 @@
+import 'package:lovedebate/Modules/OnBoarding/PreferencesOnBoarding.dart';
+import 'package:lovedebate/Modules/Prefrences/MyPreferences.dart';
+import 'package:lovedebate/Modules/Profile/GeneralSettings.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:lovedebate/Modules/Profile/BasicInfo.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
+import 'package:lovedebate/Utils/Globals/Fonts.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -16,12 +21,7 @@ class _ProfileState extends State<Profile> {
     double width=MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: GradientAppBar(
-        backgroundColorStart: GlobalColors.firstColor,
-        backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('Profile',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
-        centerTitle: true,
-      ),
+      appBar: CustomAppbar.setNavigation("Profile"),
 
       body: SafeArea(
         child: SingleChildScrollView(
@@ -61,9 +61,9 @@ class _ProfileState extends State<Profile> {
                           child: Text(
                             "Muhammad Touseef",
                             style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20
                             ),
                           ),
                         ),
@@ -87,12 +87,12 @@ class _ProfileState extends State<Profile> {
                     ]
                 ),
                 SizedBox(height: 8,),
-                ProfileListItems("Basic Info",Icon(Icons.info_outline)),
-                ProfileListItems("Ethnicity/Religion",Icon(Icons.info_outline,)),
-                ProfileListItems("Education/Job",Icon(Icons.info_outline,)),
-                ProfileListItems("Family/Contact",Icon(Icons.info_outline,)),
-                ProfileListItems("About me/Life Style",Icon(Icons.info_outline,)),
-                ProfileListItems("Photos",Icon(Icons.info_outline,)),
+                ProfileListItems("Basic Info",Icons.info_outline,1),
+                ProfileListItems("Preferences & Filters",Icons.menu,2),
+                ProfileListItems("General Settings",Icons.settings,3),
+                ProfileListItems("Notifications",Icons.notifications,4),
+                ProfileListItems("Deactivate Account",Icons.cancel,5),
+                ProfileListItems("Logout",Icons.power_settings_new,6),
               ],
             ),
           ),
@@ -101,11 +101,37 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  InkWell ProfileListItems(String text,Icon icon,) {
+  InkWell ProfileListItems(String text,IconData icon,int screenNo) {
     return InkWell(
       onTap: (){
         setState(() {
-          Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+          switch(screenNo){
+            case 1:
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+              break;
+            case 2:
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
+              break;
+            case 3:
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => GeneralSettings()));
+              break;
+            case 4:
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+              break;
+            case 5:
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+              break;
+            case 6:
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+              break;
+            default:
+              print("Nothing to do");
+              break;
+          }
+
+
+
+//          Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
 
         });
       },
@@ -119,11 +145,11 @@ class _ProfileState extends State<Profile> {
                 child: Row(
                   children: <Widget>[
                     SizedBox(width: 4,),
-                    Icon(Icons.info_outline,color:Colors.black,size: 28,),
+                    Icon(icon,color: GlobalColors.firstColor,size: 28,),
                     SizedBox(width: 12,),
-                    Expanded(child: Text(text,style: TextStyle(fontSize: 17),)),
+                    Expanded(child: Text(text,style: TextStyle(fontSize: GlobalFont.textFontSize, fontWeight: FontWeight.w500),)),
                     SizedBox(width: 8,),
-                    Icon(Icons.edit,size: 24,color: Colors.blueGrey,),
+                    Icon(Icons.edit,size: 20,color: Colors.blueGrey,),
                     SizedBox(width: 8,),
                   ],
                 ),

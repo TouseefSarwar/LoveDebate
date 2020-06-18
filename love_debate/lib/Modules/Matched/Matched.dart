@@ -1,5 +1,6 @@
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Screens/TabBarcontroller.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Widgets/CustomButtons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +18,7 @@ class _MatchedState extends State<Matched> {
     double height=(MediaQuery.of(context).size.height-MediaQuery.of(context).padding.vertical)-AppBar().preferredSize.height;
     double width=MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: GradientAppBar(
-        backgroundColorStart: GlobalColors.firstColor,
-        backgroundColorEnd: GlobalColors.secondColor,
-        title:  Text('Matched',style:TextStyle(color: Colors.white ,fontSize: 30, fontFamily: 'Satisfy', fontWeight:  FontWeight.bold)),
-        centerTitle: true,
-      ),
+      appBar: CustomAppbar.setNavigation("Matched"),
 
       body: SafeArea(
         child:ListView(

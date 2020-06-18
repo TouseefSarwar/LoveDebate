@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
-import 'Login.dart';
-import 'SignUpform.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
+import 'SUPersonalInfo.dart';
+
 
 
 class LaunchScreen extends StatefulWidget {
@@ -17,9 +18,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
     double _signupButtonwidth=_width/0.75;
     double _signupButtonHeight=_height/1.4;
     return Scaffold(
-      appBar:  AppBar(
-        backgroundColor: Color(0xFF050F15),
-      ),
+      appBar:  CustomAppbar.setNavigation("Sigup"),
       body:SafeArea(
         top: false,
         bottom: false,
@@ -82,7 +81,7 @@ InkWell SignupMethod(BuildContext context,double height, double width,String tex
     onTap: (){
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SignUpForm()),
+        MaterialPageRoute(builder: (context) => SUPersonalInfo()),
       );
     },
     child: Container(

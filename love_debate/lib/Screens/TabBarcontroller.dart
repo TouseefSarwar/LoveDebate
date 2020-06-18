@@ -24,7 +24,7 @@ class _TabBarControllerPageState extends State<TabBarControllerPage> {
     PreMatches(),
     Matched(),
     UserChatList(),
-    MyPreferences(),
+    Profile(),
   ];
 
   Color FloatingbtnSelected=GlobalColors.firstColor;
