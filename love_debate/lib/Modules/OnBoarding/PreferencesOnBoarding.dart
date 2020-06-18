@@ -53,12 +53,12 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
     return Scaffold(
       appBar: CustomAppbar.setNavigation("Preferences"),
       body: SafeArea(
-      child: (apiCall==0)?ListView.separated(
+      child: (apiCall==0)?ListView.builder(
 //        separatorBuilder: (BuildContext context, int index) => Padding(
 //          padding: const EdgeInsets.only(left: 8,right: 8,top: 12,bottom: 12),
 //          child: Container(height: 1,width: _width,color:GlobalColors.firstColor,),
 //        ),
-        separatorBuilder: (BuildContext context, int index) => Divider(thickness:2,),
+
         itemCount: _Questions.length,
         itemBuilder: (BuildContext context,int index){
          return QuestionsContainer(_height, _width, txtEmailFocusNode, txtAnswerController, context,_Questions[index].qaQuestion,_questionType,_Questions[index].qaFieldType,_Questions[index],);
@@ -104,19 +104,25 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
       });
     }
   }
-  Container QuestionsContainer(double _height, double _width, FocusNode txtEmailFocusNode, TextEditingController txtAnswerController, BuildContext context,String questiontext,int _questionType,String fieldtype,Success QuestionObj,) {
-    return Container(
-      // height: (50/100)*_height,
-      width: _width,
-      //color: Colors.blue,
-      child:Column(
+  Card QuestionsContainer(double _height, double _width, FocusNode txtEmailFocusNode, TextEditingController txtAnswerController, BuildContext context,String questiontext,int _questionType,String fieldtype,Success QuestionObj,) {
+    return Card(
+      margin: const EdgeInsets.all(8),
+      elevation:  5,
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+
           Container(
             width: _width,
             margin: EdgeInsets.all(24),
-              child: Text(questiontext,style: TextStyle(fontSize: GlobalFont.textFontSize,),textAlign: TextAlign.justify,)),
+              child: Text(questiontext,style: TextStyle(
+                  fontSize: GlobalFont.textFontSize,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+                textAlign: TextAlign.justify,
+              )
+          ),
           (fieldtype!="Slider")?Container(
            // height: 120,
             margin: EdgeInsets.all(4),
@@ -127,7 +133,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
                 children: <Widget>[
                   (fieldtype=="Dropdown"||fieldtype=="Checkbox")? AnswerContainer(_width,"Enter Required value",QuestionObj):
                   Padding(
-                    padding: const EdgeInsets.only(left: 16,right: 16),
+                    padding: const EdgeInsets.all(16),
                     child: NumberTextFeildContainer(txtAnswerController, fieldtype, context, QuestionObj),
                   ),
                 ],
@@ -135,9 +141,10 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
             ),
           ):OnBoardingSlider(_width),
         ],
-      ) ,
+      ),
     );
   }
+
   UnderLineTextField NumberTextFeildContainer(TextEditingController txtAnswerController, String fieldtype, BuildContext context, Success QuestionObj) {
     return UnderLineTextField(
       focusNode: _focusNode,
@@ -146,7 +153,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
       keyboardType: TextInputType.emailAddress,
       enableBorderColor: Colors.white,
       focusBorderColor: Colors.white,
-      textColor: Colors.grey,
+      textColor: Colors.black,
       txtController: txtAnswerController,
     );
   }
@@ -177,11 +184,19 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          child: Text((answer==" ")?answerText:answer,style: TextStyle(fontSize: GlobalFont.textFontSize),  textAlign: TextAlign.justify,
+          margin: EdgeInsets.only(bottom: 8, left: 8),
+          child: Text((answer==" ")?answerText:answer,
+            style: TextStyle(
+                  fontSize: GlobalFont.textFontSize,
+                  color: Colors.grey,
+                ),
+            textAlign: TextAlign.justify,
             overflow: TextOverflow.ellipsis,maxLines: 2,),
+
         ),
         SizedBox(height: 8,),
-        Container(height: 2,width:_width-50 ,color:Colors.grey,),
+        Container(height: 1,width:_width-54 ,color:Colors.grey,),
+        SizedBox(height: 16,),
       ],
     ),
       //       SizedBox(width:8,),
@@ -196,7 +211,13 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
       child: Column(
         children: <Widget>[
           Slider(value: _value, onChanged: _setvalue,activeColor: GlobalColors.firstColor,),
-          Text('Value: ${(_value * 100).round()}',style: TextStyle(fontSize:GlobalFont.textFontSize),),
+          Text(
+            'Value: ${(_value * 100).round()}',
+            style: TextStyle(
+              fontSize: GlobalFont.textFontSize,
+              color: Colors.grey,
+            ),
+          ),
         ],
       ),
     );

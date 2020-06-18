@@ -28,6 +28,12 @@ class _UserChatListState extends State<UserChatList> {
               ChatListItem(_width),
               ChatListItem(_width),
               ChatListItem(_width),
+              ChatListItem(_width),
+              ChatListItem(_width),
+              ChatListItem(_width),
+              ChatListItem(_width),
+              ChatListItem(_width),
+              ChatListItem(_width),
 
             ],
           ),
@@ -53,7 +59,7 @@ class _UserChatListState extends State<UserChatList> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text("Hamza Arshad",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                          Text("Hamza Arshad",style: TextStyle(fontSize: GlobalFont.textFontSize,fontWeight: FontWeight.bold),),
                           SizedBox(height: 4,),
                           Text("How are you?",style: TextStyle(fontSize: GlobalFont.textFontSize),),
                         ],
@@ -62,12 +68,12 @@ class _UserChatListState extends State<UserChatList> {
                     Container(
                       height: 40,
                      // color: Colors.cyan,
-                      margin: EdgeInsets.all(16),
+                      margin: EdgeInsets.all(8),
                      // child: Image.asset("images/message.png"),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          Text("Yesterday",style: TextStyle(fontSize: GlobalFont.textFontSize),),
+                          Text("Yesterday",style: TextStyle(fontSize: GlobalFont.textFontSize - 5),),
                         ],
                       ),
                     )

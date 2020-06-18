@@ -78,7 +78,7 @@ class _CatagoriesState extends State<Catagories> {
               ),
               SizedBox(width: 16,),
               Expanded(child: Text(text,style: TextStyle(fontSize: 17,color: Colors.black,),)),
-              Icon(Icons.navigate_next,size: 25,),
+              Icon(Icons.navigate_next,size: 25,color:  GlobalColors.firstColor,),
               SizedBox(width: 12,),
 
             ],

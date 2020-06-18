@@ -25,76 +25,71 @@ class _ProfileState extends State<Profile> {
 
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
-            height: height,
-            width: width,
-            color: Colors.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                // Upper Body
-                Stack(
-                    children: <Widget>[
-                      //Gradient Background...
-                      Container(
-                        height: (30/100)*height,
-                        width: width,
-                         //color: Colors.white,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: [
-                                Colors.white,
-                                Colors.white
-                              ]
-                          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              // Upper Body
+              Stack(
+                  children: <Widget>[
+                    //Gradient Background...
+                    Container(
+                      height: (30/100)*height,
+                      width: width,
+                       //color: Colors.white,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [
+                              Colors.white,
+                              Colors.white
+                            ]
                         ),
                       ),
+                    ),
 
-                      //Overlay
-                      Container(
-                        height: (30/100)*height,
-                        width: width,
-                        color: Colors.white,
-                        padding: EdgeInsets.only(bottom: 8),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Text(
-                            "Muhammad Touseef",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20
-                            ),
+                    //Overlay
+                    Container(
+                      height: (30/100)*height,
+                      width: width,
+                      color: Colors.white,
+                      padding: EdgeInsets.only(bottom: 8),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Text(
+                          "Muhammad Touseef",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20
                           ),
                         ),
                       ),
-                      Positioned(
-                        top: ((30/100)*height) / 2 - 70,
-                        left: width / 2 - 60,
-                        child: Container(
-                          height: 120,
-                          width: 120,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white),
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: AssetImage('images/conor.jpg'),
-                                fit: BoxFit.fitHeight
-                            ),
+                    ),
+                    Positioned(
+                      top: ((30/100)*height) / 2 - 70,
+                      left: width / 2 - 60,
+                      child: Container(
+                        height: 120,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white),
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: AssetImage('images/conor.jpg'),
+                              fit: BoxFit.fitHeight
                           ),
                         ),
                       ),
-                    ]
-                ),
-                SizedBox(height: 8,),
-                ProfileListItems("Basic Info",Icons.info_outline,1),
-                ProfileListItems("Preferences & Filters",Icons.menu,2),
-                ProfileListItems("General Settings",Icons.settings,3),
-                ProfileListItems("Notifications",Icons.notifications,4),
-                ProfileListItems("Deactivate Account",Icons.cancel,5),
-                ProfileListItems("Logout",Icons.power_settings_new,6),
-              ],
-            ),
+                    ),
+                  ]
+              ),
+              SizedBox(height: 8,),
+              ProfileListItems("Basic Info",Icons.info_outline,1),
+              ProfileListItems("Preferences & Filters",Icons.menu,2),
+              ProfileListItems("General Settings",Icons.settings,3),
+              ProfileListItems("Notifications",Icons.notifications,4),
+              ProfileListItems("Deactivate Account",Icons.cancel,5),
+              ProfileListItems("Logout",Icons.power_settings_new,6),
+            ],
           ),
         ),
       ),
@@ -139,12 +134,12 @@ class _ProfileState extends State<Profile> {
         children: <Widget>[
           Card(
             elevation: 5,
-
             child: Container(
+              height: 50,
               margin: EdgeInsets.all(16),
                 child: Row(
                   children: <Widget>[
-                    SizedBox(width: 4,),
+                    SizedBox(width: 12,),
                     Icon(icon,color: GlobalColors.firstColor,size: 28,),
                     SizedBox(width: 12,),
                     Expanded(child: Text(text,style: TextStyle(fontSize: GlobalFont.textFontSize, fontWeight: FontWeight.w500),)),

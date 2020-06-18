@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:lovedebate/Utils/Globals/Fonts.dart';
 
 class UnderLineTextField extends StatelessWidget {
 
@@ -36,7 +38,7 @@ class UnderLineTextField extends StatelessWidget {
         child: TextField(
           focusNode: focusNode,
           onTap: onTapFunc,
-          style: TextStyle(color: textColor, fontSize: 18),
+          style: TextStyle(color: textColor, fontSize: GlobalFont.textFontSize),
           textAlign: TextAlign.justify,
           textAlignVertical: TextAlignVertical.center,
           keyboardType: keyboardType,
@@ -44,7 +46,7 @@ class UnderLineTextField extends StatelessWidget {
           controller: txtController,
           decoration: InputDecoration(
             labelText: txtHint,
-            labelStyle: TextStyle(color: focusNode.hasFocus ? focusBorderColor : Colors.grey, fontSize: 18),
+            labelStyle: TextStyle(color: focusNode.hasFocus ? focusBorderColor : Colors.grey, fontSize: GlobalFont.textFontSize),
             contentPadding: EdgeInsets.symmetric(vertical: 8),
             enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
@@ -53,6 +55,13 @@ class UnderLineTextField extends StatelessWidget {
                     color: Colors.grey
                 )
             ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                  width: 1.3,
+                  style: BorderStyle.solid,
+                  color: GlobalColors.firstColor,
+              )
+          ),
           ),
         ),
       ),
@@ -81,7 +90,7 @@ class NewUnderLineTextField extends StatelessWidget {
           accentColor: Theme.of(context).primaryColor
       ),
       child: TextFormField(
-        style: TextStyle(fontSize: 14),
+        style: TextStyle(fontSize: GlobalFont.textFontSize),
         textAlign: TextAlign.justify,
         textCapitalization: capitalization,
         textAlignVertical: TextAlignVertical.center,
@@ -95,16 +104,17 @@ class NewUnderLineTextField extends StatelessWidget {
           prefixIcon: prefixIcon != null ? Container(transform: Matrix4.translationValues(0.0, 0.0, 0.0), child: Icon(prefixIcon, size: 16,)) : null,
           suffixIcon: suffixIcon,
           hintText: txtHint,
-          hintStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+          hintStyle: TextStyle(fontSize: GlobalFont.textFontSize, fontWeight: FontWeight.w400),
           filled: false,
           fillColor: Colors.white,
-          focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-                  width: 1.3,
-                  style: BorderStyle.solid,
-                  color: Theme.of(context).primaryColor
-              )
-          ),
+//          focusedBorder: UnderlineInputBorder(
+//              borderSide: BorderSide(
+//                  width: 1.3,
+//                  style: BorderStyle.solid,
+//                  color: Theme.of(context).primaryColor
+//              )
+//          ),
+
           enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
                   width: 1,

@@ -47,10 +47,14 @@ class _BasicInfoState extends State<BasicInfo> {
       margin: EdgeInsets.all(16),
       child: ListView(
         children: <Widget>[
-          emailTextField(txtEmailFocusNode,txtEmailController,'Name'),
+          emailTextField(txtEmailFocusNode,txtEmailController,'First Name'),
+          emailTextField(txtEmailFocusNode,txtEmailController,'Last Name'),
+
+          emailTextField(txtEmailFocusNode,txtEmailController,'Date of Birth'),
+          emailTextField(txtEmailFocusNode,txtEmailController,'Height'),
           Padding(
             padding: const EdgeInsets.only(left: 16,top: 16),
-            child: Text("Gender",style: TextStyle(fontSize: 18,color: Colors.grey),),
+            child: Text("Gender",style: TextStyle(fontSize: GlobalFont.textFontSize,color: Colors.grey),),
           ),
           SizedBox(height: 16,),
           Row(
@@ -79,11 +83,9 @@ class _BasicInfoState extends State<BasicInfo> {
               ),
             ],
           ),
-          emailTextField(txtEmailFocusNode,txtEmailController,'Date of Birth'),
-          emailTextField(txtEmailFocusNode,txtEmailController,'Height'),
-          emailTextField(txtEmailFocusNode,txtEmailController,'Martial Status'),
-          emailTextField(txtEmailFocusNode,txtEmailController,'Willing to move Abroad'),
-          emailTextField(txtEmailFocusNode,txtEmailController,'Nationality'),
+//          emailTextField(txtEmailFocusNode,txtEmailController,'Martial Status'),
+//          emailTextField(txtEmailFocusNode,txtEmailController,'Willing to move Abroad'),
+//          emailTextField(txtEmailFocusNode,txtEmailController,'Nationality'),
           emailTextField(txtEmailFocusNode,txtEmailController,'Country of Residence'),
           emailTextField(txtEmailFocusNode,txtEmailController,'City'),
           btnContinue(),

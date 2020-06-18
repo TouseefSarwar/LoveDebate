@@ -17,6 +17,8 @@ import 'package:flutter/material.dart';
 
 
 import '../../Screens/TabBarcontroller.dart';
+import '../../Utils/Globals/Colors.dart';
+import '../../Utils/Globals/Fonts.dart';
 import '../../Utils/HexColor.dart';
 
 
@@ -45,7 +47,8 @@ class _LoginState extends State<Login> {
         bottom: false,
         child:DecoratedBox(
           decoration: BoxDecoration(
-            image: DecorationImage(image: AssetImage('images/BackGround.jpeg'), fit: BoxFit.fitHeight),
+              color: Colors.white
+            // image: DecorationImage(image: AssetImage('images/BackGround.jpeg'), fit: BoxFit.fitHeight),
           ),
           child: Stack(
             children: <Widget>[
@@ -56,7 +59,49 @@ class _LoginState extends State<Login> {
                   CenterSection(_height),
                   BottomSection(_height)
                 ],
-              )
+              ),
+//              Positioned(
+//                bottom: 16,
+//                child: InkWell(
+//                    onTap: (){
+//                      setState(() {
+//                        Navigator.push(context, CupertinoPageRoute(builder: (context) => LaunchScreen()));
+//                      });
+//                    },
+//                    child: Container(
+//                       width: _width,
+//                        child: Text('Signup or Create account ?',style: TextStyle(color:Colors.black,fontSize: 18,),textAlign: TextAlign.center,))),
+//              ),
+
+              Positioned(
+                bottom: 16,
+                child: Container(
+                  width: _width,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      InkWell(
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Dont  Have an account ? ',
+                            style: Theme.of(context).textTheme.body1.copyWith(fontSize: GlobalFont.textFontSize,),
+                            children: <TextSpan>[
+                              TextSpan(text: 'SignUp', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
+                            ],
+                          ),
+                        ),
+                        onTap: (){
+                          setState(() {
+                            Navigator.push(context, CupertinoPageRoute(builder: (context) => SignUp()));
+                          });
+
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -70,17 +115,12 @@ class _LoginState extends State<Login> {
         // color: Colors.greenAccent,
         margin: EdgeInsets.all(8),
         child: Column(
+          // mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             btnContinue(),
             SizedBox(height: 16,),
-            InkWell(
-                onTap: (){
-                  setState(() {
+            Text('Forgot Password ?',style: TextStyle(color:Colors.lightBlue,fontSize: 18,),textAlign: TextAlign.center,),
 
-                    Navigator.push(context, CupertinoPageRoute(builder: (context) => LaunchScreen()));
-                  });
-                },
-                child: Text('Signup or Create account',style: TextStyle(color: _textcolor,fontSize: 18),)),
           ],
         )
     );
@@ -111,8 +151,10 @@ class _LoginState extends State<Login> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          Text('Love',style: TextStyle(fontSize: 45,color: _textcolor),),
-          Text('Debate',style: TextStyle(fontSize: 45,color: _textcolor),),
+          AppBarPic(),
+          SizedBox(height: 8,),
+          Text('Love Debate',style: TextStyle(fontSize: 38,fontWeight: FontWeight.bold,color:Colors.black),),
+          //  Text('Debate',style: TextStyle(fontSize: 45,color:Colors.black),),
 
           SizedBox(height: 8,)
 
@@ -128,8 +170,8 @@ class _LoginState extends State<Login> {
       isSecure: isSecure,
       keyboardType: TextInputType.emailAddress,
       enableBorderColor: Colors.white,
-      focusBorderColor: Colors.white,
-      textColor: Colors.white,
+      focusBorderColor: Colors.grey,
+      textColor: Colors.black,
       txtController: txtFeild,
       onTapFunc: () {
         setState(() {
@@ -138,7 +180,19 @@ class _LoginState extends State<Login> {
       },
     );
   }
-
+  Container AppBarPic() {
+    return Container(
+        width: 120,
+        height:120,
+        margin: EdgeInsets.all(8),
+        decoration: new BoxDecoration(
+            shape: BoxShape.circle,
+            image: new DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage("images/BackGround.jpeg",)
+            )
+        ));
+  }
   Widget btnContinue() {
     return SizedBox(
       height: 45,
@@ -179,22 +233,22 @@ class _LoginState extends State<Login> {
     try {
       ApiBaseHelper().fetchService(method: HttpMethod.post, url: WebService.login,body: body,isFormData: true).then(
               (response){
-              var res = response as http.Response;
-              if (res.statusCode == 200){
-                Map<String, dynamic> responseJson = json.decode(res.body);
-                if(responseJson.containsKey('success')){
-                  var loginresponse = LoginModel.fromJson(responseJson["success"]);
-                  print(loginresponse.user.email);
-                }else{
-                  print("Oh no response");
-                }
-
-              }else if (res.statusCode == 401){
-                Toast.show(res.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+            var res = response as http.Response;
+            if (res.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(res.body);
+              if(responseJson.containsKey('success')){
+                var loginresponse = LoginModel.fromJson(responseJson["success"]);
+                print(loginresponse.user.email);
               }else{
-                Toast.show(res.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+                print("Oh no response");
               }
-            });
+
+            }else if (res.statusCode == 401){
+              Toast.show(res.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+            }else{
+              Toast.show(res.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+            }
+          });
 
     } on FetchDataException catch(e) {
       setState(() {
