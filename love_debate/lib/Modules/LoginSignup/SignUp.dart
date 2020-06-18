@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'Login.dart';
-import 'SUPersonalInfo.dart';
+import 'SignUpform.dart';
 
 
 class LaunchScreen extends StatefulWidget {
@@ -52,7 +52,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
       child: Column(
         children: <Widget>[
           SizedBox(height: 18,),
-          SignupMethod(context,_signupButtonheight, _width,'Signup with Email',true,GlobalColors.firstColor,'images/email.png',Colors.white),
+          SignupMethod(context,_signupButtonheight, _width,'Signup with Email',true,GlobalColors.firstColor,'images/gmailfilled.png',Colors.white),
           SignupMethod(context,_signupButtonheight, _width,'Signup with FaceBook',true,Color(0xff0072CD),'images/icons8-facebook-f-48.png',Colors.white),
           SignupMethod(context,_signupButtonheight, _width,'Signup with Google',true,Color(0xffFFFFFF),'images/googleicon.png',Colors.black),
 
@@ -82,7 +82,7 @@ InkWell SignupMethod(BuildContext context,double height, double width,String tex
     onTap: (){
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SUPersonalInfo()),
+        MaterialPageRoute(builder: (context) => SignUpForm()),
       );
     },
     child: Container(

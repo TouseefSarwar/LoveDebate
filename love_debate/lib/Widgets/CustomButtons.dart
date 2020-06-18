@@ -8,17 +8,15 @@ class CustomRaisedButton extends StatelessWidget {
   final Color textColor;
   final double borderWith;
   final VoidCallback action;
-  final String shape;
-  CustomRaisedButton({this.buttonText, this.cornerRadius, this.backgroundColor, this.textColor, this.borderWith, this.action,this.shape});
+
+  CustomRaisedButton({this.buttonText, this.cornerRadius, this.backgroundColor, this.textColor, this.borderWith, this.action});
 
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
         onPressed: action,
         color: backgroundColor,
-        shape: shape == "circle"? CircleBorder(
-
-        ) : RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(cornerRadius),
             side: BorderSide(color: Theme.of(context).primaryColor, width: borderWith)),
         child: Text(

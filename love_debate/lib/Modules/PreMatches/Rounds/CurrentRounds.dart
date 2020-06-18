@@ -233,7 +233,7 @@ class _CurrentRoundsState extends State<CurrentRounds> {
 
   Container ChatItem(BubbleStyle style, String text,double isMe) {
     return Container(
-      height: 75,
+      height: 105,
       //width:200,
       //color: Colors.blue,
       child: Column(
