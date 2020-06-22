@@ -74,6 +74,9 @@ flutter:
     - family: Satisfy
       fonts:
         - asset: fonts/Satisfy-Regular.ttf
+    - family: Delius
+      fonts:
+        - asset: fonts/DeliusSwashCaps-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

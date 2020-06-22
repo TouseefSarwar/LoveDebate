@@ -70,57 +70,63 @@ class UnderLineTextField extends StatelessWidget {
 }
 class NewUnderLineTextField extends StatelessWidget {
 
-  final IconData prefixIcon;
-  final IconButton suffixIcon;
-  final TextCapitalization capitalization;
+  final FocusNode focusNode;
   final String txtHint;
-  final bool txtIsSecure;
+  final bool isSecure;
   final TextInputType keyboardType;
+  final Color enableBorderColor;
+  final Color focusBorderColor;
+  final Color textColor;
   final TextEditingController txtController;
-  final Function validator;
-  final Function onSaved;
-  final Function onChanged;
+  final VoidCallback onTapFunc;
 
-  NewUnderLineTextField({this.prefixIcon, this.suffixIcon, this.capitalization = TextCapitalization.words, this.txtHint, this.txtIsSecure = false, this.keyboardType, this.txtController, this.validator, this.onSaved, this.onChanged});
 
+  NewUnderLineTextField({
+    this.focusNode,
+    this.txtHint,
+    this.isSecure,
+    this.keyboardType,
+    this.enableBorderColor,
+    this.focusBorderColor,
+    this.textColor,
+    this.txtController,
+    this.onTapFunc
+  });
   @override
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-          accentColor: Theme.of(context).primaryColor
+          accentColor: focusBorderColor
       ),
-      child: TextFormField(
-        style: TextStyle(fontSize: GlobalFont.textFontSize),
-        textAlign: TextAlign.justify,
-        textCapitalization: capitalization,
-        textAlignVertical: TextAlignVertical.center,
-        keyboardType: keyboardType,
-        obscureText: txtIsSecure,
-        controller: txtController,
-        validator: validator,
-        onSaved: onSaved,
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          prefixIcon: prefixIcon != null ? Container(transform: Matrix4.translationValues(0.0, 0.0, 0.0), child: Icon(prefixIcon, size: 16,)) : null,
-          suffixIcon: suffixIcon,
-          hintText: txtHint,
-          hintStyle: TextStyle(fontSize: GlobalFont.textFontSize, fontWeight: FontWeight.w400),
-          filled: false,
-          fillColor: Colors.white,
-//          focusedBorder: UnderlineInputBorder(
-//              borderSide: BorderSide(
+      child: SizedBox(
+        height: 50,
+        child: TextField(
+          focusNode: focusNode,
+          onTap: onTapFunc,
+          style: TextStyle(color: textColor, fontSize: GlobalFont.textFontSize),
+          textAlign: TextAlign.justify,
+          textAlignVertical: TextAlignVertical.center,
+          keyboardType: keyboardType,
+          obscureText: isSecure,
+          controller: txtController,
+          decoration: InputDecoration(
+            labelText: txtHint,
+            labelStyle: TextStyle(color: focusNode.hasFocus ? focusBorderColor : Colors.grey, fontSize: GlobalFont.textFontSize),
+            contentPadding: EdgeInsets.symmetric(vertical: 8),
+//            enabledBorder: UnderlineInputBorder(
+//                borderSide: BorderSide(
+//                    width: 1,
+//                    style: BorderStyle.solid,
+//                    color: Colors.grey
+//                )
+//            ),
+//            focusedBorder: UnderlineInputBorder(
+//                borderSide: BorderSide(
 //                  width: 1.3,
 //                  style: BorderStyle.solid,
-//                  color: Theme.of(context).primaryColor
-//              )
-//          ),
-
-          enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-                  width: 1,
-                  style: BorderStyle.solid,
-                  color: Colors.grey.withOpacity(0.4)
-              )
+//                  color: GlobalColors.firstColor,
+//                )
+//            ),
           ),
         ),
       ),

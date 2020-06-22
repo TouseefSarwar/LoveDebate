@@ -12,7 +12,7 @@ import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
-import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
+import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
 
 class PreferencesOnBoarding extends StatefulWidget {
   @override

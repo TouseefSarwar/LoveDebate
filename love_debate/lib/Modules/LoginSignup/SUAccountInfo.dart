@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lovedebate/Modules/OnBoarding/PreferencesOnBoarding.dart';
+import 'package:lovedebate/Modules/Profile/MyPreferences.dart';
 import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
-import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
+import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
 import '../../Utils/Constants/WebService.dart';
 import '../../Utils/Controllers/ApiBaseHelper.dart';
 import '../../Utils/Controllers/AppExceptions.dart';
@@ -176,7 +178,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
         if (passTF.text != "" && passTF.text != null){
           if (confirmTF.text != "" && confirmTF.text != null){
             if (passTF.text == confirmTF.text){
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => OnBoarding()));
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
             }else{
               Toast.show("Password and Confirm Password should be same", context, duration: Toast.LENGTH_LONG);
             }

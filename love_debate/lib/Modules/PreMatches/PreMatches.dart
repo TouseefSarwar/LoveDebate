@@ -1,10 +1,10 @@
 
+import 'package:lovedebate/Models/ListModel.dart';
+import 'package:lovedebate/Screens/SubViews/RoundsListingCell.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Modules/PreMatches/Catagories.dart';
-import 'package:lovedebate/Modules/PreMatches/Rounds/Rounds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 
 class PreMatches extends StatefulWidget {
@@ -13,27 +13,120 @@ class PreMatches extends StatefulWidget {
 }
 
 class _PreMatchesState extends State<PreMatches> {
+
+  List<ListModel> list = [ ListModel(title: "Start Round" ,colorCell: Colors.blue ),
+    ListModel(title: "Start Round" ,colorCell: Colors.green),
+    ListModel(title: "Start Round" ,colorCell: Colors.redAccent),
+    ListModel(title: "Start Round" ,colorCell: Colors.purple),
+    ListModel(title: "Start Round" ,colorCell: Colors.yellow),
+    ListModel(title: "Start Round" ,colorCell: Colors.pink),
+    ListModel(title: "Start Round" ,colorCell: Colors.indigo)
+  ];
+
+
   @override
   Widget build(BuildContext context) {
-    double _height=(MediaQuery.of(context).size.height-MediaQuery.of(context).padding.vertical)-AppBar().preferredSize.height;
-    double _width=MediaQuery.of(context).size.width-90;
-    double _itemheight =(15/100)*_height;
+    double height=(MediaQuery.of(context).size.height-MediaQuery.of(context).padding.vertical)-AppBar().preferredSize.height;
+    double width=MediaQuery.of(context).size.width-90;
+    double itemheight =(15/100)*height;
     return Scaffold(
       appBar: CustomAppbar.setNavigation("Pre Matches"),
 
       body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.only(top: 8),
-          child: ListView(
-            children: <Widget>[
-
-              PreMatchesItem(_itemheight, _width, "A",Colors.green,context),
-
-              PreMatchesItem(_itemheight, _width, "M",Colors.blue,context),
-              PreMatchesItem(_itemheight, _width, "B",Colors.pink,context),
-            ],
-          ),
+        child:ListView.builder(
+          itemCount: list.length,
+          itemBuilder: (context,index){
+            return RoundListingCell(
+              title: list[index].title,
+              gender: "Male",
+              age: "30",
+              personHeight: "5'4",
+              height: itemheight,
+              width: width,
+              data: "A",
+              avatarColor: list[index].colorCell,
+              iconColor: GlobalColors.firstColor,
+              index: index,
+              action: (){
+                Navigator.push(context, CupertinoPageRoute(builder: (context) => Catagories()));
+              },
+            );
+          },
         ),
+//        ListView(
+//          children: <Widget>[
+//
+//            RoundListingCell(
+//              title: "Start Round",
+//              gender: "Male",
+//              age: "30",
+//              personHeight: "5'4",
+//              height: _itemheight,
+//              width: _width,
+//              data: "A",
+//              avatarColor: Colors.pink,
+//              iconColor: GlobalColors.firstColor,
+//            ),
+//            RoundListingCell(
+//                title: "Start Round",
+//                gender: "Male",
+//                age: "30",
+//                personHeight: "5'4",
+//                height: _itemheight,
+//                width: _width,
+//                data: "S",
+//                avatarColor: Colors.blue,
+//                iconColor:  GlobalColors.firstColor
+//            ),
+//            RoundListingCell(
+//                title: "Start Round",
+//                gender: "Male",
+//                age: "30",
+//                personHeight: "5'4",
+//                height: _itemheight,
+//                width: _width,
+//                data: "F",
+//                avatarColor: Colors.yellow,
+//                iconColor:  GlobalColors.firstColor
+//            ),
+//            RoundListingCell(
+//                title: "Start Round",
+//                gender: "Male",
+//                age: "30",
+//                personHeight: "5'4",
+//                height: _itemheight,
+//                width: _width,
+//                data: "G",
+//                avatarColor: Colors.green,
+//                iconColor: Colors.grey
+//            ),
+//            RoundListingCell(
+//                title: "Start Round",
+//                gender: "Male",
+//                age: "30",
+//                personHeight: "5'4",
+//                height: _itemheight,
+//                width: _width,
+//                data: "H",
+//                avatarColor: Colors.purple,
+//                iconColor: Colors.grey
+//            ),
+//            RoundListingCell(
+//                title: "Start Round",
+//                gender: "Male",
+//                age: "30",
+//                personHeight: "5'4",height: _itemheight,
+//                width: _width,
+//                data: "N",
+//                avatarColor: Colors.teal,
+//                iconColor: Colors.grey
+//            ),
+////              PreMatchesItem(_itemheight, _width, "A",Colors.green,context),
+////
+////              PreMatchesItem(_itemheight, _width, "M",Colors.blue,context),
+////              PreMatchesItem(_itemheight, _width, "B",Colors.pink,context),
+//          ],
+//        ),
       ),
     );
   }
@@ -118,3 +211,4 @@ InkWell PreMatchesItem(double itemheight, double width, String text, Color backg
     ),
   );
 }
+

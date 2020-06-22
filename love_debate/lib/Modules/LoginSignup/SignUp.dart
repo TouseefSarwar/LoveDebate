@@ -26,8 +26,9 @@ class _SignUpState extends State<SignUp> {
         top: false,
         bottom: false,
         child: DecoratedBox(
+
           decoration: BoxDecoration(
-            color: Colors.white
+              color: Colors.white
 //              gradient: LinearGradient(
 //                  begin: Alignment.topLeft,
 //                  end: Alignment.bottomRight,
@@ -79,11 +80,11 @@ class _SignUpState extends State<SignUp> {
   }
   Container BottomSection(double height, double width,BuildContext context,double _signupButtonheight) {
     return Container(
-      height: (60/100)* height,
+      height: (50/100)* height,
       //color: Colors.lightBlue,
       child: Column(
         children: <Widget>[
-          SizedBox(height: 18,),
+          // SizedBox(height: 18,),
           SignupMethod(context,_signupButtonheight, width,'Signup with Email',true,GlobalColors.firstColor,'images/gmailfilled.png',Colors.white),
           SignupMethod(context,_signupButtonheight, width,'Signup with FaceBook',true,Color(0xff0072CD),'images/icons8-facebook-f-48.png',Colors.white),
           SignupMethod(context,_signupButtonheight, width,'Signup with Google',true,Colors.white,'images/googleicon.png',Colors.black),
@@ -99,12 +100,18 @@ class _SignUpState extends State<SignUp> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          AppBarPic(),
-          SizedBox(height: 16,),
-          Text('Love Debate',style: TextStyle(fontSize: 38,color: Colors.black),),
-          //Text('Debate',style: TextStyle(fontSize: 45,color: Colors.white),),
-          //Text('Login or Create account',style: TextStyle(color: Colors.white),),
-          SizedBox(height: 16,)
+//          AppBarPic(),
+//          SizedBox(height: 16,),
+//          Text('Love Debate',style: TextStyle(fontSize: 38,color: Colors.black),),
+//          //Text('Debate',style: TextStyle(fontSize: 45,color: Colors.white),),
+//          //Text('Login or Create account',style: TextStyle(color: Colors.white),),
+//          SizedBox(height: 16,)
+          Container(
+              height: 220,
+              width: 220,
+              //color: Colors.lightBlue,
+              child: Image.asset("images/LoveDebatelogo.png")
+          )
 
         ],
       ),
@@ -133,13 +140,14 @@ InkWell SignupMethod(BuildContext context,double height, double width,String tex
       );
     },
     child: Container(
-      height: 45,
+      height: 55,
 //      decoration: BoxDecoration(
 //          color:bgColor,
 //        borderRadius: BorderRadius.all(Radius.circular(5))
 //      ),
       margin: EdgeInsets.all(8),
       child: Card(
+        elevation: 7,
         color: bgColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

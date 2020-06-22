@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lovedebate/Utils/Globals/Fonts.dart';
 
 class CustomRaisedButton extends StatelessWidget {
   final String buttonText;
@@ -18,12 +19,12 @@ class CustomRaisedButton extends StatelessWidget {
         color: backgroundColor,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(cornerRadius),
-            side: BorderSide(color: Theme.of(context).primaryColor, width: borderWith)),
+            side: BorderSide(color: Colors.transparent, width: borderWith)),
         child: Text(
           buttonText,
           style: TextStyle(
             color: textColor,
-            fontSize: 13,
+            fontSize: GlobalFont.textFontSize,
           ),
           textAlign: TextAlign.center,
         ));

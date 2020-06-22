@@ -1,8 +1,10 @@
 
+import 'package:lovedebate/Modules/PreMatches/PreMatchesRounds.dart';
 import 'package:lovedebate/Modules/PreMatches/Rounds/CurrentRounds.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Modules/PreMatches/Rounds/Rounds.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
+import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Utils/HexColor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +50,7 @@ class _CatagoriesState extends State<Catagories> {
   InkWell CatagoryItem(String text,BuildContext context) {
     return InkWell(
       onTap: (){
-        Navigator.push(context, CupertinoPageRoute(builder: (context) => CurrentRounds()));
+        Navigator.push(context, CupertinoPageRoute(builder: (context) => PreMatchesRounds()));
 
       },
       child: Container(
@@ -68,16 +70,16 @@ class _CatagoriesState extends State<Catagories> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SizedBox(width: 8,),
-              Container(
-                height: 30,
-                width: 30,
-                //color: Colors.pink,
-                decoration: BoxDecoration(
-                  image: DecorationImage(image: AssetImage('images/question.png'), fit: BoxFit.cover),),
-              ),
+//              SizedBox(width: 8,),
+//              Container(
+//                height: 30,
+//                width: 30,
+//                //color: Colors.pink,
+//                decoration: BoxDecoration(
+//                  image: DecorationImage(image: AssetImage('images/question.png'), fit: BoxFit.cover),),
+//              ),
               SizedBox(width: 16,),
-              Expanded(child: Text(text,style: TextStyle(fontSize: 17,color: Colors.black,),)),
+              Expanded(child: Text(text,style: TextStyle(fontSize: GlobalFont.textFontSize , fontWeight: FontWeight.w500,color: Colors.black,),)),
               Icon(Icons.navigate_next,size: 25,color:  GlobalColors.firstColor,),
               SizedBox(width: 12,),
 

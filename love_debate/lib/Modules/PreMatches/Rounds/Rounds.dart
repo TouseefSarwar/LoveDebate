@@ -2,8 +2,8 @@
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Modules/Matched/Matched.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
-import 'package:lovedebate/Widgets/CustomButtons.dart';
-import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
+import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
+import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
 import 'package:bubble/bubble.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,11 +43,12 @@ class _RoundsState extends State<Rounds> {
         .of(context)
         .size
         .width;
-    double _itemheight = (10 / 100) * _height;
 
+    double _itemheight = (10 / 100) * _height;
     double pixelRatio = MediaQuery
         .of(context)
         .devicePixelRatio;
+
     double px = 1 / pixelRatio;
 
     BubbleStyle styleSomebody = BubbleStyle(

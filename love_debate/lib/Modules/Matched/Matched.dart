@@ -1,10 +1,11 @@
+import 'package:lovedebate/Models/ListModel.dart';
+import 'package:lovedebate/Screens/SubViews/RoundsListingCell.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Screens/TabBarcontroller.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
-import 'package:lovedebate/Widgets/CustomButtons.dart';
+import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gradient_app_bar/gradient_app_bar.dart';
 
 class Matched extends StatefulWidget {
   @override
@@ -12,119 +13,137 @@ class Matched extends StatefulWidget {
 }
 
 class _MatchedState extends State<Matched> {
+
+  List<ListModel> list = [ ListModel(title: "Completed Round: " ,colorCell: Colors.blue ),
+    ListModel(title: "Completed Round: " ,colorCell: Colors.green),
+    ListModel(title: "Completed Round: " ,colorCell: Colors.redAccent),
+    ListModel(title: "Completed Round: " ,colorCell: Colors.purple),
+    ListModel(title: "Completed Round: " ,colorCell: Colors.yellow),
+    ListModel(title: "Completed Round: " ,colorCell: Colors.pink),
+    ListModel(title: "Completed Round: " ,colorCell: Colors.indigo)
+  ];
   @override
   Widget build(BuildContext context) {
 
     double height=(MediaQuery.of(context).size.height-MediaQuery.of(context).padding.vertical)-AppBar().preferredSize.height;
     double width=MediaQuery.of(context).size.width;
+    double _itemheight =(15/100)*height;
+
     return Scaffold(
       appBar: CustomAppbar.setNavigation("Matched"),
 
       body: SafeArea(
-        child:ListView(
-          children: <Widget>[
-
-            MatchedScreensItem(context),
-            MatchedScreensItem(context),
-            MatchedScreensItem(context),
-            MatchedScreensItem(context),
-          ],
+        child:ListView.builder(
+          itemCount: list.length,
+          itemBuilder: (context,index){
+            return RoundListingCell(
+              title: list[index].title+"$index",
+              gender: "Male",
+              age: "30",
+              personHeight: "5'4",
+              height: _itemheight,
+              width: width,
+              data: "A",
+              avatarColor: list[index].colorCell,
+              iconColor: GlobalColors.firstColor,
+              index: index,
+              action: (){
+//                Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+              },
+            );
+          },
         ),
       ),
     );
   }
 
-  Container MatchedScreensItem(BuildContext context) {
-    return Container(
-            height: 90,
-           // color: Colors.blue,
-            child: Column(
+  Card MatchedScreensItem(BuildContext context) {
+    return Card(
+      elevation: 3.0,
+      child: Container(
+        height: 90,
+        // color: Colors.blue,
+        child: Column(
+          children: <Widget>[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                ProfileImageContainer(),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    ProfileImageContainer(),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Text("Completed Rounds : 1",style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),),
-                           //5 Icon(Icons.chat,size: 25,)
-                          ],
-                        ),
-                        SizedBox(height: 12,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              width: MediaQuery.of(context).size.width / 4 - 2 ,
-                              height: 28,
-                              child: CustomRaisedButton(
-                                buttonText: 'Modules',
-                                cornerRadius: 5,
-                                textColor: Colors.white,
-                                backgroundColor:GlobalColors.firstColor,
-                                borderWith: 0,
-                                action: (){
-                                  setState(() {
-                                    Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
-                                  });
-                                },
-                              ),
-                            ),
-                            SizedBox(width: 4,),
-                            Container(
-                              width: MediaQuery.of(context).size.width / 4 - 2,
-                              height: 28,
-                              child: CustomRaisedButton(
-                                buttonText: 'Request',
-                                cornerRadius: 5,
-                                textColor: Colors.white,
-                                backgroundColor:GlobalColors.firstColor,
-                                borderWith: 0,
-                                action: (){
-                                  setState(() {
-                                    Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
-                                  });
-                                },
-                              ),
-                            ),
-                            SizedBox(width: 4,),
-                            Container(
-                              width: MediaQuery.of(context).size.width / 4 - 2,
-                              height: 28,
-                              child: CustomRaisedButton(
-                                buttonText: 'Chat',
-                                cornerRadius: 5,
-                                textColor: Colors.white,
-                                backgroundColor:GlobalColors.firstColor,
-                                borderWith: 0,
-                                action: (){
-                                  setState(() {
-                                    Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-
+                        Text("Completed Rounds : 1",style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),),
+                        //5 Icon(Icons.chat,size: 25,)
                       ],
                     ),
+                    SizedBox(height: 12,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width / 4 - 5 ,
+                          height: 28,
+                          child: CustomRaisedButton(
+                            buttonText: 'Modules',
+                            cornerRadius: 5,
+                            textColor: Colors.white,
+                            backgroundColor:GlobalColors.firstColor,
+                            borderWith: 0,
+                            action: (){
+                              setState(() {
+                                Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+                              });
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 4,),
+                        Container(
+                          width: MediaQuery.of(context).size.width / 4 - 5,
+                          height: 28,
+                          child: CustomRaisedButton(
+                            buttonText: 'Request',
+                            cornerRadius: 5,
+                            textColor: Colors.white,
+                            backgroundColor:GlobalColors.firstColor,
+                            borderWith: 0,
+                            action: (){
+                              setState(() {
+                                Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+                              });
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 4,),
+                        Container(
+                          width: MediaQuery.of(context).size.width / 4 - 5,
+                          height: 28,
+                          child: CustomRaisedButton(
+                            buttonText: 'Chat',
+                            cornerRadius: 5,
+                            textColor: Colors.white,
+                            backgroundColor:GlobalColors.firstColor,
+                            borderWith: 0,
+                            action: (){
+                              setState(() {
+                                Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+
                   ],
                 ),
-                Container(
-                  height: 1,
-                  width: MediaQuery.of(context).size.width - 24,
-                  padding: const EdgeInsets.only(left: 12, right: 12),
-                  color: GlobalColors.firstColor,
-
-                )
               ],
             ),
-          );
+          ],
+        ),
+      ),
+    );
   }
 
   Container MatchedItems(double width, BuildContext context,) {

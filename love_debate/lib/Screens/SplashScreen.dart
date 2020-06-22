@@ -1,6 +1,3 @@
-
-
-
 import 'dart:async';
 
 import 'package:lovedebate/Modules/LoginSignup/Login.dart';
@@ -47,25 +44,34 @@ class _SplashScreenState extends State<SplashScreen> {
                     MaterialPageRoute(builder: (context) => Login()),
                   );
                 },
-                child: Container(
-                  height: _height,
-                  color: Colors.pink,
-                  child: Image.asset('images/BackGround.jpeg',fit: BoxFit.fitHeight,),
-                ),
+//                child: Container(
+//                  height: _height,
+//                  color: Colors.pink,
+//                  child: Image.asset('images/BackGround.jpeg',fit: BoxFit.fitHeight,),
+//                ),
               ),
               Container(
-                height: (80/100)*_height,
+                height: (100/100)*_height,
                 //color: Colors.greenAccent,
                 width: double.infinity,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text('Love',style: TextStyle(fontSize: 45,color:Colors.white),),
-                    Text('Debate',style: TextStyle(fontSize: 45,color:Colors.white),),
+//                    Text('Love',style: TextStyle(fontSize: 45,color:Colors.white),),
+//                    Text('Debate',style: TextStyle(fontSize: 45,color:Colors.white),),
+                    Center(
+                      child: Container(
+                          height: 250,
+                          width: 250,
+                          //color: Colors.lightBlue,
+                          child: Image.asset("images/LoveDebatelogo.png")
+                      ),
+                    )
                   ],
                 ),
               )
+
             ],
           ),
         ),

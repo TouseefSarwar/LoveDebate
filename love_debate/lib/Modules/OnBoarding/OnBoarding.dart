@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:lovedebate/Models/OnBoardingModel.dart';
 import 'package:lovedebate/Modules/OnBoarding/OnBoardingDialogBox/OnBoardingDialogBox.dart';
-import 'package:lovedebate/Modules/OnBoarding/OnBoardingDialogBox/OnBoardingModels/CheckBoxDataModel.dart';
 import 'package:lovedebate/Screens/TabBarcontroller.dart';
 import 'package:lovedebate/Utils/Constants/WebService.dart';
 import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
@@ -11,13 +10,11 @@ import 'package:lovedebate/Utils/Controllers/Loader.dart';
 import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
-import 'package:lovedebate/Widgets/CustomButtons.dart';
+import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
-import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
+import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
 import 'package:flutter/material.dart';
-import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
-import 'dart:io';
 
 
 class OnBoarding extends StatefulWidget {

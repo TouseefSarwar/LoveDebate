@@ -9,8 +9,8 @@ import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Modules/LoginSignup/SignUp.dart';
 import 'package:lovedebate/Screens/TabBarcontroller.dart';
-import 'package:lovedebate/Widgets/CustomButtons.dart';
-import 'package:lovedebate/Widgets/CustomTextFeilds.dart';
+import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
+import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -41,85 +41,76 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     double _height=MediaQuery.of(context).size.height;
     double _width=MediaQuery.of(context).size.width;
+    double imageWidth = MediaQuery.of(context).size.width / 2;
     return Scaffold(
       body: SafeArea(
-        top: false,
-        bottom: false,
+        top: true,
+        bottom: true,
         child:DecoratedBox(
+
           decoration: BoxDecoration(
               color: Colors.white
             // image: DecorationImage(image: AssetImage('images/BackGround.jpeg'), fit: BoxFit.fitHeight),
           ),
-          child: Stack(
-            children: <Widget>[
-              ListView(
-                padding: const EdgeInsets.all(16),
-                children: <Widget>[
-                  TopSection(_height),
-                  CenterSection(_height),
-                  BottomSection(_height)
-                ],
-              ),
-//              Positioned(
-//                bottom: 16,
-//                child: InkWell(
-//                    onTap: (){
-//                      setState(() {
-//                        Navigator.push(context, CupertinoPageRoute(builder: (context) => LaunchScreen()));
-//                      });
-//                    },
-//                    child: Container(
-//                       width: _width,
-//                        child: Text('Signup or Create account ?',style: TextStyle(color:Colors.black,fontSize: 18,),textAlign: TextAlign.center,))),
-//              ),
-
-              Positioned(
-                bottom: 16,
-                child: Container(
-                  width: _width,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      InkWell(
-                        child: RichText(
-                          text: TextSpan(
-                            text: 'Dont  Have an account ? ',
-                            style: Theme.of(context).textTheme.body1.copyWith(fontSize: GlobalFont.textFontSize,),
-                            children: <TextSpan>[
-                              TextSpan(text: 'SignUp', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
-                            ],
-                          ),
-                        ),
-                        onTap: (){
-                          setState(() {
-                            Navigator.push(context, CupertinoPageRoute(builder: (context) => SignUp()));
-                          });
-
-                        },
-                      ),
-                    ],
-                  ),
+          child: Container(
+            height:  _height,
+            width: _width,
+            child: Stack(
+              children: <Widget>[
+                ListView(
+                  padding: const EdgeInsets.all(8),
+                  children: <Widget>[
+                    TopSection(_height),
+                    CenterSection(_height),
+                    BottomSection(_height,_width)
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Container BottomSection(double _height) {
+  Container BottomSection(double _height,double _width) {
     return Container(
         height: (50/100)*_height,
-        // color: Colors.greenAccent,
-        margin: EdgeInsets.all(8),
+        //color: Colors.greenAccent,
+        margin: EdgeInsets.only(top: 12, left: 8, right: 8, bottom: 8),
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             btnContinue(),
-            SizedBox(height: 16,),
+            SizedBox(height: 8,),
             Text('Forgot Password ?',style: TextStyle(color:Colors.lightBlue,fontSize: 18,),textAlign: TextAlign.center,),
+            Container(
+              height: (20/100)*_height,
+              width: _width,
+              // color: Colors.lightBlue,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  InkWell(
+                    child: RichText(
+                      text: TextSpan(
+                        text: "Don't have an account? ",
+                        style: Theme.of(context).textTheme.body1.copyWith(fontSize: GlobalFont.textFontSize,),
+                        children: <TextSpan>[
+                          TextSpan(text: 'SignUp', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
+                        ],
+                      ),
+                    ),
+                    onTap: (){
+                      setState(() {
+                        Navigator.push(context, CupertinoPageRoute(builder: (context) => SignUp()));
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
 
           ],
         )
@@ -128,16 +119,14 @@ class _LoginState extends State<Login> {
 
   Container CenterSection(double _height) {
     return Container(
-      height: (20/100)*_height,
+      height: (15/100)*_height,
       //color: Colors.blue,
-      margin: EdgeInsets.all(16),
+      margin: EdgeInsets.only(left: 16,right: 16),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           emailTextField(txtEmailFocusNode,txtEmailController,'Email',false),
-          SizedBox(height: 8,),
           emailTextField(txtPasswordFocusNode, txtPasswordController, "Password",true),
-          SizedBox(height: 8,),
 
         ],
       ),
@@ -146,17 +135,21 @@ class _LoginState extends State<Login> {
 
   Container TopSection(double _height) {
     return Container(
-      height: (40/100)*_height,
-      //color: Colors.greenAccent,
+//      height: 220,
+//      width: 220,
+      height: (45/100)*_height,
+//       color: Colors.greenAccent,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          AppBarPic(),
-          SizedBox(height: 8,),
-          Text('Love Debate',style: TextStyle(fontSize: 38,fontWeight: FontWeight.bold,color:Colors.black),),
-          //  Text('Debate',style: TextStyle(fontSize: 45,color:Colors.black),),
-
-          SizedBox(height: 8,)
+          Center(
+            child: Container(
+                height: 220,
+                width: 220,
+                //color: Colors.lightBlue,
+                child: Image.asset("images/LoveDebatelogo.png")
+            ),
+          )
 
         ],
       ),
@@ -180,21 +173,10 @@ class _LoginState extends State<Login> {
       },
     );
   }
-  Container AppBarPic() {
-    return Container(
-        width: 120,
-        height:120,
-        margin: EdgeInsets.all(8),
-        decoration: new BoxDecoration(
-            shape: BoxShape.circle,
-            image: new DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage("images/BackGround.jpeg",)
-            )
-        ));
-  }
+
   Widget btnContinue() {
     return SizedBox(
+
       height: 45,
       width: double.infinity,
       child: CustomRaisedButton(
@@ -222,8 +204,6 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-
-
   void LoginUser(){
     Map<String, dynamic> body = {
       'email': txtEmailController.text,

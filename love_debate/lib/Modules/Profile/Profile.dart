@@ -1,5 +1,5 @@
 import 'package:lovedebate/Modules/OnBoarding/PreferencesOnBoarding.dart';
-import 'package:lovedebate/Modules/Prefrences/MyPreferences.dart';
+import 'package:lovedebate/Modules/Profile/MyPreferences.dart';
 import 'package:lovedebate/Modules/Profile/GeneralSettings.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:flutter/material.dart';
@@ -133,7 +133,7 @@ class _ProfileState extends State<Profile> {
       child: Column(
         children: <Widget>[
           Card(
-            elevation: 5,
+            elevation: 3.0,
             child: Container(
               height: 50,
               margin: EdgeInsets.all(16),

@@ -1,10 +1,10 @@
 import 'package:lovedebate/Modules/Profile/Profile.dart';
 import 'package:lovedebate/Modules/Matched/Matched.dart';
-import 'package:lovedebate/Modules/Prefrences/MyPreferences.dart';
+import 'package:lovedebate/Modules/Profile/MyPreferences.dart';
 import 'package:lovedebate/Modules/PreMatches/PreMatches.dart';
 import 'package:lovedebate/Modules/Stats/Stats.dart';
 import 'package:flutter/material.dart';
-import 'package:lovedebate/Screens/UserChatList.dart';
+import 'package:lovedebate/Modules/Chat/UserChatList.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 
 import '../Modules/PreMatches/Rounds/Rounds.dart';
