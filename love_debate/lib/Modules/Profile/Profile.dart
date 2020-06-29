@@ -84,7 +84,7 @@ class _ProfileState extends State<Profile> {
               ),
               SizedBox(height: 8,),
               ProfileListItems("Basic Info",Icons.info_outline,1),
-              ProfileListItems("Preferences & Filters",Icons.menu,2),
+//              ProfileListItems("Preferences & Filters",Icons.menu,2),
               ProfileListItems("General Settings",Icons.settings,3),
               ProfileListItems("Notifications",Icons.notifications,4),
               ProfileListItems("Deactivate Account",Icons.cancel,5),

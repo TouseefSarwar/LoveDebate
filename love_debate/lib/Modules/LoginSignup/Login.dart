@@ -30,7 +30,6 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
-  Color _textcolor = Colors.white;
   TextEditingController txtEmailController = TextEditingController();
   TextEditingController txtPasswordController = TextEditingController();
   FocusNode txtEmailFocusNode = FocusNode();
@@ -39,30 +38,25 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    double _height=MediaQuery.of(context).size.height;
+    double _height=MediaQuery.of(context).size.height - MediaQuery.of(context).padding.vertical;
     double _width=MediaQuery.of(context).size.width;
     double imageWidth = MediaQuery.of(context).size.width / 2;
     return Scaffold(
       body: SafeArea(
         top: true,
         bottom: true,
-        child:DecoratedBox(
-
-          decoration: BoxDecoration(
-              color: Colors.white
-            // image: DecorationImage(image: AssetImage('images/BackGround.jpeg'), fit: BoxFit.fitHeight),
-          ),
+        child:SingleChildScrollView(
           child: Container(
             height:  _height,
             width: _width,
+
             child: Stack(
               children: <Widget>[
-                ListView(
-                  padding: const EdgeInsets.all(8),
+                Column(
                   children: <Widget>[
-                    TopSection(_height),
-                    CenterSection(_height),
-                    BottomSection(_height,_width)
+                    topSection(_height),
+                    centerSection(_height),
+                    bottomSection(_height,_width)
                   ],
                 ),
               ],
@@ -73,19 +67,13 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Container BottomSection(double _height,double _width) {
+  Container bottomSection(double _height,double _width) {
     return Container(
-        height: (50/100)*_height,
-        //color: Colors.greenAccent,
-        margin: EdgeInsets.only(top: 12, left: 8, right: 8, bottom: 8),
+        height: (30/100)*_height,
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            btnContinue(),
-            SizedBox(height: 8,),
-            Text('Forgot Password ?',style: TextStyle(color:Colors.lightBlue,fontSize: 18,),textAlign: TextAlign.center,),
             Container(
-              height: (20/100)*_height,
+              height: (25/100)*_height,
               width: _width,
               // color: Colors.lightBlue,
               child: Column(
@@ -117,9 +105,9 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Container CenterSection(double _height) {
+  Container centerSection(double _height) {
     return Container(
-      height: (15/100)*_height,
+      height: (40/100)*_height,
       //color: Colors.blue,
       margin: EdgeInsets.only(left: 16,right: 16),
       child: Column(
@@ -127,26 +115,25 @@ class _LoginState extends State<Login> {
         children: <Widget>[
           emailTextField(txtEmailFocusNode,txtEmailController,'Email',false),
           emailTextField(txtPasswordFocusNode, txtPasswordController, "Password",true),
-
+          SizedBox(height: 16,),
+          btnContinue(),
+          SizedBox(height: 16),
+          Text('Forgot Password ?',style: TextStyle(color:Colors.lightBlue,fontSize: 18,),textAlign: TextAlign.center,),
         ],
       ),
     );
   }
 
-  Container TopSection(double _height) {
+  Container topSection(double _height) {
     return Container(
-//      height: 220,
-//      width: 220,
-      height: (45/100)*_height,
-//       color: Colors.greenAccent,
+      height: (30/100)*_height,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           Center(
             child: Container(
-                height: 220,
-                width: 220,
-                //color: Colors.lightBlue,
+                height: 180,
+                width: 180,
                 child: Image.asset("images/LoveDebatelogo.png")
             ),
           )
@@ -186,25 +173,14 @@ class _LoginState extends State<Login> {
         backgroundColor:GlobalColors.firstColor,
         borderWith: 0,
         action: (){
-          setState(() {
-
-            if (txtEmailController.text == "" || txtEmailController.text==null){
-              Toast.show("Empty Email", context, duration: Toast.LENGTH_LONG);
-            }else if (txtPasswordController.text == "" || txtPasswordController.text==null){
-              Toast.show("Empty Password", context, duration: Toast.LENGTH_LONG);
-            }else{
-
-              //LoginUser();
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
-
-            }
-          });
-//
+          validateFields();
         },
       ),
     );
   }
-  void LoginUser(){
+
+
+  loginUser(){
     Map<String, dynamic> body = {
       'email': txtEmailController.text,
       'password' : txtPasswordController.text,
@@ -217,8 +193,8 @@ class _LoginState extends State<Login> {
             if (res.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(res.body);
               if(responseJson.containsKey('success')){
-                var loginresponse = LoginModel.fromJson(responseJson["success"]);
-                print(loginresponse.user.email);
+                var loginResponse = LoginModel.fromJson(responseJson["success"]);
+                print(loginResponse.user.email);
               }else{
                 print("Oh no response");
               }
@@ -238,24 +214,20 @@ class _LoginState extends State<Login> {
   }
 
 
-}
+  //validate functions there
+  validateFields(){
 
+    if (txtEmailController.text == "" || txtEmailController.text==null){
+      Toast.show("Empty Email", context, duration: Toast.LENGTH_LONG);
+    }else if (txtPasswordController.text == "" || txtPasswordController.text==null){
+      Toast.show("Empty Password", context, duration: Toast.LENGTH_LONG);
+    }else{
 
-class QaOptions {
-  String text;
-  String value;
+      //LoginUser();
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
 
-  QaOptions({this.text, this.value});
-
-  QaOptions.fromJson(Map<String, dynamic> json) {
-    text = json['text'];
-    value = json['value'];
+    }
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['text'] = this.text;
-    data['value'] = this.value;
-    return data;
-  }
 }
+

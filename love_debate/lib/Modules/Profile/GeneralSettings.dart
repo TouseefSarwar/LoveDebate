@@ -5,6 +5,7 @@ import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
 import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
+import 'package:lovedebate/Utils/Globals/Fonts.dart';
 
 
 class GeneralSettings extends StatefulWidget {
@@ -35,7 +36,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
           child: Column(
             children: <Widget>[
               emailTextField(emailFN, emailTF, "Email"),
-              emailTextField(passFN, passTF, "Password"),
+//              Text("Change Password", style: TextStyle(
+//                  fontSize: GlobalFont.textFontSize,
+//                  fontWeight: FontWeight.w500,
+//                  color: Colors.grey
+//                ),
+//              ),
+              emailTextField(passFN, passTF, "Old Password"),
+              emailTextField(passFN, passTF, "New Password"),
               emailTextField(c_passFN, c_passTF, "Confirm Password"),
               Padding(
                 padding: const EdgeInsets.all(16.0),

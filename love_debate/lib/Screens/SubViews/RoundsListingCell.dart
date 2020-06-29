@@ -13,8 +13,8 @@ class RoundListingCell extends StatelessWidget {
   String personHeight;
   Color avatarColor;
   Color iconColor;
-  VoidCallback action;
   int index;
+  VoidCallback action;
 
   ///Here we can use the model instead of "String" variable in future
   String data;

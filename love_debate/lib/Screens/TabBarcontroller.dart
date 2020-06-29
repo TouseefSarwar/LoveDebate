@@ -1,3 +1,4 @@
+import 'package:lovedebate/Modules/OnBoarding/PreferencesOnBoarding.dart';
 import 'package:lovedebate/Modules/Profile/Profile.dart';
 import 'package:lovedebate/Modules/Matched/Matched.dart';
 import 'package:lovedebate/Modules/Profile/MyPreferences.dart';
@@ -18,12 +19,12 @@ class TabBarControllerPage extends StatefulWidget {
 class _TabBarControllerPageState extends State<TabBarControllerPage> {
 
 
-  var _curIndex = 0;
+  var _curIndex = 2;
   var tabBarChildren = [
-
-    PreMatches(),
     Matched(),
     UserChatList(),
+    PreMatches(),
+    PreferencesOnBoarding(),
     Profile(),
   ];
 
@@ -36,23 +37,24 @@ class _TabBarControllerPageState extends State<TabBarControllerPage> {
 
     return Scaffold(
 
-//      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-//     floatingActionButton: FloatingActionButton(
-//       child: Icon(Icons.favorite,size: 30,),
-//       backgroundColor: FloatingbtnSelected,
-//       onPressed: (){
-//         setState(() {
-//           _curIndex = 2;
-//           if(_curIndex==2){
-//             FloatingbtnSelected=GlobalColors.firstColor;
-//           }
-//           else{
-//             FloatingbtnSelected=Colors.blueGrey;
-//           }
-//         });
-//       },
-//
-//     ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.favorite,size: 30,),
+        backgroundColor: FloatingbtnSelected,
+        onPressed: (){
+          setState(() {
+            _curIndex = 2;
+            if(_curIndex==2){
+              FloatingbtnSelected=GlobalColors.firstColor;
+              _curIndex=2;
+            }
+            else{
+              FloatingbtnSelected=Colors.blueGrey;
+            }
+          });
+        },
+
+      ),
 
       body:Center(
         child:tabBarChildren[_curIndex],
@@ -72,7 +74,7 @@ class _TabBarControllerPageState extends State<TabBarControllerPage> {
       onTap: (index){
         setState(() {
           _curIndex = index;
-          if(_curIndex==0){
+          if(_curIndex==2){
             FloatingbtnSelected=GlobalColors.firstColor;
           }
           else{
@@ -81,9 +83,11 @@ class _TabBarControllerPageState extends State<TabBarControllerPage> {
         });
       },
       items:[
-        barItem(icon: Icons.home, title:'Home', ),
+
         barItem(icon:Icons.person_outline,title: 'Matched'),
         barItem(icon:Icons.chat,title: 'Chat'),
+        barItem( title: ""),
+        barItem(icon: Icons.filter_list, title:'Preferences', ),
         barItem(icon:Icons.menu, title:'More'),
       ]
   );

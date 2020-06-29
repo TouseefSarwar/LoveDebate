@@ -43,6 +43,7 @@ class _BasicInfoState extends State<BasicInfo> {
       appBar: CustomAppbar.setNavigation("Basic Info"),
       body: Container(
       height: height,
+//      color: Colors.white,
       width: width,
       margin: EdgeInsets.all(16),
       child: ListView(

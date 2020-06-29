@@ -34,46 +34,18 @@ class _SplashScreenState extends State<SplashScreen> {
       body: SafeArea(
         top: false,
         bottom: false,
-        child: SingleChildScrollView(
-          child: Stack(
-            children: <Widget>[
-              InkWell(
-                onTap: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Login()),
-                  );
-                },
-//                child: Container(
-//                  height: _height,
-//                  color: Colors.pink,
-//                  child: Image.asset('images/BackGround.jpeg',fit: BoxFit.fitHeight,),
-//                ),
+        child: Stack(
+          children: <Widget>[
+            Center(
+              child: Container(
+                  height: 250,
+                  width: 250,
+                  //color: Colors.lightBlue,
+                  child: Image.asset("images/LoveDebatelogo.png")
               ),
-              Container(
-                height: (100/100)*_height,
-                //color: Colors.greenAccent,
-                width: double.infinity,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-//                    Text('Love',style: TextStyle(fontSize: 45,color:Colors.white),),
-//                    Text('Debate',style: TextStyle(fontSize: 45,color:Colors.white),),
-                    Center(
-                      child: Container(
-                          height: 250,
-                          width: 250,
-                          //color: Colors.lightBlue,
-                          child: Image.asset("images/LoveDebatelogo.png")
-                      ),
-                    )
-                  ],
-                ),
-              )
+            )
 
-            ],
-          ),
+          ],
         ),
       ),
     );

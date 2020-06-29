@@ -163,7 +163,7 @@ class _OnBoardingState extends State<OnBoarding> {
             barrierDismissible: false,
               context: context,
               builder: (BuildContext context) {
-                return OnBoardingDialogBox(Question: QuestionObj,txtAnswerController: txtAnswerController,);
+                return OnBoardingDialogBox(Question: QuestionObj,);
               }
           ).then((value){
             setState(() {
