@@ -25,6 +25,7 @@ class OnBoardingDataModel {
 class Success {
   int qaId;
   String qaQuestion;
+  String qaAns;
   String qaName;
   String qaSlug;
   int qaQuestionType;
@@ -38,6 +39,7 @@ class Success {
 
   Success(
       {this.qaId,
+        this.qaAns = null,
         this.qaQuestion,
         this.qaSlug,
         this.qaQuestionType,
@@ -53,6 +55,7 @@ class Success {
     qaId = json['qa_id'];
     qaQuestion = json['qa_question'];
     qaName = json['qa_name'];
+//    qaAns = json['qa_ans'];
     qaSlug = json['qa_slug'];
     qaQuestionType = json['qa_question_type'];
     qaFieldType = json['qa_field_type'];
