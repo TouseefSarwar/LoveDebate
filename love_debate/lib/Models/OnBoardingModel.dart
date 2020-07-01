@@ -25,7 +25,8 @@ class OnBoardingDataModel {
 class Success {
   int qaId;
   String qaQuestion;
-  String qaAns;
+  List<String> qaAns;
+//  String qaAns;
   String qaName;
   String qaSlug;
   int qaQuestionType;
@@ -39,7 +40,7 @@ class Success {
 
   Success(
       {this.qaId,
-        this.qaAns = null,
+        this.qaAns,
         this.qaQuestion,
         this.qaSlug,
         this.qaQuestionType,

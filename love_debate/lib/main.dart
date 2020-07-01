@@ -15,12 +15,12 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
       ),
-      home:SplashScreen(),
-        routes: <String, WidgetBuilder> {
-          '/Login': (BuildContext context) =>  Login(),
-        }
+//      home:SplashScreen(),
+//        routes: <String, WidgetBuilder> {
+//          '/Login': (BuildContext context) =>  Login(),
+//        }
 //    home:Profile(),
-//      home: PreferencesOnBoarding(),
+      home: PreferencesOnBoarding(),
     );
   }
 }

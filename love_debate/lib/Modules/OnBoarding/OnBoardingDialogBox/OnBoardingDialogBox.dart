@@ -37,18 +37,43 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
   void initState() {
     super.initState();
 
+    print(AnswersGlobal.questionIndex);
+    print(widget.questionsCheckBox);
+    if (widget.Question.qaAns != null && widget.Question.qaAns != ""){
+
+//      print(widget.Question.qaAns);
+//      List<String> qv = widget.Question.qaAns.split(',');
+//      for(int i=0; i<widget.questionsCheckBox.length ; i++){
+//        for (int j=0; j<qv.length;j++){
+//          if (qv[j] == widget.questionsCheckBox[i].value){
+//            widget.questionsCheckBox[i].checkvalue = true;
+//            break;
+//          }
+//        }
+//      }
+//      List<String> qv = widget.Question.qaAns.split(',');
+    print(widget.Question.qaAns);
+      for(int i=0; i<widget.questionsCheckBox.length ; i++){
+        for (int j=0; j<widget.Question.qaAns.length;j++){
+          if (widget.Question.qaAns[j] == widget.questionsCheckBox[i].value){
+            widget.questionsCheckBox[i].checkvalue = true;
+            break;
+          }
+        }
+      }
+
+    }
+
+
   }
 
   @override
   Widget build(BuildContext context) {
 
     var totalDialogWidth = (MediaQuery.of(context).size.width - 20)/2.2;
-    // var centerBoxWidth = (MediaQuery.of(context).size.width - 80)/ 2.2;
-    var totalHeight = totalDialogWidth + 121;
-
-    TextEditingController passwordController = new TextEditingController();
-
     var width=MediaQuery.of(context).size.width;
+
+
     return Dialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(22.5))
@@ -78,8 +103,8 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
             //height: (((questionsCheckBox.length)+1).toDouble())*60,
             child: ListView.builder(
 //              physics: NeverScrollableScrollPhysics(),
-               shrinkWrap: true,
-               itemCount: (widget.questionsCheckBox.length),
+                shrinkWrap: true,
+                itemCount: (widget.questionsCheckBox.length),
                 itemBuilder: (BuildContext context,int index,){
 //                  String itm = opt.myKey[index].text.toString();
 //                  return OnBoardingCheckBox(widget.questionsCheckBox[index].checkboxText,totalDialogWidth,widget.questionsCheckBox,index,widget.questionsCheckBox.length);
@@ -113,7 +138,7 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
         children: <Widget>[
           //SizedBox(width: 16,),
           new Checkbox(
-            value: checkList[index].checkvalue ,
+            value: checkList[index].checkvalue,
             onChanged: (checkBoxValue){
               setState(() {
                 if (widget.Question.qaFieldType == "Dropdown"){
@@ -131,7 +156,9 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
                 }else if (widget.Question.qaFieldType == "Checkbox"){
                   if(checkList[index].checkvalue==false) {
                     checkList[index].checkvalue = true;
+                    print("hereee");
                   }else {
+                    print("thereee");
                     checkList[index].checkvalue = false;
                   }
                 }
@@ -210,22 +237,37 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
         borderWith: 0,
         action: (){
           setState(() {
-            String selectedResults=" ";
+            String selectedResults="";
             widget.questionsCheckBox.forEach((f){
               if(f.checkvalue==true){
                 selectedResults=f.value+">"+ selectedResults;
-                print(AnswersGlobal.questionIndex);
               }
             });
             List<String> val = selectedResults.split(">");
             val.removeLast();
             if(text=="Done"){
               var v = AnswersModel(qId: widget.Question.qaId, answers: val);
-              print("Id: ");
-              print(v.qId);
-              print("Answer: ");
-              print(v.answers);
+//              print("Id: ");
+//              print(v.qId);
+//              print("Answer: ");
+//              print(v.answers);
               AnswersGlobal.answers.add(v);
+
+              String ans = "";
+              val.forEach((element) {
+                if (ans == ""){
+                  ans = element;
+                }else{
+                  ans = ans+","+element;
+                }
+
+//                ans =  val.reduce((value, element) => value+","+element);
+              });
+
+              print("IDer :${ans}");
+//              AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = ans;
+              AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+
 
 //              AnswersGlobal.answers.forEach((element) {
 //                print("Your answer:");
@@ -292,4 +334,263 @@ class MyKey {
     return data;
   }
 }
+
+
+
+
+
+
+//
+//class OnBoardingDialogBox extends StatefulWidget {
+//
+//
+//  Success Question;
+//  List<CheckBoxDataModel> questionsCheckBox;
+//
+//  OnBoardingDialogBox({this.Question,this.questionsCheckBox});
+//
+//  @override
+//  _OnBoardingDialogBoxState createState() => _OnBoardingDialogBoxState();
+//}
+//
+//class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
+//
+//  @override
+//  void dispose() {
+//    super.dispose();
+//    this.dispose();
+//  }
+//
+//  @override
+//  void initState() {
+//    super.initState();
+//
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//
+//    var totalDialogWidth = (MediaQuery.of(context).size.width - 20)/2.2;
+//    // var centerBoxWidth = (MediaQuery.of(context).size.width - 80)/ 2.2;
+//    var totalHeight = totalDialogWidth + 121;
+//
+//    TextEditingController passwordController = new TextEditingController();
+//
+//    var width=MediaQuery.of(context).size.width;
+//    return Dialog(
+//      shape: RoundedRectangleBorder(
+//          borderRadius: BorderRadius.all(Radius.circular(22.5))
+//      ),
+//      child: Column(
+//        mainAxisSize: MainAxisSize.min,
+//        children: <Widget>[
+//          // OnBoardingSlider(width),
+//          // OnBoardingCheckBox(),
+//          OnBoardingDropDownList(totalDialogWidth,width,widget.Question,qOptions as Autogenerated,widget.questionsCheckBox),
+//
+//        ],
+//      ),
+//    );
+//  }
+//  Container OnBoardingDropDownList(double totalDialogWidth ,double width,Success Question,Autogenerated opt,List<CheckBoxDataModel> questionsCheckBox) {
+//    return Container(
+//      //height: totalDialogWidth,
+//      child: Column(
+//        mainAxisAlignment: MainAxisAlignment.center,
+//        children: <Widget>[
+//          SizedBox(height: 16,),
+//          Text("Select the Option",style: TextStyle(fontSize: GlobalFont.textFontSize),),
+//          SizedBox(height: 16,),
+//          Container(
+//            height:((widget.questionsCheckBox.length)<7)?((widget.questionsCheckBox.length).toDouble())*60:(7*60).toDouble(),
+//            //height: (((questionsCheckBox.length)+1).toDouble())*60,
+//            child: ListView.builder(
+////              physics: NeverScrollableScrollPhysics(),
+//               shrinkWrap: true,
+//               itemCount: (widget.questionsCheckBox.length),
+//                itemBuilder: (BuildContext context,int index,){
+////                  String itm = opt.myKey[index].text.toString();
+////                  return OnBoardingCheckBox(widget.questionsCheckBox[index].checkboxText,totalDialogWidth,widget.questionsCheckBox,index,widget.questionsCheckBox.length);
+//                  return OnBoardingCheckBox(widget.questionsCheckBox,index);
+//                }),
+//          ),
+//          Container(
+//            //height: 100,
+//            width: width,
+//            //color: Colors.blue,
+//            margin: EdgeInsets.all(16),
+//            child: Row(
+//              mainAxisAlignment: MainAxisAlignment.center,
+//              children: <Widget>[
+//                Expanded(child: OnBoardingDialogBoxBtn("Cancel",Colors.grey,Colors.black)),
+//                SizedBox(width: 16,),
+//                Expanded(child: OnBoardingDialogBoxBtn("Done",GlobalColors.firstColor,Colors.white)),
+//              ],
+//            ),
+//          )
+//        ],
+//      ),
+//    );
+//  }
+//  Container OnBoardingCheckBox(List<CheckBoxDataModel> checkList,int index,) {
+//    return Container(
+//      height: 60,
+//      // color: Colors.blue,
+//      margin: EdgeInsets.only(left: 8),
+//      child: Row(
+//        children: <Widget>[
+//          //SizedBox(width: 16,),
+//          new Checkbox(
+//            value: checkList[index].checkvalue,
+//            onChanged: (checkBoxValue){
+//              setState(() {
+//                if (widget.Question.qaFieldType == "Dropdown"){
+//                  if(checkList[index].checkvalue==false){
+//                    for (int i =0; i<widget.questionsCheckBox.length; i++){
+//                      if(i == index) {
+//                        checkList[i].checkvalue=true;
+//                      }else{
+//                        checkList[i].checkvalue=false;
+//                      }
+//                    }
+//                  } else{
+//                    checkList[index].checkvalue=false;
+//                  }
+//                }else if (widget.Question.qaFieldType == "Checkbox"){
+//                  if(checkList[index].checkvalue==false) {
+//                    checkList[index].checkvalue = true;
+//                  }else {
+//                    checkList[index].checkvalue = false;
+//                  }
+//                }
+//
+//              });
+//            },
+//            checkColor: GlobalColors.secondColor,
+//            activeColor: GlobalColors.firstColor,),
+//          SizedBox(width: 8,),
+//          Expanded(
+//            child: Container(
+//                child: Text((checkList[index].checkboxText) ,style: TextStyle(fontSize: GlobalFont.textFontSize),textAlign: TextAlign.left,overflow: TextOverflow.ellipsis,maxLines: 5,)),
+//          )
+//        ],
+//      ),
+//    );
+//  }
+////  Container OnBoardingCheckBox(String opt,double width,List<CheckBoxDataModel> questionsCheckBox,int index,int apiItemLenght) {
+////    return Container(
+////      height: 60,
+////      // color: Colors.blue,
+////      margin: EdgeInsets.all(8),
+////      child: Row(
+////        children: <Widget>[
+////          //SizedBox(width: 16,),
+////          new Checkbox(
+////            value: widget.questionsCheckBox[index].checkvalue ,
+////            //onChanged: _value1Changed,
+////            onChanged: (checkBoxValue){
+////              setState(() {
+////
+////                if (widget.Question.qaFieldType == "Dropdown"){
+////                  if(widget.questionsCheckBox[index].checkvalue==false){
+//////                        questionsCheckBox[index].checkvalue=true;
+////                    for (int i =0; i<widget.questionsCheckBox.length; i++){
+////                      if(i == index) {
+////                        widget.questionsCheckBox[i].checkvalue=true;
+////                      }else{
+////                        widget.questionsCheckBox[i].checkvalue=false;
+////                      }
+////                    }
+////                  }
+////                  else{
+////                    widget.questionsCheckBox[index].checkvalue=false;
+////                  }
+////                }else if (widget.Question.qaFieldType == "Checkbox"){
+////                  if(widget.questionsCheckBox[index].checkvalue==false) {
+////                    widget.questionsCheckBox[index].checkvalue = true;
+////                  }else {
+////                    widget.questionsCheckBox[index].checkvalue = false;
+////                  }
+////                }
+////
+////              });
+////            },
+////            checkColor: GlobalColors.secondColor,
+////            activeColor: GlobalColors.firstColor,),
+////          SizedBox(width: 16,),
+////          Expanded(
+////            child: Container(
+////                child: Text((questionsCheckBox[index].checkboxText) ,style: TextStyle(fontSize: GlobalFont.textFontSize),overflow: TextOverflow.ellipsis,maxLines: 5,)),
+////          )
+////        ],
+////      ),
+////    );
+////  }
+//  Widget OnBoardingDialogBoxBtn(String text,Color color,Color textColor) {
+//    return SizedBox(
+//      height: 45,
+//      //width: width,
+//      child: CustomRaisedButton(
+//        buttonText: text,
+//        cornerRadius: 22.5,
+//        textColor: textColor,
+//        backgroundColor:color,
+//        borderWith: 0,
+//        action: (){
+//          setState(() {
+//            String selectedResults=" ";
+//            widget.questionsCheckBox.forEach((f){
+//              if(f.checkvalue==true){
+//                selectedResults=f.value+">"+ selectedResults;
+//                print(AnswersGlobal.questionIndex);
+//              }
+//            });
+//            List<String> val = selectedResults.split(">");
+//            val.removeLast();
+//            if(text=="Done"){
+//              var v = AnswersModel(qId: widget.Question.qaId, answers: val);
+//              print("Id: ");
+//              print(v.qId);
+//              print("Answer: ");
+//              print(v.answers);
+//              AnswersGlobal.answers.add(v);
+//
+//              String ans = "";
+//              val.forEach((element) {
+//                if (ans == ""){
+//                  ans = element;
+//                }else{
+//                  ans = ans+","+element;
+//                }
+//
+////                ans =  val.reduce((value, element) => value+","+element);
+//              });
+//
+//              print("IDer :${ans}");
+//              AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = ans;
+//
+//
+////              AnswersGlobal.answers.forEach((element) {
+////                print("Your answer:");
+////                print(element.answers);
+////                print("of question:");
+////                print(element.qId);
+////              });
+//
+////              print(AnswersGlobal.answers);
+//
+////              AnswersGlobal.answers[AnswersGlobal.questionIndex] = AnswersModel(qId: widget.Question.qaId, answers: val);
+//              Navigator.pop(context, selectedResults,);
+//            }
+//            else if(text=="Cancel"){
+//              Navigator.pop(context);
+//            }
+//          });
+////
+//        },
+//      ),
+//    );
+//  }
+//
+//}
 
