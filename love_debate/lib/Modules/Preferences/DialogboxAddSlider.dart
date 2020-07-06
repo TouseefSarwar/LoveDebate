@@ -1,0 +1,194 @@
+
+import 'dart:wasm';
+
+import 'package:flutter/material.dart';
+import 'package:lovedebate/Models/OnBoardingModel.dart';
+import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
+import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
+import 'package:lovedebate/Utils/Designables/Toast.dart';
+import 'package:lovedebate/Utils/Globals/AnswersGlobals.dart';
+import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:lovedebate/Utils/Globals/Fonts.dart';
+
+class DialogboxAddSlider extends StatefulWidget {
+
+  Success Question;
+  String tempCity;
+  String tempState;
+
+  DialogboxAddSlider({this.Question,this.tempCity,this.tempState});
+  @override
+  _DialogboxAddSliderState createState() => _DialogboxAddSliderState();
+}
+
+class _DialogboxAddSliderState extends State<DialogboxAddSlider> {
+
+  double _value = 0.0;
+  void setvalue(double value) => setState(() => _value = value);
+
+  TextEditingController txtCityController = TextEditingController();
+  TextEditingController txtStateController = TextEditingController();
+  FocusNode txtCityFocusNode = FocusNode();
+  FocusNode txtStateFocusNode = FocusNode();
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.Question.qaAns != null && widget.Question.qaAns != ""){
+      if(widget.Question.qaSlug=='match_area'){
+        if (widget.Question.qaAns.isEmpty){
+          _value = 0.0;
+        }else{
+          _value = double.parse(widget.Question.qaAns.first);
+        }
+        setvalue(_value);
+      }else{
+        if (widget.tempCity.isNotEmpty || widget.tempState.isNotEmpty){
+          txtCityController.text = widget.tempCity;
+          txtStateController.text = widget.tempState;
+        }else{
+          print("isEmpty");
+        }
+
+      }
+    }
+    
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+
+    var totalDialogWidth = (MediaQuery.of(context).size.width - 20)/2.2;
+    // var centerBoxWidth = (MediaQuery.of(context).size.width - 80)/ 2.2;
+    var totalHeight = totalDialogWidth;
+    return Dialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(22.5))
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+
+
+            (widget.Question.qaSlug=='match_area')?Column(
+              children: <Widget>[
+                SizedBox(height: 12,),
+                Container(
+                  // height:(10/100)*totalHeight,
+                  child: Center(child: Text("Select Matching Distance",style: TextStyle(fontSize: GlobalFont.textFontSize),)),
+                ),
+                SizedBox(height: 16,),
+                RangeSlider(totalDialogWidth),
+              ],
+            ):Column(
+              children: <Widget>[
+                Container(
+                  height:(10/100)*totalHeight,
+                  child: Center(child: Text("Select City and State",style: TextStyle(fontSize: GlobalFont.textFontSize),)),
+                ),
+                placesTextField(txtStateFocusNode, txtStateController, "State",false),
+                placesTextField(txtCityFocusNode,txtCityController,'City',false),
+                SizedBox(height: 16,),
+              ],
+            ),
+
+            Container(
+              //height: 100,
+              width: double.infinity,
+              //color: Colors.blue,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(child: OnBoardingDialogBoxBtn("Cancel",Colors.grey,Colors.black)),
+                  SizedBox(width: 16,),
+                  Expanded(child: OnBoardingDialogBoxBtn("Done",GlobalColors.firstColor,Colors.white)),
+                ],
+              ),
+            ),
+
+          ],
+        ),
+      ),
+    );
+  }
+  Widget OnBoardingDialogBoxBtn(String text,Color color,Color textColor) {
+    return SizedBox(
+      height: 45,
+      //width: width,
+      child: CustomRaisedButton(
+        buttonText: text,
+        cornerRadius: 22.5,
+        textColor: textColor,
+        backgroundColor:color,
+        borderWith: 0,
+        action: (){
+          setState(() {
+
+            String selectedResults="";
+            if(text=="Done"){
+              if (widget.Question.qaSlug=='match_area'){
+                selectedResults=" ${(_value).round()} ";
+                List<String> val = selectedResults.split(">");
+                AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                Navigator.pop(context, selectedResults,);
+              }else{
+                if (txtCityController.text.isEmpty){
+                  Toast.show("Enter City", context, duration: Toast.LENGTH_LONG);
+                } else if (txtStateController.text.isEmpty){
+                  Toast.show("Enter State", context, duration: Toast.LENGTH_LONG);
+                }else{
+                  AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.clear();
+                  Map<String, dynamic> val = {"city" : txtCityController.text, "state" :txtStateController.text};
+                  AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.add(val["city"].toString()) ;
+                  AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.add(val["state"].toString());
+                  Navigator.pop(context, selectedResults,);
+                }
+
+              }
+            } else if (text=="Cancel") {
+              Navigator.pop(context);
+            }
+
+          });
+//
+        },
+      ),
+    );
+  }
+  Widget placesTextField( FocusNode focusNode, TextEditingController txtFeild,String text, bool isSecure ) {
+    return UnderLineTextField(
+      focusNode: focusNode,
+      txtHint: text,
+      isSecure: isSecure,
+      keyboardType: TextInputType.emailAddress,
+      enableBorderColor: Colors.white,
+      focusBorderColor: Colors.grey,
+      textColor: Colors.black,
+      txtController: txtFeild,
+      onTapFunc: () {
+        setState(() {
+          FocusScope.of(context).requestFocus(focusNode);
+        });
+      },
+    );
+  }
+  Widget RangeSlider(double width) {
+    return Column(
+      children: <Widget>[
+        Slider(value: _value, onChanged: setvalue,activeColor: GlobalColors.firstColor,min: 0.0, max: 4000,),
+        Text(
+          '${(_value).round()} Miles',
+          style: TextStyle(
+            fontSize: GlobalFont.textFontSize,
+            color: Colors.grey,
+          ),
+        ),
+        SizedBox(height: 16,),
+      ],
+    );
+  }
+}

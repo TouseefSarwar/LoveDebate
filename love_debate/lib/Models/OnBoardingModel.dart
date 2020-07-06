@@ -1,4 +1,5 @@
 
+
 class OnBoardingDataModel {
   List<Success> success;
 
@@ -25,7 +26,7 @@ class OnBoardingDataModel {
 class Success {
   int qaId;
   String qaQuestion;
-  List<String> qaAns;
+  List<String> qaAns = List<String>();
 //  String qaAns;
   String qaName;
   String qaSlug;
@@ -56,6 +57,12 @@ class Success {
     qaId = json['qa_id'];
     qaQuestion = json['qa_question'];
     qaName = json['qa_name'];
+    if (json['qa_ans'] != null) {
+      qaAns = new List<String>();
+      json['qa_ans'].forEach((v) {
+        qaAns.add(v);
+      });
+    }
 //    qaAns = json['qa_ans'];
     qaSlug = json['qa_slug'];
     qaQuestionType = json['qa_question_type'];
@@ -71,6 +78,9 @@ class Success {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['qa_id'] = this.qaId;
+    if (this.qaAns != null) {
+      data['qa_ans'] = this.qaAns.map((v) => v).toList();
+    }
     data['qa_question'] = this.qaQuestion;
     data['qa_name'] = this.qaName;
     data['qa_slug'] = this.qaSlug;

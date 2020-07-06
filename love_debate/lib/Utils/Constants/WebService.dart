@@ -6,6 +6,8 @@ class WebService{
   static var onboardingApi = "questions/1";
   static var data = "data";
   static var rounds = "questions/2";
+  static var answers = "answers";
+
 
 }
 

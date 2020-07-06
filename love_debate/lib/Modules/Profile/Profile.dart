@@ -1,10 +1,8 @@
-import 'package:lovedebate/Modules/OnBoarding/PreferencesOnBoarding.dart';
-import 'package:lovedebate/Modules/Profile/MyPreferences.dart';
+import 'package:lovedebate/Modules/Preferences/PreferencesOnBoarding.dart';
 import 'package:lovedebate/Modules/Profile/GeneralSettings.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:lovedebate/Modules/Profile/BasicInfo.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';

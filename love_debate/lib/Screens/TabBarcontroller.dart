@@ -1,4 +1,4 @@
-import 'package:lovedebate/Modules/OnBoarding/PreferencesOnBoarding.dart';
+import 'package:lovedebate/Modules/Preferences/PreferencesOnBoarding.dart';
 import 'package:lovedebate/Modules/Profile/Profile.dart';
 import 'package:lovedebate/Modules/Matched/Matched.dart';
 import 'package:lovedebate/Modules/Profile/MyPreferences.dart';
