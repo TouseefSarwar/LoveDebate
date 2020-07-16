@@ -14,6 +14,7 @@ class RoundListingCell extends StatelessWidget {
   Color avatarColor;
   Color iconColor;
   int index;
+  String address;
   VoidCallback action;
 
   ///Here we can use the model instead of "String" variable in future
@@ -21,7 +22,7 @@ class RoundListingCell extends StatelessWidget {
 
 
 
-  RoundListingCell({this.height, this.width, this.data, this.avatarColor, this.iconColor, this.title, this.age, this.gender,this.personHeight,this.index, this.action});
+  RoundListingCell({this.height, this.width, this.data,this.address ,this.avatarColor, this.iconColor, this.title, this.age, this.gender,this.personHeight,this.index, this.action});
 
   @override
   Widget build(BuildContext context) {

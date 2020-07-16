@@ -1,11 +1,17 @@
+import 'dart:io';
+
 import 'package:lovedebate/Modules/Preferences/PreferencesOnBoarding.dart';
 import 'package:lovedebate/Modules/Profile/GeneralSettings.dart';
+import 'package:lovedebate/Utils/Constants/SharedPref.dart';
+import 'package:lovedebate/Utils/Controllers/Loader.dart';
+import 'package:lovedebate/Utils/Globals/AnswersGlobals.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lovedebate/Modules/Profile/BasicInfo.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
+import 'package:lovedebate/Utils/Globals/UserSession.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -13,15 +19,18 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  SharedPref prf = SharedPref();
+  bool loading = false;
+
   @override
   Widget build(BuildContext context) {
     double height=(MediaQuery.of(context).size.height-MediaQuery.of(context).padding.vertical)-AppBar().preferredSize.height;
     double width=MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: CustomAppbar.setNavigation("Profile"),
+      appBar: CustomAppbar.setNavigationWithOutBack("Profile"),
 
-      body: SafeArea(
+      body: (!loading)? SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,32 +99,47 @@ class _ProfileState extends State<Profile> {
             ],
           ),
         ),
-      ),
+      ): Center(child: Loading(),),
     );
   }
 
   InkWell ProfileListItems(String text,IconData icon,int screenNo) {
     return InkWell(
       onTap: (){
-        setState(() {
+        setState(() async {
           switch(screenNo){
             case 1:
               Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
               break;
             case 2:
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
+//              Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
               break;
             case 3:
               Navigator.push(context, CupertinoPageRoute(builder: (context) => GeneralSettings()));
               break;
             case 4:
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+//              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
               break;
             case 5:
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+//              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
               break;
             case 6:
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+              loading = true;
+              setState(() async {
+                if (await prf.containKey(UserSession.tokenkey)){
+                  AnswersGlobal.questions.clear();
+                  AnswersGlobal.answers.clear();
+                  AnswersGlobal.questionIndex = -1;
+                  await prf.remove(UserSession.tokenkey);
+                  await prf.remove(UserSession.answers);
+                  await prf.remove(UserSession.question);
+                  await prf.remove(UserSession.email);
+                  sleep(const Duration(seconds: 2));
+                  loading = false;
+                  Navigator.of(context).pushReplacementNamed('/Login');
+                }
+              });
+
               break;
             default:
               print("Nothing to do");

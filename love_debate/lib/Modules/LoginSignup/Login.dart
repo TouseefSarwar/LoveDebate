@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lovedebate/Models/LoginModel.dart';
-
+import 'package:lovedebate/Utils/Constants/SharedPref.dart';
 import 'package:lovedebate/Utils/Constants/WebService.dart';
 import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
+import 'package:lovedebate/Utils/Controllers/Loader.dart';
+import 'package:lovedebate/Utils/Designables/ErrorDialog.dart';
 import 'package:lovedebate/Utils/Designables/Toast.dart';
+import 'package:lovedebate/Utils/Globals/AnswersGlobals.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Modules/LoginSignup/SignUp.dart';
 import 'package:lovedebate/Screens/TabBarcontroller.dart';
@@ -13,9 +16,9 @@ import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
 import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-
-
+import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
+import 'package:lovedebate/Utils/Globals/SignUpGlobal.dart';
+import 'package:lovedebate/Utils/Globals/UserSession.dart';
 import '../../Screens/TabBarcontroller.dart';
 import '../../Utils/Globals/Colors.dart';
 import '../../Utils/Globals/Fonts.dart';
@@ -29,6 +32,9 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
+  int apiCall = 0;
+  SharedPref prf = SharedPref();
 
   TextEditingController txtEmailController = TextEditingController();
   TextEditingController txtPasswordController = TextEditingController();
@@ -45,7 +51,7 @@ class _LoginState extends State<Login> {
       body: SafeArea(
         top: true,
         bottom: true,
-        child:SingleChildScrollView(
+        child: (apiCall==0)? SingleChildScrollView(
           child: Container(
             height:  _height,
             width: _width,
@@ -62,7 +68,7 @@ class _LoginState extends State<Login> {
               ],
             ),
           ),
-        ),
+        ):Center(child: Loading(),),
       ),
     );
   }
@@ -179,52 +185,68 @@ class _LoginState extends State<Login> {
     );
   }
 
-
   loginUser(){
+
     Map<String, dynamic> body = {
       'email': txtEmailController.text,
       'password' : txtPasswordController.text,
     };
 
     try {
-      ApiBaseHelper().fetchService(method: HttpMethod.post, url: WebService.login,body: body,isFormData: true).then(
-              (response){
+      ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: false, url: WebService.login,body: body,isFormData: false).then(
+              (response) async {
             var res = response as http.Response;
             if (res.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(res.body);
+              print(responseJson);
               if(responseJson.containsKey('success')){
                 var loginResponse = LoginModel.fromJson(responseJson["success"]);
-                print(loginResponse.user.email);
-              }else{
-                print("Oh no response");
-              }
+                UserSession.token =  loginResponse.token == null? "": "Bearer ${loginResponse.token}";
+                await prf.set(UserSession.tokenkey,UserSession.token);
+                await prf.set(UserSession.signUp,false);
+                UserSession.isSignup = await prf.getBy(UserSession.signUp);
+                await prf.remove(UserSession.answers);
+                await prf.remove(UserSession.question);
+                apiCall =0;
+                Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
 
+              }else{
+                apiCall =0;
+                setState(() {});
+              }
             }else if (res.statusCode == 401){
-              Toast.show(res.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+              apiCall = 0;
+              setState(() {});
+              GFunction.showError(jsonDecode(res.body)["error"].toString(), context);
             }else{
-              Toast.show(res.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+              apiCall = 0;
+              setState(() {});
+              GFunction.showError(res.reasonPhrase.toString(), context);
             }
           });
 
     } on FetchDataException catch(e) {
-      setState(() {
-
-      });
+      apiCall = 0;
+      setState(() {});
+      GFunction.showError(e.toString(), context);
     }
   }
-
 
   //validate functions there
   validateFields(){
 
     if (txtEmailController.text == "" || txtEmailController.text==null){
-      Toast.show("Empty Email", context, duration: Toast.LENGTH_LONG);
+      GFunction.showError("Enter Email Address", context);
     }else if (txtPasswordController.text == "" || txtPasswordController.text==null){
-      Toast.show("Empty Password", context, duration: Toast.LENGTH_LONG);
+      GFunction.showError("Enter Password", context);
     }else{
+      apiCall = 1;
+      setState(() {
+        loginUser();
+      });
 
-      //LoginUser();
-      Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+
+//      Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
 
     }
   }

@@ -2,17 +2,32 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lovedebate/Utils/Constants/WebService.dart';
+import 'package:lovedebate/Utils/Globals/UserSession.dart';
 import 'dart:io';
 import 'AppExceptions.dart';
 class ApiBaseHelper {
  final String _baseUrl = WebService.baseURL;
   //String _baseUrl ;
-  Future<dynamic> fetchService({String method,String url, dynamic body, bool isFormData}) async {
-    var _header = {'Content-Type' : (isFormData) ? 'application/x-www-form-urlencoded' : 'application/json'};
+  Future<dynamic> fetchService({String method,String url,bool authorization = false, dynamic body, bool isFormData}) async {
+    var _header;
+
+    if (authorization){
+      _header = {
+        'Content-Type' : (isFormData) ? 'application/x-www-form-urlencoded' : 'application/json',
+        'Authorization' : UserSession.token,
+      };
+    }else{
+      _header = {
+        'Content-Type' : (isFormData) ? 'application/x-www-form-urlencoded' : 'application/json',
+      };
+    }
+    print("url : ${_baseUrl + url}");
+    print(_header);
     if (method == HttpMethod.post){
       if(isFormData != true){
         body = json.encode(body);
       }
+      print(body);
       var responseJson;
       try {
         final response = await http.post(_baseUrl + url, headers: _header, body: body);
@@ -31,7 +46,6 @@ class ApiBaseHelper {
       }
       return responseJson;
     }
-
   }
 }
 
@@ -49,6 +63,6 @@ dynamic _returnResponse(http.Response response) {
     case 500:
     default:
       throw FetchDataException(
-          'Error occured while Communication with Server with StatusCode : ${response.statusCode}');
+          ' ${response.reasonPhrase} with StatusCode : ${response.statusCode}');
   }
 }

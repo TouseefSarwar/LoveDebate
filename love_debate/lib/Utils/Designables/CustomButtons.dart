@@ -24,7 +24,7 @@ class CustomRaisedButton extends StatelessWidget {
           buttonText,
           style: TextStyle(
             color: textColor,
-            fontSize: GlobalFont.textFontSize,
+            fontSize: GlobalFont.textFontSize -2,
           ),
           textAlign: TextAlign.center,
         ));

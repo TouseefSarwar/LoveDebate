@@ -9,4 +9,5 @@ class SignUpGlobal{
   static var email = "";
   static var password = "";
   static var c_password = "";
+  static var isSignUp = true;
 }

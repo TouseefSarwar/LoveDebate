@@ -1,7 +1,7 @@
-
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lovedebate/Modules/LoginSignup/HeightDialogBox.dart';
 import 'package:lovedebate/Modules/LoginSignup/SUAccountInfo.dart';
 import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
@@ -26,6 +26,8 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
   int index1=1;
   int index2=2;
   int selectedradio=0;
+
+  var selectedHeight;
 
   DateFormat dateFormat = DateFormat("MM/dd/yyyy");
   //end
@@ -55,20 +57,55 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
         lastDate: DateTime(2101));
     //if (picked != null && picked != selectedDate)
     setState(() {
+      DateTime now = DateTime.now();
+      String limit=DateFormat("yyyy-MM-dd").format(now);
+      print("Today"+limit);
       selectedDate = picked;
-      dobTF.text=DateFormat("dd/MM/yyyy").format(selectedDate);
+      final selected=DateFormat("yyyy-MM-dd").format(selectedDate);
+      //dobTF.text=selected;
+      final difference=DateTime.now().difference(picked).inDays;
+      print("Diffderence "+difference.toString());
+      if(!difference.isNegative){
+        dobTF.text=selected;
+        print(dobTF.text);
+      }
+      else{
+        dobTF.text=" ";
+        Toast.show("Invalid Date", context);
+      }
       // print(DateFormat("dd/MM/yyyy").format(selectedDate));
       //DateFormat.M.format(selectedDate);
       //dobTF.text = selectedDate.toString();
-
     });
   }
   Widget _selectTimeIos(){
     return CupertinoDatePicker(
+      backgroundColor: Colors.white,
       mode: CupertinoDatePickerMode.date,
       initialDateTime: DateTime.now(),
       onDateTimeChanged: (DateTime date){
-        dobTF.text=DateFormat("dd/MM/yyyy").format(selectedDate);
+        //dobTF.text=DateFormat("yyyy-MM-dd").format(selectedDate);
+        DateTime now = DateTime.now();
+        String limit=DateFormat("yyyy-MM-dd").format(now);
+        print("Today"+limit);
+        selectedDate = date;
+        final selected=DateFormat("yyyy-MM-dd").format(selectedDate);
+
+        print("selected date"+selected);
+        //dobTF.text=selected;
+
+        final difference=DateTime.now().difference(selectedDate).inDays;
+        print("Diffderence "+difference.toString());
+        if(!difference.isNegative){
+          dobTF.text=selected;
+          print(dobTF.text);
+        }
+        else{
+          dobTF.text=" ";
+          Toast.show("Invalid Date", context);
+
+        }
+
         //dobTF.text=date.toString().split(" ")[0];
       },
     );
@@ -168,7 +205,20 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
         txtController: txtFeild,
         onTapFunc: () {
           setState(() {
-            FocusScope.of(context).requestFocus(focusNode);
+            // FocusScope.of(context).requestFocus(focusNode);
+            if(text=='Height (ft. in.)'){
+              //focusNode.unfocus();
+              FocusScope.of(context).requestFocus(FocusNode());
+              showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (context) {
+                    return HeightDialogBox();
+                  }
+              ).then((value){
+                heightTF.text=value;
+              });
+            }
           });
         },
       ),
@@ -189,6 +239,8 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
         txtController: txtFeild,
         onTapFunc: () {
           setState(() {
+
+            FocusScope.of(context).requestFocus(FocusNode());
             if (Theme.of(context).platform == TargetPlatform.iOS){
               showModalBottomSheet(
                   context: context,
@@ -209,6 +261,7 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: SizedBox(
 
+
                                       height: 35,
                                       width: 85,
                                       child: RaisedButton(
@@ -224,6 +277,7 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
                                   Padding(
                                     padding: const EdgeInsets.only(right: 8.0),
                                     child: SizedBox(
+
 
                                       height: 35,
                                       width: 85,
@@ -256,6 +310,7 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
 
   Widget btnSignUp() {
     return SizedBox(
+
 
       height: 60,
       child: FloatingActionButton(
@@ -326,14 +381,60 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
         if (dobTF.text != "" && dobTF.text != null){
           if (heightTF.text != "" && heightTF.text != null){
 
+//            SignUpGlobal.f_name = fnameTF.text;
+//            SignUpGlobal.l_name = lnameTF.text;
+//            SignUpGlobal.dob = dobTF.text;
+//            SignUpGlobal.gender = _genderValue.toString();
+//            SignUpGlobal.personHeight = heightTF.text;
+
+            //heightConvert.split('/');
+
+            var gnd = "";
+            if ( _genderValue  == Gender.male){
+              gnd = "1";
+            }else{
+              gnd = "2";
+            }
+            var result=heightTF.text.split(' / ')[1].toString();
+            //print(heightConvert);
+
+            result=result.split("'")[0].toString();
+            int lenght=result.length;
+            print(lenght);
+            if(lenght<5){
+              var res=result[0].toString();
+              var res1=result[2].toString();
+              selectedHeight=res+"."+res1;
+              print(selectedHeight);
+            }
+            else{
+              var res=result[0].toString();
+              var res1=result[2].toString();
+              var res2=result[3].toString();
+              selectedHeight=res+"."+res1+""+res2;
+              print(selectedHeight);
+            }
+
+//            String f_name=fnameTF.text;
+//            String l_name=lnameTF.text;
+//            String email=emailTF.text;
+//            String password=passTF.text;
+//            String c_password=confirmTF.text;
+//            String gender=gnd;
+//            String dob=dobTF.text;
+//            String height=selectedHeight;
+
             SignUpGlobal.f_name = fnameTF.text;
             SignUpGlobal.l_name = lnameTF.text;
             SignUpGlobal.dob = dobTF.text;
-            SignUpGlobal.gender = _genderValue.toString();
-            SignUpGlobal.personHeight = heightTF.text;
+            SignUpGlobal.gender = gnd;
+            SignUpGlobal.personHeight = selectedHeight;
+            SignUpGlobal.password=passTF.text;
+            SignUpGlobal.c_password=confirmTF.text;
 
             Navigator.push(context, CupertinoPageRoute(builder: (context) => SUAcountInfo()));
           }else{
+//            GFunction.showError(jsonDecode(res.body)["error"].toString(), context);
             Toast.show("Enter Confirm Password", context, duration: Toast.LENGTH_LONG);
           }
         }else{

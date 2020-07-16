@@ -1,7 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:lovedebate/Modules/LoginSignup/Login.dart';
 import 'package:flutter/material.dart';
+import 'package:lovedebate/Screens/TabBarcontroller.dart';
+import 'package:lovedebate/Utils/Constants/SharedPref.dart';
+import 'package:lovedebate/Utils/Globals/UserSession.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -9,14 +13,21 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
+  SharedPref prf = SharedPref();
   startTime() async {
     var _duration = new Duration(seconds: 3);
     return new Timer(_duration, navigationPage);
   }
 
-  void navigationPage() {
-    Navigator.of(context).pushReplacementNamed('/Login');
+  void navigationPage() async{
+    if (await prf.containKey(UserSession.tokenkey)){
+      UserSession.token = await prf.getBy(UserSession.tokenkey);
+      Navigator.of(context).pushReplacementNamed('/TabBarControllerPage');
+    }else{
+      UserSession.token = "";
+      Navigator.of(context).pushReplacementNamed('/Login');
+    }
+
   }
 
   @override

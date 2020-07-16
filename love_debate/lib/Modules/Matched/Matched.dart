@@ -30,7 +30,7 @@ class _MatchedState extends State<Matched> {
     double _itemheight =(15/100)*height;
 
     return Scaffold(
-      appBar: CustomAppbar.setNavigation("Matched"),
+      appBar: CustomAppbar.setNavigationWithOutBack("Matched"),
 
       body: SafeArea(
         child:ListView.builder(

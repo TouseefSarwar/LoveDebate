@@ -69,7 +69,7 @@ class _UserChatListState extends State<UserChatList> {
     double _height=(MediaQuery.of(context).size.height)-AppBar().preferredSize.height;
     double _width=MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: CustomAppbar.setNavigation("Chats"),
+      appBar: CustomAppbar.setNavigationWithOutBack("Connections"),
       body: SafeArea(
         child:Container(
           height: _height,

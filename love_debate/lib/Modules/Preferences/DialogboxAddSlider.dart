@@ -1,22 +1,35 @@
 
+import 'dart:convert';
 import 'dart:wasm';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lovedebate/Models/AnswersModel.dart';
 import 'package:lovedebate/Models/OnBoardingModel.dart';
+import 'package:lovedebate/Screens/TabBarcontroller.dart';
+import 'package:lovedebate/Utils/Constants/SharedPref.dart';
+import 'package:lovedebate/Utils/Constants/WebService.dart';
+import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
+import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
 import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
 import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
 import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/AnswersGlobals.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
+import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
+import 'package:lovedebate/Utils/Globals/UserSession.dart';
 
 class DialogboxAddSlider extends StatefulWidget {
 
   Success Question;
   String tempCity;
   String tempState;
+  String tempFAdd ="";
+  String tempLat ="";
+  String tempLng ="";
 
-  DialogboxAddSlider({this.Question,this.tempCity,this.tempState});
+  DialogboxAddSlider({this.Question,this.tempCity,this.tempState, this.tempFAdd,this.tempLat,this.tempLng});
   @override
   _DialogboxAddSliderState createState() => _DialogboxAddSliderState();
 }
@@ -25,7 +38,7 @@ class _DialogboxAddSliderState extends State<DialogboxAddSlider> {
 
   double _value = 0.0;
   void setvalue(double value) => setState(() => _value = value);
-
+  SharedPref prf = SharedPref();
   TextEditingController txtCityController = TextEditingController();
   TextEditingController txtStateController = TextEditingController();
   FocusNode txtCityFocusNode = FocusNode();
@@ -133,18 +146,61 @@ class _DialogboxAddSliderState extends State<DialogboxAddSlider> {
               if (widget.Question.qaSlug=='match_area'){
                 selectedResults=" ${(_value).round()} ";
                 List<String> val = selectedResults.split(">");
-                AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                AnswersGlobal.answers.removeWhere((element){
+                  if (element.qId== widget.Question.qaId){
+                    return true;
+                  } else{
+                    return false;
+                  }
+                });
+                AnswersModel v = AnswersModel(qId: widget.Question.qaId,qSlug: widget.Question.qaSlug, answers: val.first);
+                if (UserSession.isSignup){
+                  AnswersGlobal.answers.add(v);
+                  AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                }else{
+                  print("no signup");
+                  List<AnswersModel> lst = List<AnswersModel>();
+                  lst.add(v);
+                  saveSingleAnswers(lst,val);
+                }
+
+                ///Need to change: Use Answers Array for answers to show instead of Questions for all.
+
+
                 Navigator.pop(context, selectedResults,);
               }else{
                 if (txtCityController.text.isEmpty){
-                  Toast.show("Enter City", context, duration: Toast.LENGTH_LONG);
+                  GFunction.showError("Enter City", context);
                 } else if (txtStateController.text.isEmpty){
-                  Toast.show("Enter State", context, duration: Toast.LENGTH_LONG);
+                  GFunction.showError("Enter State", context);
                 }else{
+                  print("asaas");
+                  Map<String, dynamic> val = {"city" : txtCityController.text, "state" :txtStateController.text, "formattedAddress": widget.tempFAdd,"lat": widget.tempLat, "lng":widget.tempLng};
+                  AnswersGlobal.answers.removeWhere((element){
+                    if (element.qId== widget.Question.qaId){
+                      return true;
+                    } else{
+                      return false;
+                    }
+                  });
+                  AnswersModel v = AnswersModel(qId: widget.Question.qaId,qSlug: widget.Question.qaSlug, answers: val);
+//                  AnswersGlobal.answers.add(v);
+                  ///Need to change: Use Answers Array for answers to show instead of Questions for all.
                   AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.clear();
-                  Map<String, dynamic> val = {"city" : txtCityController.text, "state" :txtStateController.text};
                   AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.add(val["city"].toString()) ;
                   AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.add(val["state"].toString());
+                  AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.add(widget.tempFAdd);
+                  AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.add(widget.tempLat);
+                  AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.add(widget.tempLng);
+                  if (UserSession.isSignup){
+                    AnswersGlobal.answers.add(v);
+                  }else{
+                    print("no signup");
+                    List<AnswersModel> lst = List<AnswersModel>();
+                    lst.add(v);
+                    saveSingleAnswers(lst,AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns);
+
+                  }
                   Navigator.pop(context, selectedResults,);
                 }
 
@@ -176,6 +232,7 @@ class _DialogboxAddSliderState extends State<DialogboxAddSlider> {
       },
     );
   }
+
   Widget RangeSlider(double width) {
     return Column(
       children: <Widget>[
@@ -190,5 +247,50 @@ class _DialogboxAddSliderState extends State<DialogboxAddSlider> {
         SizedBox(height: 16,),
       ],
     );
+  }
+
+
+
+  ///Save Answers.
+  saveSingleAnswers(List<AnswersModel> ans,List<String> val) {
+    Map<String, dynamic> body = {
+      'answers' : ans,
+    };
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.post, url: WebService.answers,body: body,isFormData: false).then(
+              (response) async {
+            if (response.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(response.body);
+              print("Your Api Response ;${responseJson}");
+              if(responseJson.containsKey('success')) {
+                AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                await prf.remove(UserSession.question);
+                Map<String, dynamic> resp = {
+                  'success': AnswersGlobal.questions,
+                };
+                await prf.set(UserSession.question, json.encode(resp));
+
+
+//                if (await prf.containKey(UserSession.question) ){
+//                  await prf.remove(UserSession.question);
+//                  await prf.set(UserSession.question, "{'success': ${AnswersGlobal.questions}");
+//                }
+
+              } else{
+                print("Oh No....! response");
+              }
+            }else if (response.statusCode == 401){
+              setState(() {});
+              GFunction.showError(response.body["error"].toString(), context);
+            }else{
+              setState(() {});
+              GFunction.showError(response.reasonPhrase.toString(), context);
+            }
+          });
+    } on FetchDataException catch(e) {
+      setState(() {
+        GFunction.showError(e.toString(), context);
+      });
+    }
   }
 }

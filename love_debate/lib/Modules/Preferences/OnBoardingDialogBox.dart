@@ -1,27 +1,35 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lovedebate/Models/AnswersModel.dart';
 import 'package:lovedebate/Models/OnBoardingModel.dart';
 import 'package:lovedebate/Modules/Preferences/PreferencesModel/CheckBoxDataModel.dart';
+import 'package:lovedebate/Utils/Constants/SharedPref.dart';
+import 'package:lovedebate/Utils/Constants/WebService.dart';
+import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
+import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
+import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/AnswersGlobals.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
+import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
+import 'package:lovedebate/Utils/Globals/SignUpGlobal.dart';
+import 'package:lovedebate/Utils/Globals/UserSession.dart';
 
 
 class OnBoardingDialogBox extends StatefulWidget {
 
-
   Success Question;
   List<CheckBoxDataModel> questionsCheckBox;
-
   OnBoardingDialogBox({this.Question,this.questionsCheckBox});
-
   @override
   _OnBoardingDialogBoxState createState() => _OnBoardingDialogBoxState();
 }
 
 class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
+  SharedPref prf = SharedPref();
 
   @override
   void dispose() {
@@ -33,8 +41,11 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
   void initState() {
     super.initState();
 
-    print(AnswersGlobal.questionIndex);
-    print(widget.questionsCheckBox);
+//    print(AnswersGlobal.questionIndex);
+//    print(widget.questionsCheckBox);
+    if (widget.Question.qaAns != null){
+      print("Hereee");
+    }
     if (widget.Question.qaAns != null && widget.Question.qaAns != ""){
       ///If you want to send
 //      print(widget.Question.qaAns);
@@ -48,7 +59,6 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
 //        }
 //      }
 //      List<String> qv = widget.Question.qaAns.split(',');
-    print(widget.Question.qaAns);
       for(int i=0; i<widget.questionsCheckBox.length ; i++){
         for (int j=0; j<widget.Question.qaAns.length;j++){
           if (widget.Question.qaAns[j] == widget.questionsCheckBox[i].value){
@@ -57,7 +67,6 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
           }
         }
       }
-
     }
 
 
@@ -135,9 +144,10 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
           //SizedBox(width: 16,),
           new Checkbox(
             value: checkList[index].checkvalue,
+
             onChanged: (checkBoxValue){
               setState(() {
-                print(widget.Question.qaName);
+//                print(widget.Question.qaName);
                 if (widget.Question.qaFieldType == "Dropdown"){
                   if(checkList[index].checkvalue==false){
                     for (int i =0; i<widget.questionsCheckBox.length; i++){
@@ -153,16 +163,14 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
                 }else if (widget.Question.qaFieldType == "Checkbox"){
                   if(checkList[index].checkvalue==false) {
                     checkList[index].checkvalue = true;
-                    print("hereee");
                   }else {
-                    print("thereee");
                     checkList[index].checkvalue = false;
                   }
                 }
 
               });
             },
-            checkColor: GlobalColors.secondColor,
+            checkColor: Colors.white,
             activeColor: GlobalColors.firstColor,),
           SizedBox(width: 8,),
           Expanded(
@@ -195,41 +203,55 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
             List<String> val = selectedResults.split(">");
             val.removeLast();
             if(text=="Done"){
-              var v = AnswersModel(qId: widget.Question.qaId, answers: val);
-//              print("Id: ");
-//              print(v.qId);
-//              print("Answer: ");
-//              print(v.answers);
-              ///we need this when answers nedd to send seprately..
-              AnswersGlobal.answers.add(v);
-//              print(val);
-//              print(AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns);
-//              String ans = "";
-//              val.forEach((element) {
-//                if (ans == ""){
-//                  ans = element;
-//                }else{
-//                  ans = ans+","+element;
-//                }
-//
-////                ans =  val.reduce((value, element) => value+","+element);
-//              });
+              if (widget.Question.qaFieldType == "Checkbox"){
+                AnswersGlobal.answers.removeWhere((element){
+                  if (element.qId== widget.Question.qaId){
+                    print("deleted");
+                    return true;
+                  } else{
+                    print("not found");
+                    return false;
+                  }
+                });
+                AnswersModel v = AnswersModel(qId: widget.Question.qaId,qSlug: widget.Question.qaSlug, answers: val);
+                if (UserSession.isSignup){
+                  AnswersGlobal.answers.add(v);
+                  AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                }else{
+                  print("no signup");
+                  List<AnswersModel> lst = List<AnswersModel>();
+                  lst.add(v);
+                  AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                  saveSingleAnswers(lst, val);
+                }
+//                AnswersGlobal.answers.add(v);
+              }else{
+                AnswersGlobal.answers.removeWhere((element){
+                  if (element.qId== widget.Question.qaId){
+                    print("deleted");
+                    return true;
+                  } else{
+                    print("not found");
+                    return false;
+                  }
+                });
+                AnswersModel v = AnswersModel(qId: widget.Question.qaId,qSlug: widget.Question.qaSlug, answers: val.first);
+                  if (UserSession.isSignup){
+                    AnswersGlobal.answers.add(v);
+                    AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                  }else{
+                    print("no signup");
+                    List<AnswersModel> lst = List<AnswersModel>();
+                    lst.add(v);
+                    AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                    saveSingleAnswers(lst, val);
+                  }
 
-//              AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = ans;
-              AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
-//              print(val);
-//              print(AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns);
+              }
 
-//              AnswersGlobal.answers.forEach((element) {
-//                print("Your answer:");
-//                print(element.answers);
-//                print("of question:");
-//                print(element.qId);
-//              });
+              ///Need to change: Use Answers Array for answers to show instead of Questions for all.
+//              AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
 
-//              print(AnswersGlobal.answers);
-
-//              AnswersGlobal.answers[AnswersGlobal.questionIndex] = AnswersModel(qId: widget.Question.qaId, answers: val);
               Navigator.pop(context, selectedResults,);
             }
             else if(text=="Cancel"){
@@ -241,6 +263,47 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
       ),
     );
   }
+
+
+  ///Save Answers.
+  saveSingleAnswers(List<AnswersModel> ans, List<String> val) {
+    Map<String, dynamic> body = {
+      "answers" : ans,
+    };
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.answers,body: body,isFormData: false).then(
+              (response) async {
+            if (response.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(response.body);
+              print("Your Api Response ;${responseJson}");
+              if(responseJson.containsKey('success')) {
+                print("Inserted Successfully");
+                AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                await prf.remove(UserSession.question);
+                Map<String, dynamic> resp = {
+                  'success': AnswersGlobal.questions,
+                };
+                await prf.set(UserSession.question, json.encode(resp));
+
+              } else{
+                print("Oh No....! response");
+              }
+            }else if (response.statusCode == 401){
+              setState(() {});
+              GFunction.showError(response.body["error"].toString(), context);
+
+            }else{
+              GFunction.showError(response.reasonPhrase.toString(), context);
+            }
+          });
+    } on FetchDataException catch(e) {
+      setState(() {
+        GFunction.showError(e.toString(), context);
+      });
+    }
+  }
+
+
 
 }
 

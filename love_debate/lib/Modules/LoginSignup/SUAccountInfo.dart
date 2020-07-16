@@ -1,9 +1,13 @@
-
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lovedebate/Modules/Preferences/PreferencesOnBoarding.dart';
+import 'package:lovedebate/Utils/Constants/SharedPref.dart';
+import 'package:lovedebate/Utils/Controllers/Loader.dart';
+import 'package:lovedebate/Utils/Designables/ErrorDialog.dart';
 import 'package:lovedebate/Utils/Designables/Toast.dart';
+import 'package:lovedebate/Utils/Globals/UserSession.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
@@ -30,6 +34,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
   int index1=1;
   int index2=2;
   int selectedradio=0;
+  int apiCall = 0 ;
 
   //end
 
@@ -41,6 +46,8 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
   FocusNode passFN = FocusNode();
   FocusNode confirmFN = FocusNode();
   FocusNode emailFN = FocusNode();
+
+  SharedPref prf = SharedPref();
 
   @override
   void initState() {
@@ -57,7 +64,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
 
     return Scaffold(
       appBar: CustomAppbar.setNavigation(""),
-      body: SafeArea(
+      body: (apiCall == 0)? SafeArea(
         top: true,
         child: Container(
           height: _height,
@@ -123,7 +130,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
             ),
           ),
         ),
-      ),
+      ) : Center(child: Loading(),),
     );
   }
 
@@ -163,65 +170,97 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
       ),
     );
   }
-
-
   void SignUpUser(){
-    var gnd = "";
-//    if ( _genderValue  == Gender.male){
-//      gnd = "1";
-//    }else{
-//      gnd = "2";
-//    }
     Map<String, dynamic> body = {
-//      'f_name': fnameTF.text,
-//      'l_name': lnameTF.text,
-      'email': emailTF.text,
-      'password' : passTF.text,
-      'c_password' : confirmTF.text,
-      'gender': gnd,
-//      'dob' : dobTF.text,
+      'first_name': SignUpGlobal.f_name.toString(),
+      'last_name': SignUpGlobal.l_name.toString(),
+      'email': emailTF.text.toString(),
+      'password' : passTF.text.toString(),
+      'c_password' : confirmTF.text.toString(),
+      'gender': SignUpGlobal.gender.toString(),
+      'dob':SignUpGlobal.dob.toString(),
+      'height':SignUpGlobal.personHeight.toString(),
     };
     print(body);
     try {
-      ApiBaseHelper().fetchService(method: HttpMethod.post, url: WebService.login,body: body,isFormData: true).then(
-              (response){
-            Map<String, dynamic> responseJson = json.decode(response);
-            if(responseJson.containsKey('success')){
+      ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.registerUser,body: body,isFormData: false).then(
+              (response) async{
 
+            var res = response as http.Response;
+            if (res.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(res.body);
+              if(responseJson.containsKey('success')){
+                UserSession.token =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
+                print(UserSession.token);
+                await prf.set(UserSession.tokenkey,UserSession.token);
+                await prf.set(UserSession.signUp,true);
+                UserSession.isSignup = await prf.getBy(UserSession.signUp);
+                apiCall = 0;
+                SignUpGlobal.f_name = null;
+                SignUpGlobal.l_name = null;
+                SignUpGlobal.email = null;
+                SignUpGlobal.password= null;
+                SignUpGlobal.c_password = null;
+                SignUpGlobal.gender =null;
+                SignUpGlobal.personHeight =null;
+                SignUpGlobal.dob=null;
+
+                GFunction.showSuccess("", () {
+                  Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
+                }, context);
+
+              }else{
+                apiCall = 0;
+                setState(() {});
+                print("Oh no response");
+              }
+            }else if (res.statusCode == 401){
+              apiCall = 0;
+              setState(() {});
+              Map<String, dynamic> err = json.decode(res.body);
+              GFunction.showError(err.toString(), context);
             }else{
-              print(responseJson);
+              apiCall = 0;
+              setState(() {});
+              GFunction.showError(res.reasonPhrase.toString(), context);
             }
           });
-
     } on FetchDataException catch(e) {
-      setState(() {
-
-      });
+      apiCall = 0;
+      setState(() {});
+      GFunction.showError(e.toString(), context);
     }
   }
 
   void ValidateFields(){
     if (emailTF.text != "" && emailTF.text != null){
       if (GFunction.validateEmail(emailTF.text)){
-        //SignUpUser();
+        print("Hare");
         if (passTF.text != "" && passTF.text != null){
           if (confirmTF.text != "" && confirmTF.text != null){
             if (passTF.text == confirmTF.text){
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
+//              if(SignUpGlobal.password.length >7){
+                apiCall = 1;
+                setState(() {
+                  SignUpUser();
+                });
+//              }else{
+//                GFunction.showError("Minimum 8 characters.", context);
+//              }
             }else{
-              Toast.show("Password and Confirm Password should be same", context, duration: Toast.LENGTH_LONG);
+              GFunction.showError("Password and Confirm Password should be same", context);
             }
           }else{
-            Toast.show("Enter Confirm Password", context, duration: Toast.LENGTH_LONG);
+            GFunction.showError("Enter Confirm Password", context);
           }
         }else{
-          Toast.show("Enter Password", context, duration: Toast.LENGTH_LONG);
+          GFunction.showError("Enter Password", context);
         }
       }else{
-        Toast.show("Invalid Email Formate", context, duration: Toast.LENGTH_LONG);
+        GFunction.showError("Invalid Email Formate", context);
       }
     }else{
-      Toast.show("Enter Email Address", context, duration: Toast.LENGTH_LONG);
+      GFunction.showError("Enter Email Address", context);
     }
 
   }

@@ -1,19 +1,27 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lovedebate/Models/AnswersModel.dart';
+import 'package:lovedebate/Models/LoginModel.dart';
 import 'package:lovedebate/Models/OnBoardingModel.dart';
 import 'package:lovedebate/Models/QaOptions.dart';
 import 'package:lovedebate/Modules/Preferences/DialogboxAddSlider.dart';
 import 'package:lovedebate/Modules/Preferences/GooglePlaces.dart';
 import 'package:lovedebate/Modules/Preferences/OnBoardingDialogBox.dart';
+import 'package:lovedebate/Screens/TabBarcontroller.dart';
+import 'package:lovedebate/Utils/Constants/SharedPref.dart';
 import 'package:lovedebate/Utils/Constants/WebService.dart';
 import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:lovedebate/Utils/Controllers/Loader.dart';
 import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/AnswersGlobals.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
 import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
+import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
+import 'package:lovedebate/Utils/Globals/SignUpGlobal.dart';
+import 'package:lovedebate/Utils/Globals/UserSession.dart';
 import 'PreferencesModel/CheckBoxDataModel.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -34,52 +42,112 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
 
   ///additionals
   ///
-  ///
   List<CheckBoxDataModel> questionsCheckBox = List<CheckBoxDataModel>();
   List<CheckBoxDataModel> apiQuestionsCheckBox = List<CheckBoxDataModel>();
 
 ///ends
-
+  ///
   int apiCall = 0;
-  List<Success> questionsData = List<Success>();
-
-  String answer=" ";
-
+  String answer="";
   double _value = 0.0;
+  SharedPref prf = SharedPref();
+
   void _setvalue(double value) => setState(() => _value = value);
 
-  TextEditingController txtAnswerController = TextEditingController();
-
-  FocusNode txtEmailFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    callOnBoardingQuestions();
-    apiCall=1;
-    AnswersGlobal.answers.clear();
-    AnswersGlobal.questionIndex = -1;
+    get();
   }
 
 
-  @override
-  Widget build(BuildContext context) {
+  get() async{
 
-    double _height=(MediaQuery.of(context).size.height)-AppBar().preferredSize.height;
-    double _width=MediaQuery.of(context).size.width;
+    if (await prf.containKey(UserSession.signUp)){
+      if (await prf.getBy(UserSession.signUp)){
+          apiCall=1;
+          setState(() {
+            callOnBoardingQuestions();
+          });
+      }else{
+        if(await prf.containKey(UserSession.question)){
+
+            Map<String, dynamic> responseJson = json.decode(await prf.getBy(UserSession.question));
+            AnswersGlobal.questions.clear();
+            responseJson["success"].forEach((v) {
+            Success item = Success.fromJson(v);
+            AnswersGlobal.questions.add(Success.fromJson(v));
+            });
+            AnswersGlobal.questions.forEach((element) {
+            print(element.qaAns);
+            });
+            apiCall =0;
+            setState(() {});
+
+
+//          if (await prf.containKey(UserSession.answers)){
+//            Map<String, dynamic> responseJson = json.decode(await prf.getBy(UserSession.answers));
+//            print(responseJson);
+//            for (int i=0; i<responseJson["answers"].length; i++){
+//              print(AnswersGlobal.questions[i].qaId);
+//              print(responseJson["answers"][i]["qa_id"]);
+//              if (AnswersGlobal.questions[i].qaId == responseJson["answers"][i]["qa_id"]){
+//                if (responseJson["answers"][i]["qa_slug"] == "address"){
+//                  AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"]["city"].toString());
+//                  AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"]["state"].toString());
+//                  AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"]["formattedAddress"].toString());
+//                  AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"]["lat"].toString());
+//                  AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"]["lng"].toString());
+//                }else{
+//                  if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+//                    for(int j=0; j<responseJson["answers"][i]["answer"].length; j++){
+//                      print(responseJson["answers"][i]["answer"][j]);
+//                      AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"][j]);
+//                    }
+//                  }else if (AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+//                    print(responseJson["answers"][i]["answer"]);
+//                    AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"].toString());
+//                  }
+//
+//                }
+//              }
+//            }
+//          }
+
+        }else{
+          callOnBoardingQuestions();
+          apiCall=1;
+        }
+      }
+    }else{
+    }
+
+  }
+
+  @override
+  Widget build(BuildContext context)  {
+
+//    double _height=(MediaQuery.of(context).size.height)-AppBar().preferredSize.height;
+//    double _width=MediaQuery.of(context).size.width;
 //    String ans = "";
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Preferences" ,style: TextStyle(fontSize: GlobalFont.navFontSize, fontWeight: FontWeight.bold,color:  Colors.black),),
+    return Scaffold (
+      appBar: (UserSession.isSignup)? AppBar(
+        automaticallyImplyLeading: false,
+        title: Text("I Seek!" ,style: TextStyle(fontSize: GlobalFont.navFontSize, fontWeight: FontWeight.bold,color:  Colors.black),),
         backgroundColor: Colors.white,
-        actions: <Widget>[
+        actions: SignUpGlobal.isSignUp? <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 20.0,top: 12),
             child: GestureDetector(
               onTap: () {
                 if (ValidateQuestion()){
-                  saveAnswers();
+                  apiCall =1;
+                  setState(() {
+                    saveAnswers();
+                  });
+
                 }else{
                   print("Missing Feilds");
                 }
@@ -94,16 +162,41 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
               )
             ),
           ),
-        ],
-      ),
+        ]:<Widget>[],
+      ): CustomAppbar.setNavigationWithOutBack("I Seek!"),
+//      appBar: AppBar(
+//          automaticallyImplyLeading: false,
+//          title: Text("I Seek" ,style: TextStyle(fontSize: GlobalFont.navFontSize, fontWeight: FontWeight.bold,color:  Colors.black),),
+//          backgroundColor: Colors.white,
+//          actions: SignUpGlobal.isSignUp? <Widget>[
+//            Padding(
+//              padding: const EdgeInsets.only(right: 20.0,top: 12),
+//              child: GestureDetector(
+//                  onTap: () {
+//                  if (ValidateQuestion()){
+//                      saveAnswers();
+//                  }else{
+//                    print("Missing Feilds");
+//                  }
+//                },
+//                  child: Text(
+//                    "Save" ,
+//                    style: TextStyle(
+//                        fontSize: 21,
+//                        fontWeight: FontWeight.w500 ,
+//                        color: GlobalColors.firstColor
+//                    ),
+//                  )
+//              ),
+//            ),
+//          ]:<Widget>[],
+//        ),
       body: SafeArea(
       child: (apiCall==0)?Padding(
         padding: const EdgeInsets.all(4.0),
         child: ListView.builder(
-//          itemCount: questionsData.length,
           itemCount: AnswersGlobal.questions.length,
           itemBuilder: (context, index){
-//            AnswersGlobal.questionIndex = index;
             return PreferenceQuestion(
               ques: AnswersGlobal.questions[index],
               ans: AnswersGlobal.questions[index].qaAns == null || AnswersGlobal.questions[index].qaAns.isEmpty ?Text(
@@ -112,7 +205,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
                     fontSize: GlobalFont.textFontSize - 2,
                     color: Colors.grey),
               ):Text(
-                index == 0 ? AnswersGlobal.questions[index].qaAns.first +", "+ AnswersGlobal.questions[index].qaAns.last  :"Selected",
+                index == 0 ? AnswersGlobal.questions[index].qaAns.first +", "+ AnswersGlobal.questions[index].qaAns[1]  :"Selected",
                 style: TextStyle(
                     fontSize: GlobalFont.textFontSize - 2,
                     fontWeight: FontWeight.w500,
@@ -120,7 +213,6 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
               ) ,
               action: (){
                 if (AnswersGlobal.questions[index].qaSlug == "address"){
-                    print("Use places instead");
                     AnswersGlobal.questionIndex = index;
                     _handlePressButton();
 
@@ -183,7 +275,6 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
         ),
       ):Center(child: Loading(),),
     ),
-
     );
   }
 
@@ -254,7 +345,6 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
               }
           ).then((value){
             setState(() {
-              answer=value;
             });
 
           });
@@ -288,6 +378,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
       //       ),
     );
   }
+
   Container OnBoardingSlider(double width) {
     return Container(
       height: 75,
@@ -307,15 +398,15 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
     );
   }
 
-  ///API's Calling
+  ///API's OnboardingQuestions
   callOnBoardingQuestions() {
+
     Map<String, dynamic> body = {
 
     };
     try {
-      ApiBaseHelper().fetchService(method: HttpMethod.get, url: WebService.onboardingApi,body: body,isFormData: true).then(
-              (response) {
-
+      ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: false, url: WebService.onboardingApi,body: body,isFormData: true).then(
+              (response) async {
             var data = List<Success>();
             if (response.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(response.body);
@@ -323,34 +414,379 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
                 responseJson['success'].forEach((v) {
                   data.add(Success.fromJson(v));
                 });
-                setState(() {
-//                  questionsData=data;
-                  AnswersGlobal.questions = data;
-                  apiCall=0;
-                });
+                AnswersGlobal.questions = data;
+                FetchUserAnswers();
               } else{
                 print("Oh no response");
               }
 
             }else if (response.statusCode == 401){
-              Toast.show(response.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+              apiCall=0;
+              setState(() {});
+              GFunction.showError(response.body["error"].toString(), context);
             }else{
-              Toast.show(response.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+              apiCall=0;
+              setState(() {});
+              GFunction.showError(response.reasonPhrase.toString(), context);
             }
           });
 
     } on FetchDataException catch(e) {
       setState(() {
-
+        GFunction.showError(e.toString(), context);
       });
     }
   }
+  ///API's Answers
+  FetchUserAnswers() {
+
+    Map<String, dynamic> body = {
+
+    };
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: true, url: WebService.userAnswers,body: body,isFormData: true).then(
+              (response) async {
+            List<String> val = List<String>();
+            if (response.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(response.body);
+              if(responseJson.containsKey('success')) {
+                for(int i= 0; i<AnswersGlobal.questions.length;i++){
+                  if (AnswersGlobal.questions[i].qaSlug == "address"){
+                    if(responseJson['success']['city'] != null && responseJson['success']['state'] != null ){
+                      AnswersGlobal.questions[i].qaAns.add(responseJson['success']['city'].toString());
+                      AnswersGlobal.questions[i].qaAns.add(responseJson['success']['state'].toString());
+                      AnswersGlobal.questions[i].qaAns.add(responseJson['success']['address'].toString());
+                      AnswersGlobal.questions[i].qaAns.add(responseJson['success']['lat'].toString());
+                      AnswersGlobal.questions[i].qaAns.add(responseJson['success']['lng'].toString());
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "match_area"){
+                    if (responseJson['success']['pr_match_area'] != null){
+                      AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_match_area'].toString());
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "height_preference"){
+                    if (responseJson['success']['pr_height'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_height'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_height'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "serious"){
+                    if (responseJson['success']['pr_serious'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_serious'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_serious'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "profession"){
+                    if (responseJson['success']['pr_profession'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_profession'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_profession'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "avg_income"){
+                    if (responseJson['success']['pr_average_income'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_average_income'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_average_income'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "goal"){
+                    if (responseJson['success']['pr_goals'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_goals'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_goals'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "children_preference"){
+                    if (responseJson['success']['pr_kids'] != null){
+
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_kids'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_kids'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "partner_expectations"){
+                    if (responseJson['success']['pr_expectations'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_expectations'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_expectations'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "characteristics"){
+                    if (responseJson['success']['pr_characteristic'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_characteristic'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_characteristic'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "IE"){
+                    if (responseJson['success']['pr_ie'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_ie'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_ie'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "single"){
+                    if (responseJson['success']['pr_single'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_single'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_single'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "single_dislikes"){
+                    if (responseJson['success']['pr_single_dislikes'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_single_dislikes'].toString());
+
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_single_dislikes'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "faith"){
+                    if (responseJson['success']['faith'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['faith'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['faith'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "faith_dislike"){
+                    if (responseJson['success']['pr_faith_dislikes'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_faith_dislikes'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_faith_dislikes'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "religion_comp"){
+                    if (responseJson['success']['pr_religious'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_religious'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_religious'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "ethnicity"){
+                    if (responseJson['success']['ethnicity'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['ethnicity'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['ethnicity'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "ethnicity_dislike"){
+                    if (responseJson['success']['pr_ethnicity_dislikes'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_ethnicity_dislikes'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_ethnicity_dislikes'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "most_dislikes"){
+                    if (responseJson['success']['pr_other_dislikes'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_other_dislikes'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_other_dislikes'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "town"){
+                    if (responseJson['success']['pr_town_likes'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_town_likes'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_town_likes'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "vacation"){
+                    if (responseJson['success']['pr_vacations'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_vacations'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_vacations'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "curse"){
+                    if (responseJson['success']['pr_curse'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_curse'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_curse'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "hobbies_outdoor"){
+                    if (responseJson['success']['pr_hobbies_outdoor'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_hobbies_outdoor'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_hobbies_outdoor'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+                  }
+                  else if (AnswersGlobal.questions[i].qaSlug == "hobbies_indoor"){
+                    if (responseJson['success']['pr_hobbies_indoor'] != null){
+                      if(AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
+                        AnswersGlobal.questions[i].qaAns.add(responseJson['success']['pr_hobbies_indoor'].toString());
+                      }else if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
+                        val = responseJson['success']['pr_hobbies_indoor'].toString().split(",");
+                        AnswersGlobal.questions[i].qaAns = val;
+                      }
+                    }
+
+
+                  }
+                }
+
+                AnswersGlobal.questions.forEach((element) {
+                  print(element.qaAns);
+
+                });
+                await prf.remove(UserSession.question);
+                Map<String, dynamic> resp = {
+                  'success': AnswersGlobal.questions,
+                };
+                await prf.set(UserSession.question, json.encode(resp));
+
+                apiCall=0;
+                setState(() {});
+              } else{
+                print("Oh no response");
+              }
+
+            }else if (response.statusCode == 401){
+              apiCall=0;
+              setState(() {});
+              GFunction.showError(response.body["error"].toString(), context);
+
+            }else{
+              apiCall=0;
+              setState(() {});
+              GFunction.showError(response.reasonPhrase.toString(), context);
+            }
+          });
+
+    } on FetchDataException catch(e) {
+      setState(() {
+        GFunction.showError(e.toString(), context);
+      });
+    }
+  }
+
+  ///Save Answers.
+  saveSingleAnswers(List<AnswersModel> ans) {
+    Map<String, dynamic> body = {
+      'answers' : ans,
+    };
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.answers,body: body,isFormData: false).then(
+              (response) async {
+            if (response.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(response.body);
+              print("Your Api Response ;${responseJson}");
+              if(responseJson.containsKey('success')) {
+                print("hereeeee");
+
+                await prf.remove(UserSession.question);
+                Map<String, dynamic> resp = {
+                  'success': AnswersGlobal.questions,
+                };
+                await prf.set(UserSession.question, json.encode(resp));
+
+//                if(!(await prf.containKey(UserSession.answers))){
+//                  Map<String, dynamic> respAns = {
+//                    'answers': AnswersGlobal.answers,
+//                  };
+//                  await prf.set(UserSession.answers, json.encode(respAns));
+//                }
+                apiCall = 0;
+                setState(() {});
+              } else{
+                print("Oh No....! response");
+              }
+            }else if (response.statusCode == 401){
+              apiCall = 0;
+              setState(() {});
+              GFunction.showError(response.body["error"].toString(), context);
+            }else{
+              GFunction.showError(response.reasonPhrase.toString(), context);
+
+            }
+          });
+    } on FetchDataException catch(e) {
+      setState(() {
+        GFunction.showError(e.toString(), context);
+      });
+    }
+  }
+
   ///additional
   callOnBoardingSubOptions(String webserviceUrl, Success question) {
     Map<String, dynamic> body = {
     };
     try {
-      ApiBaseHelper().fetchService(method: HttpMethod.get, url: webserviceUrl,body: body,isFormData: true).then(
+      ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: false, url: webserviceUrl,body: body,isFormData: true).then(
               (response) {
             var data = List<QaOptions>();
             if (response.statusCode == 200){
@@ -420,52 +856,64 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
                 print("Oh no response");
               }
             }else if (response.statusCode == 401){
-              setState(() {
-                apiCall = 0;
-              });
-              Toast.show(response.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+              apiCall = 0;
+              setState(() {});
+              GFunction.showError(jsonDecode(response.body)["error"].toString(), context);
             }else{
               setState(() {
                 apiCall = 0;
               });
-              Toast.show(response.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+              GFunction.showError(response.reasonPhrase.toString(), context);
             }
           });
     } on FetchDataException catch(e) {
       setState(() {
+        GFunction.showError(e.toString(), context);
       });
     }
   }
 
 ///Save Answers.
   saveAnswers() {
-
-
     Map<String, dynamic> body = {
-      "answers" : jsonEncode(AnswersGlobal.questions),
+      'answers' : AnswersGlobal.answers,
     };
     try {
-      ApiBaseHelper().fetchService(method: HttpMethod.post, url: WebService.answers,body: body,isFormData: true).then(
-              (response) {
-            var data = List<QaOptions>();
+      ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.answers,body: body,isFormData: false).then(
+              (response) async {
             if (response.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(response.body);
-              print("Your Api Response ;${responseJson}");
               if(responseJson.containsKey('success')) {
-                AnswersGlobal.questions.clear();
-                AnswersGlobal.questionIndex = -1;
-                AnswersGlobal.answers.clear();
-              } else{
-                print("Oh no response");
-              }
+
+                await prf.remove(UserSession.question);
+                Map<String, dynamic> resp = {
+                  'success': AnswersGlobal.questions,
+                };
+                await prf.set(UserSession.question, json.encode(resp));
+                if(!(await prf.containKey(UserSession.answers))){
+                  Map<String, dynamic> respAns = {
+                    'answers': AnswersGlobal.answers,
+                  };
+                  await prf.set(UserSession.answers, json.encode(respAns));
+                }
+                await prf.set(UserSession.signUp,false);
+                setState(() {});
+                apiCall = 0;
+                Navigator.push(context, CupertinoPageRoute(fullscreenDialog: true,builder: (context) => TabBarControllerPage()) );
+
+              } else{}
             }else if (response.statusCode == 401){
-              Toast.show(response.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+              apiCall = 0;
+              setState(() {});
+              GFunction.showError(jsonDecode(response.body)["error"].toString(), context);
             }else{
-              Toast.show(response.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
+              apiCall = 0;
+              GFunction.showError(response.reasonPhrase.toString(), context);
             }
           });
     } on FetchDataException catch(e) {
       setState(() {
+        GFunction.showError(e.toString(), context);
       });
     }
   }
@@ -476,7 +924,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
     for (int i=0; i<AnswersGlobal.questions.length; i++){
       if (AnswersGlobal.questions[i].qaSkipable == 0) {
         if (AnswersGlobal.questions[i].qaAns.isEmpty) {
-          Toast.show("Please Enter ${AnswersGlobal.questions[i].qaName}", context, duration: Toast.LENGTH_LONG);
+          GFunction.showError("Please Enter ${AnswersGlobal.questions[i].qaName}", context);
           flag = false;
           break;
         }
@@ -512,11 +960,12 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
     if (p != null) {
       // get detail (lat/lng)
       PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
-//      final lat = detail.result.geometry.location.lat;
-//      final lng = detail.result.geometry.location.lng;
-
+      final lat = detail.result.geometry.location.lat != null && detail.result.geometry.location.lat.toString() != "" ? detail.result.geometry.location.lat.toString() : "";
+      final lng = detail.result.geometry.location.lng != null && detail.result.geometry.location.lng.toString() != "" ? detail.result.geometry.location.lng.toString() : "";
+      final fortAdd= detail.result.formattedAddress != null && detail.result.formattedAddress.toString() != ""? detail.result.formattedAddress.toString() : "";
       var city="";
       var state="";
+
     for(int i=0;i<detail.result.addressComponents.length;i++){
       if(detail.result.addressComponents[i].types[0].toString()=="administrative_area_level_1"){
         if (detail.result.addressComponents[i].longName != null && detail.result.addressComponents[i].longName != ""){
@@ -529,16 +978,13 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
         }
       }
     }
-    Map<String, dynamic> val = {"city" : city, "state" :state};
-
-    print(val["city"]);
-
-    if ((val["city"].toString() == null || val["city"].toString() == "") || (val["state"].toString() == null || val["state"].toString() == "")){
+      Map<String, dynamic> val = {"city" : city, "state" :state, "formattedAddress": fortAdd,"lat": lat, "lng": lng};
+    if ((val["city"].toString() == null || val["city"].toString() == "") || (val["state"].toString() == null || val["state"].toString() == "") || (val["formatedAddress"].toString() == null || val["formatedAddress"].toString() == "") || (val["lat"].toString() == null || val["lat"].toString() == "") || (val["lng"].toString() == null || val["lng"].toString() == "")){
       showDialog(
           barrierDismissible: false,
           context: context,
           builder: (context) {
-            return DialogboxAddSlider(Question: AnswersGlobal.questions[AnswersGlobal.questionIndex],tempCity: val["city"],tempState: val["state"],);
+            return DialogboxAddSlider(Question: AnswersGlobal.questions[AnswersGlobal.questionIndex],tempCity: val["city"],tempState: val["state"],tempFAdd: fortAdd,tempLat: lat,tempLng: lng,);
           }
 
       ).then((value){
@@ -546,11 +992,28 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
         });
       });
     }else{
+      AnswersModel v = AnswersModel(qId: AnswersGlobal.questions[AnswersGlobal.questionIndex].qaId,qSlug: AnswersGlobal.questions[AnswersGlobal.questionIndex].qaSlug, answers: val);
+
+      ///Need to change: Use Answers Array for answers to show instead of Questions for all.
       AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.clear();
       AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.add(val["city"].toString());
       AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.add(val["state"].toString());
-      setState(() {
-      });
+      AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.add(fortAdd);
+      AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.add(lat);
+      AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns.add(lng);
+      if (UserSession.isSignup){
+        AnswersGlobal.answers.add(v);
+        setState(() {});
+      }else{
+        List<AnswersModel> lst = List<AnswersModel>();
+        lst.add(v);
+        apiCall = 1;
+        setState(() {
+          saveSingleAnswers(lst);
+        });
+
+      }
+
     }
 
     }
@@ -602,10 +1065,7 @@ class PreferenceQuestion extends StatelessWidget {
   }
 }
 
-
-
 ///Google places
-
 
 class CustomSearchScaffold extends PlacesAutocompleteWidget {
   CustomSearchScaffold()

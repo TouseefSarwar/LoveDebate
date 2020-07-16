@@ -26,8 +26,8 @@ class OnBoardingDataModel {
 class Success {
   int qaId;
   String qaQuestion;
+//  dynamic qaAns;
   List<String> qaAns = List<String>();
-//  String qaAns;
   String qaName;
   String qaSlug;
   int qaQuestionType;
@@ -39,31 +39,20 @@ class Success {
   Null createdAt;
   Null updatedAt;
 
-  Success(
-      {this.qaId,
-        this.qaAns,
-        this.qaQuestion,
-        this.qaSlug,
-        this.qaQuestionType,
-        this.qaFieldType,
-        this.qaOptions,
-        this.qaPlaceholder,
-        this.qaSkipable,
-        this.qaStatus,
-        this.createdAt,
-        this.updatedAt});
+  Success({this.qaId, this.qaAns, this.qaQuestion, this.qaSlug, this.qaQuestionType, this.qaFieldType, this.qaOptions, this.qaPlaceholder, this.qaSkipable, this.qaStatus, this.createdAt, this.updatedAt});
 
   Success.fromJson(Map<String, dynamic> json) {
     qaId = json['qa_id'];
     qaQuestion = json['qa_question'];
     qaName = json['qa_name'];
+//    qaAns = json['qa_ans'].cast<String>();
+
     if (json['qa_ans'] != null) {
       qaAns = new List<String>();
       json['qa_ans'].forEach((v) {
         qaAns.add(v);
       });
     }
-//    qaAns = json['qa_ans'];
     qaSlug = json['qa_slug'];
     qaQuestionType = json['qa_question_type'];
     qaFieldType = json['qa_field_type'];
@@ -78,6 +67,7 @@ class Success {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['qa_id'] = this.qaId;
+    data['qa_ans'] = this.qaAns;
     if (this.qaAns != null) {
       data['qa_ans'] = this.qaAns.map((v) => v).toList();
     }
