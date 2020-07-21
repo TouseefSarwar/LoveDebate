@@ -1,53 +1,31 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lovedebate/Modules/LoginSignup/HeightDialogBox.dart';
-import 'package:lovedebate/Modules/LoginSignup/SUAccountInfo.dart';
+import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
+import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
 import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
-import 'package:lovedebate/Utils/Globals/Fonts.dart';
-import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
-import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
-import 'package:lovedebate/Utils/Globals/SignUpGlobal.dart';
-import '../../Utils/Constants/WebService.dart';
-import '../../Utils/Controllers/ApiBaseHelper.dart';
-import '../../Utils/Controllers/AppExceptions.dart';
 import 'package:intl/intl.dart';
 
-
-class SUPersonalInfo extends StatefulWidget {
+class SocialSignUpForm extends StatefulWidget {
   @override
-  _SUPersonalInfoState createState() => _SUPersonalInfoState();
+  _SocialSignUpFormState createState() => _SocialSignUpFormState();
 }
 enum Gender { male, female}
-class _SUPersonalInfoState extends State<SUPersonalInfo> {
+class _SocialSignUpFormState extends State<SocialSignUpForm> {
 
-  //New
+  DateFormat dateFormat = DateFormat("MM/dd/yyyy");
+  TextEditingController heightTF = TextEditingController();
+  TextEditingController dobTF = TextEditingController();
+  Gender _genderValue = Gender.male;
+
+  FocusNode heightFN = FocusNode();
+  FocusNode dobFN = FocusNode();
+
   int index1=1;
   int index2=2;
   int selectedradio=0;
-
-  var selectedHeight;
-
-  DateFormat dateFormat = DateFormat("MM/dd/yyyy");
-  //end
-  TextEditingController fnameTF = TextEditingController();
-  TextEditingController lnameTF = TextEditingController();
-  TextEditingController emailTF = TextEditingController();
-  TextEditingController passTF = TextEditingController();
-  TextEditingController confirmTF = TextEditingController();
-  TextEditingController heightTF = TextEditingController();
-  TextEditingController dobTF = TextEditingController();
-//  Gender _genderValue = Gender.male;
-
-  FocusNode fnameFN = FocusNode();
-  FocusNode lnameFN = FocusNode();
-  FocusNode passFN = FocusNode();
-  FocusNode confirmFN = FocusNode();
-  FocusNode emailFN = FocusNode();
-  FocusNode heightFN = FocusNode();
-  FocusNode dobFN = FocusNode();
 
   DateTime selectedDate = DateTime.now();
   Future<Null> _selectDate(BuildContext context) async {
@@ -56,14 +34,14 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
         initialDate: selectedDate,
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101));
-    //if (picked != null && picked != selectedDate)
+//if (picked != null && picked != selectedDate)
     setState(() {
       DateTime now = DateTime.now();
       String limit=DateFormat("yyyy-MM-dd").format(now);
       print("Today"+limit);
       selectedDate = picked;
       final selected=DateFormat("yyyy-MM-dd").format(selectedDate);
-      //dobTF.text=selected;
+//dobTF.text=selected;
       final difference=DateTime.now().difference(picked).inDays;
       print("Diffderence "+difference.toString());
       if(!difference.isNegative){
@@ -74,26 +52,23 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
         dobTF.text=" ";
         Toast.show("Invalid Date", context);
       }
-      // print(DateFormat("dd/MM/yyyy").format(selectedDate));
-      //DateFormat.M.format(selectedDate);
-      //dobTF.text = selectedDate.toString();
+// print(DateFormat("dd/MM/yyyy").format(selectedDate));
+//DateFormat.M.format(selectedDate);
+//dobTF.text = selectedDate.toString();
     });
   }
   Widget _selectTimeIos(){
     return CupertinoDatePicker(
-      backgroundColor: Colors.white,
       mode: CupertinoDatePickerMode.date,
       initialDateTime: DateTime.now(),
       onDateTimeChanged: (DateTime date){
-        //dobTF.text=DateFormat("yyyy-MM-dd").format(selectedDate);
+// dobTF.text=DateFormat("yyyy-MM-dd").format(selectedDate);
         DateTime now = DateTime.now();
         String limit=DateFormat("yyyy-MM-dd").format(now);
         print("Today"+limit);
-        selectedDate = date;
+        selectedDate = selectedDate;
         final selected=DateFormat("yyyy-MM-dd").format(selectedDate);
-
-        print("selected date"+selected);
-        //dobTF.text=selected;
+//dobTF.text=selected;
 
         final difference=DateTime.now().difference(selectedDate).inDays;
         print("Diffderence "+difference.toString());
@@ -107,7 +82,7 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
 
         }
 
-        //dobTF.text=date.toString().split(" ")[0];
+//dobTF.text=date.toString().split(" ")[0];
       },
     );
   }
@@ -117,38 +92,22 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
 
     double _height=(MediaQuery.of(context).size.height-MediaQuery.of(context).padding.vertical)-AppBar().preferredSize.height;
     double _width=MediaQuery.of(context).size.width;
-
     return Scaffold(
-      appBar: CustomAppbar.setNavigation(""),
+      appBar: CustomAppbar.setNavigation("SignIn"),
       body: SafeArea(
-        top: true,
         child: Container(
           height: _height,
           width: _width,
-          color: Colors.white,
+// color: Colors.red,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListView(
               children: <Widget>[
-                SizedBox(height: 32,),
-                Center(
-                  child: Text(
-                    "Personal Info",
-                    style: TextStyle(
-                        fontSize: GlobalFont.navFontSize,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey
-                    ),
-                  ),
-                ),
-
-                emailTextField(fnameFN,fnameTF,'First Name',false, TextInputType.text),
-
-                emailTextField(lnameFN,lnameTF,'Last Name',false,TextInputType.text),
 
                 dateTime(dobFN,dobTF,'Date of Birth'),
 
                 emailTextField(heightFN,heightTF,'Height (ft. in.)',false,TextInputType.number),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 16 ,top: 16),
                   child: Text("Gender",style: TextStyle(fontSize: 18,color: Colors.grey),),
@@ -159,9 +118,10 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
                     Expanded(
                       child: Container(
                           width: 100,
-                          child:customRadioButton(1, selectedradio, 'Male ',context, (value){
+                          child:customRadioButton(index1, selectedradio, 'Male ',context, (value){
+                            var index =index1;
                             setState(() {
-                              selectedradio=1;
+                              selectedradio=index1;
                             });
                           })
                       ),
@@ -169,9 +129,11 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
                     Expanded(
                       child: Container(
                           width: 100,
-                          child: customRadioButton(2, selectedradio, 'Female',context, (value){
+//color: Colors.green,
+                          child: customRadioButton(index2, selectedradio, 'Female',context, (value){
+                            var index =index2;
                             setState(() {
-                              selectedradio=2;
+                              selectedradio=index2;
                             });
                           })
                       ),
@@ -179,12 +141,23 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
                   ],
                 ),
                 SizedBox(height: 16,),
-                btnSignUp(),
+                btnContinue(),
               ],
-
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget customRadioButton(int value, int groupedValue, String text,BuildContext context, ValueChanged _onChange) {
+    return InkWell(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Radio(value: value, groupValue: groupedValue, onChanged: _onChange,activeColor: GlobalColors.firstColor,),
+          Text(text,style: TextStyle(fontSize: 18),),
+        ],
       ),
     );
   }
@@ -197,15 +170,15 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
         txtHint: text,
         isSecure: isSecure,
         keyboardType: keyboardType,
-//      enableBorderColor: Colors.white,
+// enableBorderColor: Colors.white,
         focusBorderColor: Colors.grey,
         textColor: Colors.black,
         txtController: txtFeild,
         onTapFunc: () {
           setState(() {
-            // FocusScope.of(context).requestFocus(focusNode);
+// FocusScope.of(context).requestFocus(focusNode);
             if(text=='Height (ft. in.)'){
-              //focusNode.unfocus();
+//focusNode.unfocus();
               FocusScope.of(context).requestFocus(FocusNode());
               showDialog(
                   barrierDismissible: false,
@@ -222,6 +195,7 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
       ),
     );
   }
+
 
   Widget dateTime( FocusNode focusNode, TextEditingController txtFeild,String text) {
     return Padding(
@@ -251,19 +225,20 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
                           children: <Widget>[
                             Container(
                               height: 50,
-                              color: GlobalColors.firstColor,
+                              color: Theme.of(context).primaryColor,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: SizedBox(
+
                                       height: 35,
                                       width: 85,
                                       child: RaisedButton(
                                         onPressed: () => Navigator.of(context).pop(),
                                         color: Colors.white,
-                                        child: Text("Cancel", style: TextStyle(fontSize: 16, color: GlobalColors.firstColor),),
+                                        child: Text("Cancel", style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor),),
                                         shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(5.0)
                                         ),
@@ -273,11 +248,12 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
                                   Padding(
                                     padding: const EdgeInsets.only(right: 8.0),
                                     child: SizedBox(
+
                                       height: 35,
                                       width: 85,
                                       child: RaisedButton(
                                         onPressed: () => Navigator.of(context).pop(),
-                                        color: GlobalColors.secondColor,
+                                        color: Colors.blueAccent,
                                         child: Text("Done", style: TextStyle(fontSize: 16, color: Colors.white),),
                                         shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(5.0)
@@ -302,80 +278,20 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
     );
   }
 
-  Widget btnSignUp() {
+  Widget btnContinue() {
     return SizedBox(
 
-
-      height: 60,
-      child: FloatingActionButton(
-        backgroundColor: GlobalColors.firstColor,
-        onPressed: () => {
-          setState(() {
-            ValidateFields();
-          })
+      height: 45,
+      width: double.infinity,
+      child: CustomRaisedButton(
+        buttonText: 'Continue',
+        cornerRadius: 5,
+        textColor: Colors.white,
+        backgroundColor:GlobalColors.firstColor,
+        borderWith: 0,
+        action: (){
+// validateFields();
         },
-        tooltip: 'Increment',
-        child: Icon(Icons.arrow_forward),
-      ),
-    );
-
-//      CustomRaisedButton(
-//      buttonText: '',
-//      cornerRadius: 30,
-//      textColor: Colors.white,
-//      backgroundColor:GlobalColors.firstColor,
-//      borderWith: 0,
-//      action: (){
-//        setState(() {
-//          ValidateFields();
-//        });
-//      },
-//    );
-  }
-
-  void ValidateFields(){
-    if (fnameTF.text != "" && fnameTF.text!=null){
-      if (lnameTF.text != "" && lnameTF.text!=null){
-        if (dobTF.text != "" && dobTF.text != null){
-          if (heightTF.text != "" && heightTF.text != null){
-            var lst = heightTF.text.replaceAll('\"', "");
-            var ht = lst.replaceAll("\'",".");
-            if (selectedradio == 0){
-              GFunction.showError("Select gender", context);
-            }else{
-              print(selectedradio);
-              SignUpGlobal.f_name = fnameTF.text;
-              SignUpGlobal.l_name = lnameTF.text;
-              SignUpGlobal.dob = dobTF.text;
-              SignUpGlobal.gender = selectedradio.toString();
-              SignUpGlobal.personHeight = ht;
-              SignUpGlobal.password=passTF.text;
-              SignUpGlobal.c_password=confirmTF.text;
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => SUAcountInfo()));
-            }
-          }else {
-            GFunction.showError("Enter Height", context);
-          }
-        }else{
-          GFunction.showError("Enter Date of Birth", context);
-        }
-      }else{
-        GFunction.showError("Enter Last Name", context);
-      }
-
-    }else{
-      GFunction.showError("Enter First Name", context);
-    }
-  }
-
-  Widget customRadioButton(int value, int groupedValue, String text,BuildContext context, ValueChanged _onChange) {
-    return InkWell(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Radio(value: value, groupValue: groupedValue, onChanged: _onChange,activeColor: GlobalColors.firstColor,),
-          Text(text,style: TextStyle(fontSize: 18),),
-        ],
       ),
     );
   }

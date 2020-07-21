@@ -58,6 +58,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
   @override
   void initState() {
     super.initState();
+    print(UserSession.isSignup);
     get();
   }
 
@@ -72,7 +73,6 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
           });
       }else{
         if(await prf.containKey(UserSession.question)){
-
             Map<String, dynamic> responseJson = json.decode(await prf.getBy(UserSession.question));
             AnswersGlobal.questions.clear();
             responseJson["success"].forEach((v) {
@@ -85,39 +85,12 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
             apiCall =0;
             setState(() {});
 
-
-//          if (await prf.containKey(UserSession.answers)){
-//            Map<String, dynamic> responseJson = json.decode(await prf.getBy(UserSession.answers));
-//            print(responseJson);
-//            for (int i=0; i<responseJson["answers"].length; i++){
-//              print(AnswersGlobal.questions[i].qaId);
-//              print(responseJson["answers"][i]["qa_id"]);
-//              if (AnswersGlobal.questions[i].qaId == responseJson["answers"][i]["qa_id"]){
-//                if (responseJson["answers"][i]["qa_slug"] == "address"){
-//                  AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"]["city"].toString());
-//                  AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"]["state"].toString());
-//                  AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"]["formattedAddress"].toString());
-//                  AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"]["lat"].toString());
-//                  AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"]["lng"].toString());
-//                }else{
-//                  if (AnswersGlobal.questions[i].qaFieldType == "Checkbox"){
-//                    for(int j=0; j<responseJson["answers"][i]["answer"].length; j++){
-//                      print(responseJson["answers"][i]["answer"][j]);
-//                      AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"][j]);
-//                    }
-//                  }else if (AnswersGlobal.questions[i].qaFieldType == "Dropdown"){
-//                    print(responseJson["answers"][i]["answer"]);
-//                    AnswersGlobal.questions[i].qaAns.add(responseJson["answers"][i]["answer"].toString());
-//                  }
-//
-//                }
-//              }
-//            }
-//          }
-
         }else{
-          callOnBoardingQuestions();
           apiCall=1;
+          setState(() {
+            callOnBoardingQuestions();
+          });
+
         }
       }
     }else{
@@ -128,16 +101,12 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
   @override
   Widget build(BuildContext context)  {
 
-//    double _height=(MediaQuery.of(context).size.height)-AppBar().preferredSize.height;
-//    double _width=MediaQuery.of(context).size.width;
-//    String ans = "";
-
     return Scaffold (
       appBar: (UserSession.isSignup)? AppBar(
         automaticallyImplyLeading: false,
         title: Text("I Seek!" ,style: TextStyle(fontSize: GlobalFont.navFontSize, fontWeight: FontWeight.bold,color:  Colors.black),),
         backgroundColor: Colors.white,
-        actions: SignUpGlobal.isSignUp? <Widget>[
+        actions: UserSession.isSignup? <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 20.0,top: 12),
             child: GestureDetector(
@@ -164,37 +133,11 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
           ),
         ]:<Widget>[],
       ): CustomAppbar.setNavigationWithOutBack("I Seek!"),
-//      appBar: AppBar(
-//          automaticallyImplyLeading: false,
-//          title: Text("I Seek" ,style: TextStyle(fontSize: GlobalFont.navFontSize, fontWeight: FontWeight.bold,color:  Colors.black),),
-//          backgroundColor: Colors.white,
-//          actions: SignUpGlobal.isSignUp? <Widget>[
-//            Padding(
-//              padding: const EdgeInsets.only(right: 20.0,top: 12),
-//              child: GestureDetector(
-//                  onTap: () {
-//                  if (ValidateQuestion()){
-//                      saveAnswers();
-//                  }else{
-//                    print("Missing Feilds");
-//                  }
-//                },
-//                  child: Text(
-//                    "Save" ,
-//                    style: TextStyle(
-//                        fontSize: 21,
-//                        fontWeight: FontWeight.w500 ,
-//                        color: GlobalColors.firstColor
-//                    ),
-//                  )
-//              ),
-//            ),
-//          ]:<Widget>[],
-//        ),
       body: SafeArea(
       child: (apiCall==0)?Padding(
         padding: const EdgeInsets.all(4.0),
         child: ListView.builder(
+//          key: ValueKey<int>(Random(DateTime.now().millisecondsSinceEpoch).nextInt(4294967296)),
           itemCount: AnswersGlobal.questions.length,
           itemBuilder: (context, index){
             return PreferenceQuestion(
@@ -228,7 +171,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
                       print(value);
                       setState(() {
   //                        AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = value;
-                        print("Yahn pa Slider.... :${AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns}");
+                        print("Yahn pa.... :${AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns}");
                       });
                     });
                 }else{
@@ -437,6 +380,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
       });
     }
   }
+
   ///API's Answers
   FetchUserAnswers() {
 
@@ -897,6 +841,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
                   await prf.set(UserSession.answers, json.encode(respAns));
                 }
                 await prf.set(UserSession.signUp,false);
+                UserSession.isSignup = await prf.getBy(UserSession.signUp);
                 setState(() {});
                 apiCall = 0;
                 Navigator.push(context, CupertinoPageRoute(fullscreenDialog: true,builder: (context) => TabBarControllerPage()) );

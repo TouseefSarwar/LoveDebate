@@ -44,15 +44,25 @@ class _HeightDialogBoxState extends State<HeightDialogBox> {
 
                 if (heightArray != null) {
                   heightArray=jsonData["heightArray"];
-                  for(var u in heightArray){
-                    var item =HeightDataModel(height:u,checkValue: false);
-                    _heightList.add(item);
-                  }
+//                  for(var u in heightArray){
+//                    var item =HeightDataModel(height:u,checkValue: false);
+//                    _heightList.add(item);
+//                  }
                 }
-                print(heightArray.length);
 
-
+                var height;
+                for(int i=0;i<heightArray.length;i++){
+                  var item;
+                  item=heightArray[i].toString();
+                  item=item.split('/')[1].toString();
+                  print(item);
+                  height=HeightDataModel(height: item,checkValue: false);
+                  //_heightList.clear();
+                  _heightList.add(height);
+                  print(_heightList);
+                }
                 return HeightListItem();
+
               },
             ))),
             Container(
@@ -108,7 +118,29 @@ class _HeightDialogBoxState extends State<HeightDialogBox> {
                 SizedBox(width: 8,),
                 Expanded(
                   child: Container(
-                      child: Text((_heightList[index].height) ,style: TextStyle(fontSize: GlobalFont.textFontSize,),textAlign: TextAlign.left,overflow: TextOverflow.ellipsis,maxLines: 5,)),
+                      child: InkWell(
+                        onTap: (){
+                          setState(() {
+                            if(_heightList[index].checkValue==false){
+                              for (int i =0; i<_heightList.length; i++){
+                                if(i == index) {
+                                  _heightList[i].checkValue=true;
+                                }else{
+                                  _heightList[i].checkValue=false;
+                                }
+                              }
+                            } else{
+                              _heightList[index].checkValue=false;
+                            }
+                          });
+                        },
+                        child: Text(
+                          (_heightList[index].height),
+                          style: TextStyle(fontSize: GlobalFont.textFontSize,),
+                          textAlign: TextAlign.left,overflow: TextOverflow.ellipsis,maxLines: 5,
+                        ),
+                      )
+                  ),
                 )
               ],
             ),

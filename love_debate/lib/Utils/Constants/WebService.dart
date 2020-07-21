@@ -3,6 +3,7 @@ class WebService{
 //  static var baseURL = "https://lovedebate.co/api/";
   static var baseURL = "https://lovedebate.co/public/api/";
   static var registerUser = "register";
+  ///Login without Token
   static var login = "login";
   static var onboardingApi = "questions/1";
   static var data = "data";
@@ -12,6 +13,9 @@ class WebService{
   static var prematches = "prematches";
   static var userAnswers = "userDetail";
   static var socialLogin = "social_login";
+  static var updateProfile = "update_profile";
+  static var updatePassword = "update_password";
+  static var logout = "logout";
 
 
 }

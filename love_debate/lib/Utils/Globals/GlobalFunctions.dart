@@ -35,4 +35,14 @@ class GFunction{
     });
   }
 
+  String validatePassword(String value){
+    String  pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+    RegExp regExp = new RegExp(pattern);
+    if(value == ''){
+      return 'Password is required';
+    }else{
+      return null;
+    }
+  }
+
 }

@@ -62,11 +62,10 @@ class RoundListingCell extends StatelessWidget {
                     height: 75,
                     child: Center(
                       child: Text(
-                        data,style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.bold),
+                        (data != null || data!="")?data:"",style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
-
                 ],
               ),
 
@@ -114,7 +113,7 @@ class RoundListingCell extends StatelessWidget {
                         children: <Widget>[
                           Icon(Icons.pin_drop, color: iconColor,size: 20,),
                           SizedBox(width: 4,),
-                          Text("Clifton Park, NY, USA",style: TextStyle(fontSize: GlobalFont.textFontSize,color:Color(0xff2E3022))),
+                          Text((address != null || address != "")?address:"Address not found",style: TextStyle(fontSize: GlobalFont.textFontSize,color:Color(0xff2E3022))),
                         ],
                       )
                     ],

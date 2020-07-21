@@ -175,7 +175,36 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
           SizedBox(width: 8,),
           Expanded(
             child: Container(
-                child: Text((checkList[index].checkboxText) ,style: TextStyle(fontSize: GlobalFont.textFontSize),textAlign: TextAlign.left,overflow: TextOverflow.ellipsis,maxLines: 5,)),
+                child: InkWell(
+                  onTap: (){
+                    setState(() {
+//                print(widget.Question.qaName);
+                      if (widget.Question.qaFieldType == "Dropdown"){
+                        if(checkList[index].checkvalue==false){
+                          for (int i =0; i<widget.questionsCheckBox.length; i++){
+                            if(i == index) {
+                              checkList[i].checkvalue=true;
+                            }else{
+                              checkList[i].checkvalue=false;
+                            }
+                          }
+                        }else{
+                          checkList[index].checkvalue=false;
+                        }
+                      }else if (widget.Question.qaFieldType == "Checkbox"){
+                        if(checkList[index].checkvalue==false) {
+                          checkList[index].checkvalue = true;
+                        }else {
+                          checkList[index].checkvalue = false;
+                        }
+                      }
+
+                    });
+                  },
+                    child: Text(
+                      (checkList[index].checkboxText) ,style: TextStyle(fontSize: GlobalFont.textFontSize),textAlign: TextAlign.left,overflow: TextOverflow.ellipsis,maxLines: 5,)
+                )
+            ),
           )
         ],
       ),
@@ -224,34 +253,65 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
                   AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
                   saveSingleAnswers(lst, val);
                 }
-//                AnswersGlobal.answers.add(v);
               }else{
-                AnswersGlobal.answers.removeWhere((element){
-                  if (element.qId== widget.Question.qaId){
-                    print("deleted");
-                    return true;
-                  } else{
-                    print("not found");
-                    return false;
-                  }
-                });
-                AnswersModel v = AnswersModel(qId: widget.Question.qaId,qSlug: widget.Question.qaSlug, answers: val.first);
-                  if (UserSession.isSignup){
-                    AnswersGlobal.answers.add(v);
-                    AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                  if (widget.Question.qaSlug == "avg_income"){
+                    for(int i=0; i<widget.questionsCheckBox.length;i++){
+                      if(widget.questionsCheckBox[i].checkvalue==true){
+                        if (i == 0){
+                          selectedResults = "" +">"+ widget.questionsCheckBox[i].value +">"+ widget.questionsCheckBox[i+1].value;
+                        }else if (i == widget.questionsCheckBox.last){
+                          selectedResults = widget.questionsCheckBox[i-1].value +">"+ widget.questionsCheckBox[i].value +">"+ "";
+                        }else{
+                          selectedResults = widget.questionsCheckBox[i-1].value +">"+ widget.questionsCheckBox[i].value +">"+ widget.questionsCheckBox[i+1].value;
+                        }
+                      }
+                    }
+                    List<String> vl = selectedResults.split(">");
+
+                    AnswersGlobal.answers.removeWhere((element){
+                      if (element.qId== widget.Question.qaId){
+                        print("deleted");
+                        return true;
+                      } else{
+                        print("not found");
+                        return false;
+                      }
+                    });
+                    List<String> fv =List<String>();
+                    AnswersModel v = AnswersModel(qId: widget.Question.qaId,qSlug: widget.Question.qaSlug, answers: vl);
+                    if (UserSession.isSignup){
+                      AnswersGlobal.answers.add(v);
+                      fv.add(vl[1]);
+                      AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = fv;
+                    }else{
+                      List<AnswersModel> lst = List<AnswersModel>();
+                      lst.add(v);
+                      fv.add(vl[1]);
+                      AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = fv;
+                      saveSingleAnswers(lst, vl);
+                    }
                   }else{
-                    print("no signup");
-                    List<AnswersModel> lst = List<AnswersModel>();
-                    lst.add(v);
-                    AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
-                    saveSingleAnswers(lst, val);
+                    AnswersGlobal.answers.removeWhere((element){
+                      if (element.qId== widget.Question.qaId){
+                        print("deleted");
+                        return true;
+                      } else{
+                        print("not found");
+                        return false;
+                      }
+                    });
+                    AnswersModel v = AnswersModel(qId: widget.Question.qaId,qSlug: widget.Question.qaSlug, answers: val.first);
+                    if (UserSession.isSignup){
+                      AnswersGlobal.answers.add(v);
+                      AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                    }else{
+                      List<AnswersModel> lst = List<AnswersModel>();
+                      lst.add(v);
+                      AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                      saveSingleAnswers(lst, val);
+                    }
                   }
-
               }
-
-              ///Need to change: Use Answers Array for answers to show instead of Questions for all.
-//              AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
-
               Navigator.pop(context, selectedResults,);
             }
             else if(text=="Cancel"){
@@ -277,8 +337,14 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
               Map<String, dynamic> responseJson = json.decode(response.body);
               print("Your Api Response ;${responseJson}");
               if(responseJson.containsKey('success')) {
-                print("Inserted Successfully");
-                AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                if(widget.Question.qaSlug == "avg_income"){
+                  List<String> fv =List<String>();
+                  fv.add(val[1]);
+                  AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = fv;
+                }else{
+                  AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = val;
+                }
+
                 await prf.remove(UserSession.question);
                 Map<String, dynamic> resp = {
                   'success': AnswersGlobal.questions,

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_password_strength/flutter_password_strength.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,8 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
   FocusNode passFN = FocusNode();
   FocusNode confirmFN = FocusNode();
   FocusNode emailFN = FocusNode();
+  String _password ="";
+  bool showTooltip = false;
 
   SharedPref prf = SharedPref();
 
@@ -92,7 +95,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
 
                       emailTextField(emailFN,emailTF,'Email Address',false),
 
-                      emailTextField(passFN,passTF,'Password', true),
+                      passwordTextField(passFN,passTF),
 
                       emailTextField(confirmFN,confirmTF,'Confirm Password',true),
                       SizedBox(height: 64,),
@@ -170,6 +173,50 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
       ),
     );
   }
+
+
+  Widget passwordTextField(FocusNode focusNode,TextEditingController txtFeild) {
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Stack(
+        alignment: AlignmentDirectional.center,
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              PasswordTextField(txtHint: "Password",
+                keyboardType: TextInputType.text,
+                txtIsSecure: true,
+                txtController:txtFeild ,
+                onSaved: (String value){
+                  _password = value;
+                },
+                onChanged: (String value){
+                  setState(() {
+                    _password = value;
+                  });
+                },
+              ),
+              (_password != '') ? FlutterPasswordStrength(password:_password, height: 4) : Container(),
+            ],
+          ),
+          Positioned(
+            right: 4,
+            child: InkWell(
+              onTap: (){
+                setState(() {
+                  showTooltip = showTooltip ? false : true;
+                });
+              },
+              child: Container(height: 30,width: 50),
+              //child: Icon(Icons.help_outline, color: Colors.black, size: 20,)
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+
   void SignUpUser(){
     Map<String, dynamic> body = {
       'first_name': SignUpGlobal.f_name.toString(),
@@ -206,7 +253,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
                 SignUpGlobal.dob=null;
 
                 GFunction.showSuccess("", () {
-                  Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
+                  Navigator.push(context, CupertinoPageRoute(fullscreenDialog: true,builder: (context) => PreferencesOnBoarding()) );
                 }, context);
 
               }else{
@@ -235,7 +282,6 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
   void ValidateFields(){
     if (emailTF.text != "" && emailTF.text != null){
       if (GFunction.validateEmail(emailTF.text)){
-        print("Hare");
         if (passTF.text != "" && passTF.text != null){
           if (confirmTF.text != "" && confirmTF.text != null){
             if (passTF.text == confirmTF.text){

@@ -272,14 +272,14 @@ class _PreMatchesState extends State<PreMatches> {
           itemBuilder: (context,index){
             return RoundListingCell(
               title: 'Start Round',
-              gender: (matches[index].gender!=null)?(matches[index].gender==0)?'Male':'Female':" ",
+              gender: (matches[index].gender!=null)?(matches[index].gender==1)?'Male':'Female':" ",
 //              age: (matches[index].dob!=null)?matches[index].dob:'',
               age: '25',
-              personHeight:(matches[index].height!=null || matches[index].height!="")? matches[index].height: " ",
+              personHeight:(matches[index].height!=null)? matches[index].height: " ",
               height: itemheight,
               width: width,
               data: (matches[index].firstName!=null)?matches[index].firstName[0].toString():'',
-              address: (matches[index].address!=null)?matches[index].address:'',
+              address: (matches[index].city!=null && matches[index].state!=null)?"${matches[index].city}, ${matches[index].state}":"Address not found",
               avatarColor: Colors.red,
               iconColor: GlobalColors.firstColor,
               index: index,
@@ -310,80 +310,6 @@ class _PreMatchesState extends State<PreMatches> {
               textAlign: TextAlign.center,
             ),),
         ) :Center(child: Loading(),),
-// ListView(
-// children: <Widget>[
-//
-// RoundListingCell(
-// title: "Start Round",
-// gender: "Male",
-// age: "30",
-// personHeight: "5'4",
-// height: _itemheight,
-// width: _width,
-// data: "A",
-// avatarColor: Colors.pink,
-// iconColor: GlobalColors.firstColor,
-// ),
-// RoundListingCell(
-// title: "Start Round",
-// gender: "Male",
-// age: "30",
-// personHeight: "5'4",
-// height: _itemheight,
-// width: _width,
-// data: "S",
-// avatarColor: Colors.blue,
-// iconColor: GlobalColors.firstColor
-// ),
-// RoundListingCell(
-// title: "Start Round",
-// gender: "Male",
-// age: "30",
-// personHeight: "5'4",
-// height: _itemheight,
-// width: _width,
-// data: "F",
-// avatarColor: Colors.yellow,
-// iconColor: GlobalColors.firstColor
-// ),
-// RoundListingCell(
-// title: "Start Round",
-// gender: "Male",
-// age: "30",
-// personHeight: "5'4",
-// height: _itemheight,
-// width: _width,
-// data: "G",
-// avatarColor: Colors.green,
-// iconColor: Colors.grey
-// ),
-// RoundListingCell(
-// title: "Start Round",
-// gender: "Male",
-// age: "30",
-// personHeight: "5'4",
-// height: _itemheight,
-// width: _width,
-// data: "H",
-// avatarColor: Colors.purple,
-// iconColor: Colors.grey
-// ),
-// RoundListingCell(
-// title: "Start Round",
-// gender: "Male",
-// age: "30",
-// personHeight: "5'4",height: _itemheight,
-// width: _width,
-// data: "N",
-// avatarColor: Colors.teal,
-// iconColor: Colors.grey
-// ),
-//// PreMatchesItem(_itemheight, _width, "A",Colors.green,context),
-////
-//// PreMatchesItem(_itemheight, _width, "M",Colors.blue,context),
-//// PreMatchesItem(_itemheight, _width, "B",Colors.pink,context),
-// ],
-// ),
       ),
     );
 
@@ -395,7 +321,6 @@ class _PreMatchesState extends State<PreMatches> {
     Map<String, dynamic> body = {
 
     };
-    print(body);
     try {
       ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: true, url: WebService.prematches,body: body,isFormData: false).then(
               (response){
@@ -404,16 +329,11 @@ class _PreMatchesState extends State<PreMatches> {
               var data=List<Matches>();
               Map<String, dynamic> responseJson = json.decode(res.body);
               if(responseJson.containsKey('success')){
-//                print("HEre is yourrr response : ${responseJson["success"]}");
+                print("HEre is yourrr response : ${responseJson["success"]}");
                 responseJson["success"].forEach((v) {
-
-//                  print(v);
                   Matches item = Matches.fromJson(v);
-//                  print(item);
                   data.add(Matches.fromJson(v));
-// print(Matches.fromJson(v));
                 });
-//                print("Countttt: ${data.length}");
 
                 setState(() {
                   matches=data;

@@ -6,14 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lovedebate/Models/AnswersModel.dart';
 import 'package:lovedebate/Models/OnBoardingModel.dart';
-import 'package:lovedebate/Screens/TabBarcontroller.dart';
 import 'package:lovedebate/Utils/Constants/SharedPref.dart';
 import 'package:lovedebate/Utils/Constants/WebService.dart';
 import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
 import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
 import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
-import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/AnswersGlobals.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
@@ -144,7 +142,7 @@ class _DialogboxAddSliderState extends State<DialogboxAddSlider> {
             String selectedResults="";
             if(text=="Done"){
               if (widget.Question.qaSlug=='match_area'){
-                selectedResults=" ${(_value).round()} ";
+                selectedResults="${(_value).round()}";
                 List<String> val = selectedResults.split(">");
                 AnswersGlobal.answers.removeWhere((element){
                   if (element.qId== widget.Question.qaId){
@@ -269,13 +267,6 @@ class _DialogboxAddSliderState extends State<DialogboxAddSlider> {
                   'success': AnswersGlobal.questions,
                 };
                 await prf.set(UserSession.question, json.encode(resp));
-
-
-//                if (await prf.containKey(UserSession.question) ){
-//                  await prf.remove(UserSession.question);
-//                  await prf.set(UserSession.question, "{'success': ${AnswersGlobal.questions}");
-//                }
-
               } else{
                 print("Oh No....! response");
               }

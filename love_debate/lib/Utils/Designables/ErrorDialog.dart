@@ -70,7 +70,6 @@ import 'package:lovedebate/Utils/Globals/Fonts.dart';
 class ErrorDialog extends StatefulWidget {
 
   String errorMsg;
-
   ErrorDialog({this.errorMsg});
   @override
   _ErrorDialogState createState() => _ErrorDialogState();
@@ -87,39 +86,42 @@ class _ErrorDialogState extends State<ErrorDialog> {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(22.5))
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(height: 12,),
-          Container(
-            height: 30,
-            width: 30,
-            child: Image.asset("images/close.png"),
-          ),
-          SizedBox(height: 16,),
-          Text("Oops!",style: TextStyle(fontSize: GlobalFont.textFontSize,fontWeight: FontWeight.bold),),
-          SizedBox(height: 8,),
-          Text(widget.errorMsg,style: TextStyle(fontSize: GlobalFont.textFontSize,),textDirection: TextDirection.ltr,maxLines: 5,),
-          SizedBox(height: 16,),
-          Container(
-            height: 45,
-            width: 100,
-            // color: Colors.pink,
-            child: CustomRaisedButton(
-              buttonText: 'Ok',
-              cornerRadius:22.5,
-              textColor: Colors.white,
-              backgroundColor:Color(0xffff0000),
-              borderWith: 0,
-              action: (){
-                Navigator.pop(context);
-              },
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(height: 12,),
+            Container(
+              height: 30,
+              width: 30,
+              child: Image.asset("images/close.png"),
             ),
-          ),
-          SizedBox(height: 8,),
-        ],
+            SizedBox(height: 16,),
+            Text("Oops!",style: TextStyle(fontSize: GlobalFont.textFontSize,fontWeight: FontWeight.bold),),
+            SizedBox(height: 8,),
+            Text(widget.errorMsg,style: TextStyle(fontSize: GlobalFont.textFontSize,),textDirection: TextDirection.ltr,maxLines: 5,),
+            SizedBox(height: 16,),
+            Container(
+              height: 45,
+              width: 100,
+              // color: Colors.pink,
+              child: CustomRaisedButton(
+                buttonText: 'Ok',
+                cornerRadius:22.5,
+                textColor: Colors.white,
+                backgroundColor:GlobalColors.firstColor,
+                borderWith: 0,
+                action: (){
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+            SizedBox(height: 8,),
+          ],
+        ),
       ),
     );
   }

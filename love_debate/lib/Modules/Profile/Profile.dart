@@ -1,8 +1,10 @@
-import 'dart:io';
-
-import 'package:lovedebate/Modules/Preferences/PreferencesOnBoarding.dart';
+import 'dart:convert';
+import 'package:lovedebate/Models/UserDetailModel.dart';
 import 'package:lovedebate/Modules/Profile/GeneralSettings.dart';
 import 'package:lovedebate/Utils/Constants/SharedPref.dart';
+import 'package:lovedebate/Utils/Constants/WebService.dart';
+import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
+import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
 import 'package:lovedebate/Utils/Controllers/Loader.dart';
 import 'package:lovedebate/Utils/Globals/AnswersGlobals.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
@@ -11,7 +13,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:lovedebate/Modules/Profile/BasicInfo.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
+import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
 import 'package:lovedebate/Utils/Globals/UserSession.dart';
+
+import 'CameraDialog.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -21,6 +26,20 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   SharedPref prf = SharedPref();
   bool loading = false;
+  UserDetail data = UserDetail();
+  String image='images/conor.jpg';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    loading= true;
+    setState(() {
+      FetchUserDetails();
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +71,6 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
-
                     //Overlay
                     Container(
                       height: (30/100)*height,
@@ -62,7 +80,7 @@ class _ProfileState extends State<Profile> {
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: Text(
-                          "Muhammad Touseef",
+                          (data != null) ?data.firstName+" "+data.lastName : "",
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
@@ -87,6 +105,38 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
+
+                    Positioned(
+                      top: ((55/100)*height) / 2 - 70,
+                      left: width / 1.6 - 30,
+                      child: InkWell(
+                        onTap: (){
+                          setState(() {
+                            showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (context) {
+                                  return CameraDialog();
+                                }
+                            ).then((value){
+//image="";
+                              print(value);
+//image=value;
+                              var img=value;
+                              print(img);
+                            });
+
+                          });
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.all(Radius.circular(360))
+                            ),
+                            child: Icon(Icons.camera_alt,color: GlobalColors.firstColor,)),
+                      ),
+                    )
+
                   ]
               ),
               SizedBox(height: 8,),
@@ -106,16 +156,15 @@ class _ProfileState extends State<Profile> {
   InkWell ProfileListItems(String text,IconData icon,int screenNo) {
     return InkWell(
       onTap: (){
-        setState(() async {
           switch(screenNo){
             case 1:
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo(userData: data,)));
               break;
             case 2:
 //              Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
               break;
             case 3:
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => GeneralSettings()));
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => GeneralSettings(userData: data,)));
               break;
             case 4:
 //              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
@@ -125,32 +174,15 @@ class _ProfileState extends State<Profile> {
               break;
             case 6:
               loading = true;
-              setState(() async {
-                if (await prf.containKey(UserSession.tokenkey)){
-                  AnswersGlobal.questions.clear();
-                  AnswersGlobal.answers.clear();
-                  AnswersGlobal.questionIndex = -1;
-                  await prf.remove(UserSession.tokenkey);
-                  await prf.remove(UserSession.answers);
-                  await prf.remove(UserSession.question);
-                  await prf.remove(UserSession.email);
-                  sleep(const Duration(seconds: 2));
-                  loading = false;
-                  Navigator.of(context).pushReplacementNamed('/Login');
-                }
+              setState(() {
+                logoutUserSession();
               });
-
               break;
             default:
               print("Nothing to do");
               break;
           }
 
-
-
-//          Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
-
-        });
       },
       child: Column(
         children: <Widget>[
@@ -183,6 +215,88 @@ class _ProfileState extends State<Profile> {
         ],
       ),
     );
+  }
+
+
+  ///Logout Api Call
+    logoutUserSession(){
+
+      Map<String, dynamic> body = {};
+      try {
+        ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: true, url: WebService.logout,body: body,isFormData: true).then(
+                (response) async {
+
+              if (response.statusCode == 200){
+                Map<String, dynamic> responseJson = json.decode(response.body);
+                if(responseJson.containsKey('success')) {
+                  if (await prf.containKey(UserSession.tokenkey)){
+                    AnswersGlobal.questions.clear();
+                    AnswersGlobal.answers.clear();
+                    AnswersGlobal.questionIndex = -1;
+                    await prf.remove(UserSession.tokenkey);
+                    await prf.remove(UserSession.answers);
+                    await prf.remove(UserSession.question);
+                    await prf.remove(UserSession.email);
+                    Navigator.of(context).pushReplacementNamed('/Login');
+                  }
+                } else{
+                }
+
+              }else if (response.statusCode == 401){
+                loading=false;
+                setState(() {});
+                GFunction.showError(response.body["error"].toString(), context);
+              }else{
+                loading=false;
+                setState(() {});
+                GFunction.showError(response.reasonPhrase.toString(), context);
+              }
+            });
+
+      } on FetchDataException catch(e) {
+        loading=false;
+        setState(() {});
+        GFunction.showError(e.toString(), context);
+      }
+    }
+
+  ///UserDetails
+  FetchUserDetails() {
+
+    Map<String, dynamic> body = {
+
+    };
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: true, url: WebService.userAnswers,body: body,isFormData: true).then(
+              (response) async {
+            List<String> val = List<String>();
+            if (response.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(response.body);
+              if(responseJson.containsKey('success')) {
+                data = UserDetail.fromJson(responseJson["success"]);
+                loading =false;
+                setState(() {});
+              } else{
+                print("Oh no response");
+              }
+
+            }else if (response.statusCode == 401){
+              loading =false;
+              setState(() {});
+              GFunction.showError(response.body["error"].toString(), context);
+
+            }else{
+              loading =false;
+              setState(() {});
+              GFunction.showError(response.reasonPhrase.toString(), context);
+            }
+          });
+
+    } on FetchDataException catch(e) {
+      setState(() {
+        GFunction.showError(e.toString(), context);
+      });
+    }
   }
 
 }

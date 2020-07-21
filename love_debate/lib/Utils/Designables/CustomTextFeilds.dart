@@ -133,3 +133,62 @@ class NewUnderLineTextField extends StatelessWidget {
     );
   }
 }
+
+class PasswordTextField extends StatelessWidget {
+
+  final IconData prefixIcon;
+  final IconButton suffixIcon;
+  final TextCapitalization capitalization;
+  final String txtHint;
+  final bool txtIsSecure;
+  final TextInputType keyboardType;
+  final TextEditingController txtController;
+  final Function validator;
+  final Function onSaved;
+  final Function onChanged;
+
+  PasswordTextField({this.prefixIcon, this.suffixIcon, this.capitalization = TextCapitalization.words, this.txtHint, this.txtIsSecure = false, this.keyboardType, this.txtController, this.validator, this.onSaved, this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+          accentColor: Theme.of(context).primaryColor
+      ),
+      child: TextFormField(
+        style: TextStyle(fontSize: 14),
+        textAlign: TextAlign.justify,
+        textCapitalization: capitalization,
+        textAlignVertical: TextAlignVertical.center,
+        keyboardType: keyboardType,
+        obscureText: txtIsSecure,
+        controller: txtController,
+        validator: validator,
+        onSaved: onSaved,
+        onChanged: onChanged,
+        decoration: InputDecoration(
+          prefixIcon: prefixIcon != null ? Container(transform: Matrix4.translationValues(0.0, 0.0, 0.0), child: Icon(prefixIcon, size: 16,)) : null,
+          suffixIcon: suffixIcon,
+          hintText: txtHint,
+          hintStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+          filled: false,
+          fillColor: Colors.white,
+          focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                  width: 1.3,
+                  style: BorderStyle.solid,
+                  color: Theme.of(context).primaryColor
+              )
+          ),
+          enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                  width: 1,
+                  style: BorderStyle.solid,
+                  color: Colors.grey.withOpacity(0.4)
+              )
+          ),
+        ),
+      ),
+    );
+  }
+}
