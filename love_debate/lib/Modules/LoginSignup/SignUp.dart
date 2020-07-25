@@ -297,7 +297,9 @@ class _SignUpState extends State<SignUp> {
             if (response.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(response.body);
               if(responseJson.containsKey('success')) {
+
                 if(responseJson['success']['already_exist'] == false){
+                  UserSession.token =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
                   await prf.set(UserSession.tokenkey,UserSession.token);
                   Navigator.push(context, CupertinoPageRoute(fullscreenDialog: true,builder: (context) => SocialSignUpForm(
                     email: responseJson['success']['user']['email'].toString(),

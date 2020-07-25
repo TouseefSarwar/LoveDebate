@@ -390,6 +390,7 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
             if (res.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(res.body);
               if(responseJson.containsKey('success')){
+
                 await prf.set(UserSession.signUp,true);
                 UserSession.isSignup = await prf.getBy(UserSession.signUp);
                 islaoding = false;
