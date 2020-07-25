@@ -289,7 +289,7 @@ class _PreMatchesState extends State<PreMatches> {
                 Duration dur = DateTime.now().difference(dob);
                 String differenceInYears = (dur.inDays/365).floor().toString();
                 print(differenceInYears);
-                Navigator.push(context, CupertinoPageRoute(builder: (context) => Catagories()));
+                Navigator.push(context, CupertinoPageRoute(builder: (context) => Catagories(roundDetail:  matches[index],)));
               },
             );
           },

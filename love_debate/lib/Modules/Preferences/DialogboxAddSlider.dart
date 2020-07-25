@@ -20,7 +20,7 @@ import 'package:lovedebate/Utils/Globals/UserSession.dart';
 
 class DialogboxAddSlider extends StatefulWidget {
 
-  Success Question;
+  OnBoardingDataModel Question;
   String tempCity;
   String tempState;
   String tempFAdd ="";

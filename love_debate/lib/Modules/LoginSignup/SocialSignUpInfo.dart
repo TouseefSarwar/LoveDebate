@@ -1,14 +1,32 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lovedebate/Modules/LoginSignup/HeightDialogBox.dart';
+import 'package:lovedebate/Modules/Preferences/PreferencesOnBoarding.dart';
+import 'package:lovedebate/Utils/Constants/SharedPref.dart';
+import 'package:lovedebate/Utils/Constants/WebService.dart';
+import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
+import 'package:lovedebate/Utils/Controllers/Loader.dart';
 import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
 import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
 import 'package:lovedebate/Utils/Designables/Toast.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:intl/intl.dart';
+import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
+import 'package:lovedebate/Utils/Globals/SignUpGlobal.dart';
+import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
+import 'package:http/http.dart' as http;
+import 'package:lovedebate/Utils/Globals/UserSession.dart';
 
 class SocialSignUpForm extends StatefulWidget {
+
+  String email;
+  String firstName;
+  String lastName;
+
+  SocialSignUpForm({this.email,this.firstName,this.lastName});
   @override
   _SocialSignUpFormState createState() => _SocialSignUpFormState();
 }
@@ -16,16 +34,20 @@ enum Gender { male, female}
 class _SocialSignUpFormState extends State<SocialSignUpForm> {
 
   DateFormat dateFormat = DateFormat("MM/dd/yyyy");
+  SharedPref prf = SharedPref();
   TextEditingController heightTF = TextEditingController();
   TextEditingController dobTF = TextEditingController();
+  TextEditingController emailTF = TextEditingController();
   Gender _genderValue = Gender.male;
 
   FocusNode heightFN = FocusNode();
   FocusNode dobFN = FocusNode();
+  FocusNode emailFN = FocusNode();
 
   int index1=1;
   int index2=2;
   int selectedradio=0;
+  bool islaoding = false;
 
   DateTime selectedDate = DateTime.now();
   Future<Null> _selectDate(BuildContext context) async {
@@ -34,14 +56,14 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
         initialDate: selectedDate,
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101));
-//if (picked != null && picked != selectedDate)
+    //if (picked != null && picked != selectedDate)
     setState(() {
       DateTime now = DateTime.now();
       String limit=DateFormat("yyyy-MM-dd").format(now);
       print("Today"+limit);
       selectedDate = picked;
       final selected=DateFormat("yyyy-MM-dd").format(selectedDate);
-//dobTF.text=selected;
+      //dobTF.text=selected;
       final difference=DateTime.now().difference(picked).inDays;
       print("Diffderence "+difference.toString());
       if(!difference.isNegative){
@@ -52,9 +74,9 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
         dobTF.text=" ";
         Toast.show("Invalid Date", context);
       }
-// print(DateFormat("dd/MM/yyyy").format(selectedDate));
-//DateFormat.M.format(selectedDate);
-//dobTF.text = selectedDate.toString();
+      // print(DateFormat("dd/MM/yyyy").format(selectedDate));
+      //DateFormat.M.format(selectedDate);
+      //dobTF.text = selectedDate.toString();
     });
   }
   Widget _selectTimeIos(){
@@ -62,13 +84,13 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
       mode: CupertinoDatePickerMode.date,
       initialDateTime: DateTime.now(),
       onDateTimeChanged: (DateTime date){
-// dobTF.text=DateFormat("yyyy-MM-dd").format(selectedDate);
+        // dobTF.text=DateFormat("yyyy-MM-dd").format(selectedDate);
         DateTime now = DateTime.now();
         String limit=DateFormat("yyyy-MM-dd").format(now);
         print("Today"+limit);
         selectedDate = selectedDate;
         final selected=DateFormat("yyyy-MM-dd").format(selectedDate);
-//dobTF.text=selected;
+        //dobTF.text=selected;
 
         final difference=DateTime.now().difference(selectedDate).inDays;
         print("Diffderence "+difference.toString());
@@ -82,7 +104,7 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
 
         }
 
-//dobTF.text=date.toString().split(" ")[0];
+        //dobTF.text=date.toString().split(" ")[0];
       },
     );
   }
@@ -95,14 +117,16 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
     return Scaffold(
       appBar: CustomAppbar.setNavigation("SignIn"),
       body: SafeArea(
-        child: Container(
+        child: (!islaoding) ? Container(
           height: _height,
           width: _width,
-// color: Colors.red,
+          // color: Colors.red,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListView(
               children: <Widget>[
+
+                (widget.email=="" || widget.email== null)?emailTextField(emailFN,emailTF,'Email',false,TextInputType.text):Container(),
 
                 dateTime(dobFN,dobTF,'Date of Birth'),
 
@@ -119,7 +143,7 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
                       child: Container(
                           width: 100,
                           child:customRadioButton(index1, selectedradio, 'Male ',context, (value){
-                            var index =index1;
+                            var index  =index1;
                             setState(() {
                               selectedradio=index1;
                             });
@@ -129,9 +153,9 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
                     Expanded(
                       child: Container(
                           width: 100,
-//color: Colors.green,
+                          //color: Colors.green,
                           child: customRadioButton(index2, selectedradio, 'Female',context, (value){
-                            var index =index2;
+                            var index  =index2;
                             setState(() {
                               selectedradio=index2;
                             });
@@ -145,7 +169,7 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
               ],
             ),
           ),
-        ),
+        ): Center(child: Loading(),),
       ),
     );
   }
@@ -170,15 +194,15 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
         txtHint: text,
         isSecure: isSecure,
         keyboardType: keyboardType,
-// enableBorderColor: Colors.white,
+//      enableBorderColor: Colors.white,
         focusBorderColor: Colors.grey,
         textColor: Colors.black,
         txtController: txtFeild,
         onTapFunc: () {
           setState(() {
-// FocusScope.of(context).requestFocus(focusNode);
+            // FocusScope.of(context).requestFocus(focusNode);
             if(text=='Height (ft. in.)'){
-//focusNode.unfocus();
+              //focusNode.unfocus();
               FocusScope.of(context).requestFocus(FocusNode());
               showDialog(
                   barrierDismissible: false,
@@ -233,6 +257,7 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: SizedBox(
 
+
                                       height: 35,
                                       width: 85,
                                       child: RaisedButton(
@@ -248,6 +273,7 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
                                   Padding(
                                     padding: const EdgeInsets.only(right: 8.0),
                                     child: SizedBox(
+
 
                                       height: 35,
                                       width: 85,
@@ -281,6 +307,7 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
   Widget btnContinue() {
     return SizedBox(
 
+
       height: 45,
       width: double.infinity,
       child: CustomRaisedButton(
@@ -290,10 +317,104 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
         backgroundColor:GlobalColors.firstColor,
         borderWith: 0,
         action: (){
-// validateFields();
+          // validateFields();
+          Map<String, dynamic> body;
+          if (widget.email == null || widget.email == ""){
+            if (emailTF.text.isNotEmpty){
+              if (dobTF.text.isNotEmpty){
+                if (heightTF.text.isNotEmpty){
+                  if (selectedradio == 0){
+                    GFunction.showError("Select gender", context);
+                  }else{
+                    islaoding = true;
+                    setState(() {});
+                    body = {
+                      'first_name': widget.firstName,
+                      'last_name': widget.lastName,
+                      'email' : emailTF.text,
+                      'dob':dobTF.text,
+                      'height':heightTF.text,
+                      'gender' : selectedradio.toString()
+                    };
+                    SignUpUser(body);
+                  }
+                }else{
+                  GFunction.showError("Enter Height", context);
+                }
+              }else{
+                GFunction.showError("Enter Date of birth", context);
+              }
+
+            }else{
+              GFunction.showError("Enter Email", context);
+            }
+          }else{
+            if (dobTF.text.isNotEmpty){
+              if (heightTF.text.isNotEmpty){
+                var lst = heightTF.text.replaceAll('\"', "");
+                var ht = lst.replaceAll("\'",".");
+                if (selectedradio == 0){
+                  GFunction.showError("Select gender", context);
+                }else{
+                  islaoding = true;
+                  setState(() {});
+                  body = {
+                    'first_name': widget.firstName,
+                    'last_name': widget.lastName,
+                    'dob':dobTF.text,
+                    'height':ht,
+                    'gender' : selectedradio.toString()
+                  };
+                  SignUpUser(body);
+                }
+              }else{
+                GFunction.showError("Enter Height", context);
+              }
+            }else{
+              GFunction.showError("Enter Date of birth", context);
+            }
+          }
+
         },
       ),
     );
+  }
+
+  void SignUpUser(Map<String, dynamic> body ){
+    print(body);
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.updateProfile,body: body,isFormData: false).then(
+              (response) async{
+
+            var res = response as http.Response;
+            if (res.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(res.body);
+              if(responseJson.containsKey('success')){
+                await prf.set(UserSession.signUp,true);
+                UserSession.isSignup = await prf.getBy(UserSession.signUp);
+                islaoding = false;
+                setState(() {});
+                 Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
+              }else{
+                print("Oh no response");
+              }
+
+            }else if (res.statusCode == 401){
+              islaoding = false;
+              setState(() {});
+              GFunction.showError(jsonDecode(res.body)["error"].toString(), context);
+            }else{
+              islaoding = false;
+              setState(() {});
+              GFunction.showError(res.reasonPhrase.toString(), context);
+            }
+
+          });
+    } on FetchDataException catch(e) {
+      setState(() {
+
+      });
+    }
   }
 
 }

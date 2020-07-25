@@ -21,7 +21,7 @@ import 'package:lovedebate/Utils/Globals/UserSession.dart';
 
 class OnBoardingDialogBox extends StatefulWidget {
 
-  Success Question;
+  OnBoardingDataModel Question;
   List<CheckBoxDataModel> questionsCheckBox;
   OnBoardingDialogBox({this.Question,this.questionsCheckBox});
   @override
@@ -94,7 +94,7 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
       ),
     );
   }
-  Container OnBoardingDropDownList(double totalDialogWidth ,double width,Success Question,List<CheckBoxDataModel> questionsCheckBox) {
+  Container OnBoardingDropDownList(double totalDialogWidth ,double width,OnBoardingDataModel Question,List<CheckBoxDataModel> questionsCheckBox) {
     return Container(
       //height: totalDialogWidth,
       child: Column(

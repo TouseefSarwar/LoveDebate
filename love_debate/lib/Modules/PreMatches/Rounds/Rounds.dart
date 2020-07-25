@@ -1,17 +1,25 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lovedebate/Models/OnBoardingModel.dart';
 import 'package:lovedebate/Modules/Matched/Matched.dart';
+import 'package:lovedebate/Utils/Constants/WebService.dart';
+import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
+import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
+import 'package:lovedebate/Utils/Controllers/Loader.dart';
 import 'package:lovedebate/Utils/Globals/Colors.dart';
 import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
 import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
 import 'package:lovedebate/Utils/Globals/Fonts.dart';
-
+import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
 import 'SubViews/RoundsDataModelClass.dart';
 
 class Rounds extends StatefulWidget {
+  String catId;
+  Rounds({this.catId});
   @override
   _RoundsState createState() => _RoundsState();
 }
@@ -22,29 +30,36 @@ class _RoundsState extends State<Rounds> {
   bool isActiveRd1=true;
   bool isActiveRd2=false;
   bool isActiveRd3=false;
-
   bool done=false;
-
   int accept=0;
-
   bool status=false;
-
-
+  int apiCall = 0;
   var chatList=[
     RoundsDataModelClass(isMe: 1.0,answerText: "What is your name"),
   ];
 
+  List<OnBoardingDataModel> roundsQuestion = List<OnBoardingDataModel>();
 
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    apiCall =1;
+    setState(() {
+      getRoundsQuestion();
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    double _height=(MediaQuery.of(context).size.height-MediaQuery.of(context).padding.vertical)-(AppBar().preferredSize.height);
+    double _height=(MediaQuery.of(context).size.height) -(AppBar().preferredSize.height);
     double _width=MediaQuery.of(context).size.width;
 
 
     double isMe=0;
-    double Somebody=0;
     double roundsNo=0;
     double pixelRatio = MediaQuery
         .of(context)
@@ -53,7 +68,6 @@ class _RoundsState extends State<Rounds> {
 
     BubbleStyle styleSomebody = BubbleStyle(
       nip: BubbleNip.no,
-//color:Color(0xffF1F1F1),
       color: Colors.white,
       elevation: 1 * px,
       margin: BubbleEdges.only(top: 8, right: 50),
@@ -61,7 +75,6 @@ class _RoundsState extends State<Rounds> {
     );
     BubbleStyle styleMe = BubbleStyle(
       nip: BubbleNip.no,
-//color:Color(0xffF1F1F1),
       elevation: 1 * px,
       margin: BubbleEdges.only(top: 8.0, left: 50.0),
       alignment: Alignment.topRight,
@@ -74,11 +87,14 @@ class _RoundsState extends State<Rounds> {
 
     return Scaffold(
       appBar: CustomAppbar.setNavigation("Rounds"),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            _steps(_height,_width,isMe,styleSomebody,styleMe,txtAnswerFocusNode,txtAnswerController,context,roundsNo)
-          ],
+      body: SafeArea(
+        bottom: false,
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              _steps(_height,_width,isMe,styleSomebody,styleMe,txtAnswerFocusNode,txtAnswerController,context,roundsNo)
+            ],
+          ),
         ),
       ),
     );
@@ -86,10 +102,8 @@ class _RoundsState extends State<Rounds> {
 
   Widget _steps(double height,double width,double isMe, BubbleStyle styleSomebody, BubbleStyle styleMe, FocusNode txtEmailFocusNode, TextEditingController txtEmailController, BuildContext context,double roundsNo) => Container(
 
-//margin: EdgeInsets.only(top: 10),
     height: height,
     color: Colors.white,
-
     child: Theme(
       data: ThemeData(
 
@@ -123,9 +137,6 @@ class _RoundsState extends State<Rounds> {
         currentStep: _index,
         onStepTapped: (index){
           setState(() {
-            if(_index==index){
-              _index++;
-            }
           });
         },
         controlsBuilder: (BuildContext context, {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
@@ -144,98 +155,84 @@ class _RoundsState extends State<Rounds> {
     ),
   );
 
-  Material RoundsItemWidget(double _height, double _width, double isMe, BubbleStyle styleSomebody, BubbleStyle styleMe, FocusNode txtEmailFocusNode, TextEditingController txtEmailController, BuildContext context,double roundsNo) {
+  Material RoundsItemWidget(double _height, double _width, double isMe, BubbleStyle styleSomebody, BubbleStyle styleMe, FocusNode txtAnswerFN, TextEditingController txtAnswerTF, BuildContext context,double roundsNo) {
     return Material(
       elevation: 0,
       borderOnForeground: true,
-      child: Container(
+      child: (apiCall == 0)?Container(
 //color: Colors.cyan,
-        height: _height,
+        height: _height - AppBar().preferredSize.height - MediaQuery.of(context).padding.vertical,
         decoration: BoxDecoration(
             color: Color(0xffF1F1F1),
+//            color: Colors.white,
             border: Border.all(color: Colors.grey),
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(20.0),
               topLeft: Radius.circular(20.0),
             )
         ),
-        child: Column(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
 //mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
+            children: <Widget>[
 // Divider(thickness: 1,),
-            SizedBox(height: 24,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-//height: (10 / 100) * _height,
-                  height: 70,
-//color: Colors.deepPurple,
-                  margin: EdgeInsets.all(8),
-                  child: RoundUserItem(Color(0xffa1c4fd ),Color(0xffc2e9fb),0),
-                ),
-                Container(
-//height: (10 / 100) * _height,
-                  height: 70,
-//color: Colors.blueGrey,
-                  margin: EdgeInsets.all(8),
-                  child: RoundUserItem(Color(0xffffecd2),Color(0xfffcb69f),1),
-                ),
-              ],
-            ),
-            Container(
-//height: (10 / 100) * _height,
-              height: 70,
-              width: _width,
-// color: Colors.grey,
-              child: Text(
-                "What are your Hobbies ?", style: TextStyle(fontSize: 24,fontWeight:FontWeight.bold ),
+              SizedBox(height: 24,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    height: 70,
+                    child: RoundUserItem(Color(0xffa1c4fd ),Color(0xffc2e9fb),0),
+                  ),
+                  Container(
+                    height: 70,
+                    child: RoundUserItem(Color(0xffffecd2),Color(0xfffcb69f),1),
+                  ),
+                ],
+              ),
+              SizedBox(height: 12,),
+              Text(
+                roundsQuestion[_index].qaQuestion, style: TextStyle(fontSize: 21,fontWeight:FontWeight.bold,),
                 textAlign: TextAlign.center,),
-            ),
-            Container(
-              height: _height-350,
-//height: (35/100)*_height,
-// color: Colors.pink,
-//width: _width,
-              child: ListView.builder(
-                  itemCount: chatList.length,
-                  itemBuilder:(BuildContext context,int index){
-                    return ChatItem((chatList[index].isMe!=1)?styleSomebody:styleMe,chatList[index].answerText,chatList[index].isMe.toDouble());
-                  }),
-            ),
-            (done==false)?Container(
-              height: 45,
-              margin: EdgeInsets.all(8),
-              color: Colors.white,
-// decoration: BoxDecoration(
-// //color: Color(0xffE0E0E0),
-// color: Colors.white,
-// border: Border.all(
-// width: 1.0,
-// color: Colors.grey
-// ),
-// borderRadius: BorderRadius.all(
-// Radius.circular(22.0) // <--- border radius here
-// ),
-// ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              SizedBox(height: 12,),
+
+              // Ider kisi or ka answer
+
+
+
+              // Accept decline Button
+              // Ider apna answer
+
+              Expanded(
+                child: Container(
+                  child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                      itemCount: chatList.length,
+                      itemBuilder:(BuildContext context,int index){
+                        return ChatItem((chatList[index].isMe!=1)?styleSomebody:styleMe,chatList[index].answerText,chatList[index].isMe.toDouble());
+                      }),
+                ),
+              ),
+              (done==false)?Container(
+                height: 45,
+                margin: EdgeInsets.all(8),
+                color: Colors.white,
                 child: Row(
                   children: <Widget>[
                     Expanded(
                       child:UnderLineTextField(
-                        focusNode: txtEmailFocusNode,
-                        txtHint: "Your answer",
+                        focusNode: txtAnswerFN,
+                        txtHint: " Your answer",
                         isSecure: false,
                         keyboardType: TextInputType.emailAddress,
                         enableBorderColor: Colors.white,
                         focusBorderColor: Colors.white,
                         textColor: Colors.black,
-                        txtController: txtEmailController,
+                        txtController: txtAnswerTF,
                         onTapFunc: () {
                           setState(() {
-
-                            FocusScope.of(context).requestFocus(txtEmailFocusNode);
+                            FocusScope.of(context).requestFocus(txtAnswerFN);
                           });
                         },
                       ),
@@ -244,40 +241,44 @@ class _RoundsState extends State<Rounds> {
                     InkWell(
                         onTap: (){
                           setState(() {
-                            done=true;
-                            chatList.add(RoundsDataModelClass(isMe: 0.0,answerText: txtEmailController.text));
+                            if(txtAnswerTF.text.isEmpty){
+                              GFunction.showError("Write your answer", context);
+                            }else{
+                              done=true;
+                              chatList.add(RoundsDataModelClass(isMe: 0.0,answerText: txtAnswerTF.text));
+                            }
+
                           });
                         },
                         child: Icon(Icons.send,color: GlobalColors.firstColor,))
                   ],
                 ),
+              ):Container(
+                width: double.infinity,
+                decoration:BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(22.5))
+                ),
+                child: (_index == 2) ? Container():btnRounds("Next",1),
               ),
-            ):Container(
-              width: double.infinity,
-              decoration:BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(22.5))
-              ),
-              child: btnRounds("Next",1),
-            ),
-            (roundsNo==3)?Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                RoundsButton("Connect with user",GlobalColors.firstColor,),
-                RoundsButton("Start Again",GlobalColors.firstColor,),
-              ],
-            ):Container(),
+              (roundsNo==3)?Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  RoundsButton("Connect with user",GlobalColors.firstColor,),
+                  RoundsButton("Start Again",GlobalColors.firstColor,),
+                ],
+              ):Container(),
 // Divider(thickness: 1,)
-          ],
+            ],
+          ),
         ),
 
-      ),
+      ):Center(child: Loading(),),
     );
   }
   Widget btnRounds(String text,double round) {
     return Container(
       height: 50,
       margin: EdgeInsets.all(8),
-//width: double.infinity,
       child: CustomRaisedButton(
         buttonText: text,
         cornerRadius: 5,
@@ -288,6 +289,7 @@ class _RoundsState extends State<Rounds> {
           setState(() {
             done=false;
             chatList.clear();
+            print("heerree1");
             if(_index<3){
               _index++;
             }
@@ -319,16 +321,11 @@ class _RoundsState extends State<Rounds> {
       ),
     );
   }
+
   Container RoundUserItem(Color colorA,Color colorB,double user) {
-// return CircleAvatar(
-// radius: 28,
-// backgroundColor: color,
-// child: Text("HA"),
-// );
     return Container(
       height: 40,
       width: 100,
-//color: color,
       decoration:BoxDecoration(
         gradient: LinearGradient(
             begin: Alignment.topRight,
@@ -348,10 +345,11 @@ class _RoundsState extends State<Rounds> {
       child: Center(child: Text("HA",style: TextStyle(fontSize: 18),)),
     );
   }
+
   Container ChatItem(BubbleStyle style, String text,double isMe) {
     return Container(
-      height: (isMe!=0)?140:80,
-//width:200,
+//      height: (isMe!=0)?140:80,
+      width: double.infinity,
 //color: Colors.,
       child: Column(
 //mainAxisSize: MainAxisSize.min,
@@ -363,12 +361,15 @@ class _RoundsState extends State<Rounds> {
               children: <Widget>[
                 Row(
                   mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    Text(text,style: TextStyle(fontSize: GlobalFont.textFontSize),),
+                    Expanded(
+                        child: Text(
+                          text,
+                          style: TextStyle(fontSize: GlobalFont.textFontSize),
+                          overflow: TextOverflow.ellipsis,
+                        )
+                    ),
                     SizedBox(width: 6,),
-// (accept==1)?Text("Accept",style: TextStyle(fontSize: 10),):Text("Reject",style: TextStyle(fontSize: 10),)
                   ],
                 ),
 
@@ -410,7 +411,6 @@ class _RoundsState extends State<Rounds> {
                           setState(() {
                             accept=2;
                             status=true;
-
                           });
                         },
                         child: Icon(Icons.clear,color: Colors.white,size: 34,))):Container(),
@@ -437,26 +437,67 @@ class _RoundsState extends State<Rounds> {
   }
 
   Widget answerTextField( FocusNode focusNode, TextEditingController txtFeild,String text ,bool isSecure, TextInputType keyboardType ) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: UnderLineTextField(
-        focusNode: focusNode,
-        txtHint: text,
-        isSecure: isSecure,
-        keyboardType: keyboardType,
+    return UnderLineTextField(
+      focusNode: focusNode,
+      txtHint: text,
+      isSecure: isSecure,
+      keyboardType: keyboardType,
 // enableBorderColor: Colors.white,
-        focusBorderColor: Colors.grey,
-        textColor: Colors.black,
-        txtController: txtFeild,
-        onTapFunc: () {
-          setState(() {
-            FocusScope.of(context).requestFocus(FocusNode());
+      focusBorderColor: Colors.grey,
+      textColor: Colors.black,
+      txtController: txtFeild,
+      onTapFunc: () {
+        setState(() {
+          FocusScope.of(context).requestFocus(FocusNode());
 
-          });
-        },
-      ),
+        });
+      },
     );
   }
+
+  ///API Call
+  void getRoundsQuestion(){
+    Map<String, dynamic> body = {
+    };
+
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: false, url: WebService.rounds+"/${widget.catId}",body: body,isFormData: false).then(
+              (response) async{
+
+            var res = response as http.Response;
+            if (res.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(res.body);
+              if(responseJson.containsKey('success')){
+                responseJson["success"].forEach((v) {
+                  roundsQuestion.add(OnBoardingDataModel.fromJson(v));
+                });
+                apiCall = 0;
+                setState(() {});
+
+              }else{
+                apiCall = 0;
+                setState(() {});
+                print("Oh no response");
+              }
+            }else if (res.statusCode == 401){
+              apiCall = 0;
+              setState(() {});
+              Map<String, dynamic> err = json.decode(res.body);
+              GFunction.showError(err['error'].toString(), context);
+            }else{
+              apiCall = 0;
+              setState(() {});
+              GFunction.showError(res.reasonPhrase.toString(), context);
+            }
+          });
+    } on FetchDataException catch(e) {
+      apiCall = 0;
+      setState(() {});
+      GFunction.showError(e.toString(), context);
+    }
+  }
+
+
 
 }
 

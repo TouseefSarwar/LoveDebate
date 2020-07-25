@@ -1,4 +1,6 @@
 
+import 'package:lovedebate/Models/UserDetailModel.dart';
+
 class UserSession{
   static String token = "";
   static String email = "";
@@ -7,5 +9,6 @@ class UserSession{
   static String question = "question";
   static String answers = "answers";
   static bool isSignup = false;
+  static UserDetail userData = UserDetail();
 
 }

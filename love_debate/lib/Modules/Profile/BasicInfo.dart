@@ -157,6 +157,7 @@
 import 'dart:convert';
 
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:lovedebate/Models/LoginModel.dart';
 import 'package:lovedebate/Models/UserDetailModel.dart';
 import 'package:lovedebate/Modules/LoginSignup/HeightDialogBox.dart';
 import 'package:lovedebate/Modules/Preferences/GooglePlaces.dart';
@@ -175,6 +176,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
+import 'package:lovedebate/Utils/Globals/UserSession.dart';
 import 'dart:math';
 import '../../Utils/Controllers/AppExceptions.dart';
 import 'package:http/http.dart' as http;
@@ -184,10 +186,8 @@ const kGoogleApiKey = "AIzaSyDkrmNt7yLpSO4JA9k7JdzVmX3KQrvvyzg";
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 
 class BasicInfo extends StatefulWidget {
-  UserDetail userData;
 
 
-  BasicInfo({this.userData});
   @override
   _BasicInfoState createState() => _BasicInfoState();
 }
@@ -227,12 +227,12 @@ class _BasicInfoState extends State<BasicInfo> {
   void initState() {
     super.initState();
     selectedradio=0;
-    fnameTF.text = widget.userData.firstName;
-    lnameTF.text = widget.userData.lastName;
-    heightTF.text = widget.userData.height;
-    dobTF.text = widget.userData.dob;
-    addressTF.text = widget.userData.city +", "+widget.userData.state;
-    selectedradio = int.parse(widget.userData.gender);
+    fnameTF.text = UserSession.userData.firstName;
+    lnameTF.text = UserSession.userData.lastName;
+    heightTF.text = UserSession.userData.height;
+    dobTF.text = UserSession.userData.dob;
+    addressTF.text = UserSession.userData.city +", "+UserSession.userData.state;
+    selectedradio = int.parse(UserSession.userData.gender);
 
   }
 
@@ -250,19 +250,14 @@ class _BasicInfoState extends State<BasicInfo> {
         initialDate: selectedDate,
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101));
-//if (picked != null && picked != selectedDate)
     setState(() {
       DateTime now = DateTime.now();
       String limit=DateFormat("yyyy-MM-dd").format(now);
-      print("Today"+limit);
       selectedDate = picked;
       final selected=DateFormat("yyyy-MM-dd").format(selectedDate);
-//dobTF.text=selected;
       final difference=DateTime.now().difference(picked).inDays;
-      print("Diffderence "+difference.toString());
       if(!difference.isNegative){
         dobTF.text=selected;
-        print(dobTF.text);
       }
       else{
         dobTF.text=" ";
@@ -486,7 +481,9 @@ class _BasicInfoState extends State<BasicInfo> {
         backgroundColor:GlobalColors.firstColor,
         borderWith: 0,
         action: (){
+          apiCall = 1;
           setState(() {
+
             updateProfile();
 // Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
           });
@@ -517,20 +514,37 @@ class _BasicInfoState extends State<BasicInfo> {
               Map<String, dynamic> responseJson = json.decode(res.body);
               if(responseJson.containsKey('success')){
                 print("SuccesFully Updated.");
+                UserSession.userData.firstName = fnameTF.text;
+                UserSession.userData.lastName = lnameTF.text;
+                UserSession.userData.city = val['city'];
+                UserSession.userData.city = val['state'];
+                UserSession.userData.city = val['formatted_address'];
+                UserSession.userData.city = val['lat'];
+                UserSession.userData.city = val['lng'];
+                UserSession.userData.dob = dobTF.text;
+                UserSession.userData.height = heightTF.text;
+
+                apiCall =0;
+                setState(() {});
               }else{
+                apiCall =0;
+                setState(() {});
                 print("Oh no response");
               }
 
             }else if (res.statusCode == 401){
+              apiCall =0;
+              setState(() {});
               Toast.show(res.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
             }else{
+              apiCall =0;
+              setState(() {});
               Toast.show(res.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
             }
           });
     } on FetchDataException catch(e) {
-      setState(() {
-
-      });
+      apiCall =0;
+      setState(() {});
     }
   }
 

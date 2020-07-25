@@ -16,6 +16,8 @@ class WebService{
   static var updateProfile = "update_profile";
   static var updatePassword = "update_password";
   static var logout = "logout";
+  static var roundCategories = "categories/1";
+
 
 
 }

@@ -76,8 +76,8 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
             Map<String, dynamic> responseJson = json.decode(await prf.getBy(UserSession.question));
             AnswersGlobal.questions.clear();
             responseJson["success"].forEach((v) {
-            Success item = Success.fromJson(v);
-            AnswersGlobal.questions.add(Success.fromJson(v));
+            OnBoardingDataModel item = OnBoardingDataModel.fromJson(v);
+            AnswersGlobal.questions.add(OnBoardingDataModel.fromJson(v));
             });
             AnswersGlobal.questions.forEach((element) {
             print(element.qaAns);
@@ -221,7 +221,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
     );
   }
 
-  Card QuestionsContainer(double _height, double _width, FocusNode txtEmailFocusNode, TextEditingController txtAnswerController, BuildContext context,String questiontext,int _questionType,String fieldtype,Success QuestionObj,) {
+  Card QuestionsContainer(double _height, double _width, FocusNode txtEmailFocusNode, TextEditingController txtAnswerController, BuildContext context,String questiontext,int _questionType,String fieldtype,OnBoardingDataModel QuestionObj,) {
     return Card(
       margin: const EdgeInsets.all(8),
       elevation:  5,
@@ -263,7 +263,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
     );
   }
 
-  InkWell AnswerContainer(double _width,String answerText,Success QuestionObj,) {
+  InkWell AnswerContainer(double _width,String answerText,OnBoardingDataModel QuestionObj,) {
     return InkWell(
       onTap: (){
         setState(() {
@@ -350,12 +350,12 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
     try {
       ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: false, url: WebService.onboardingApi,body: body,isFormData: true).then(
               (response) async {
-            var data = List<Success>();
+            var data = List<OnBoardingDataModel>();
             if (response.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(response.body);
               if(responseJson.containsKey('success')) {
                 responseJson['success'].forEach((v) {
-                  data.add(Success.fromJson(v));
+                  data.add(OnBoardingDataModel.fromJson(v));
                 });
                 AnswersGlobal.questions = data;
                 FetchUserAnswers();
@@ -726,7 +726,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
   }
 
   ///additional
-  callOnBoardingSubOptions(String webserviceUrl, Success question) {
+  callOnBoardingSubOptions(String webserviceUrl, OnBoardingDataModel question) {
     Map<String, dynamic> body = {
     };
     try {
@@ -821,6 +821,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
   saveAnswers() {
     Map<String, dynamic> body = {
       'answers' : AnswersGlobal.answers,
+      'profile_completion_status' : "1",
     };
     try {
       ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.answers,body: body,isFormData: false).then(
@@ -969,7 +970,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
 ///Questions Stateless widget
 class PreferenceQuestion extends StatelessWidget {
 
-  Success ques;
+  OnBoardingDataModel ques;
   VoidCallback action;
   Text ans;
   PreferenceQuestion({this.ques, this.action, this.ans});

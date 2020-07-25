@@ -4,6 +4,6 @@ import 'package:lovedebate/Models/OnBoardingModel.dart';
 
 class AnswersGlobal{
   static List<AnswersModel> answers =  List<AnswersModel>();
-  static List<Success> questions =  List<Success>();
+  static List<OnBoardingDataModel> questions =  List<OnBoardingDataModel>();
   static int questionIndex = -1;
 }

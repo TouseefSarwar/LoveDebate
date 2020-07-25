@@ -26,7 +26,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   SharedPref prf = SharedPref();
   bool loading = false;
-  UserDetail data = UserDetail();
+
   String image='images/conor.jpg';
 
   @override
@@ -80,7 +80,7 @@ class _ProfileState extends State<Profile> {
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: Text(
-                          (data != null) ?data.firstName+" "+data.lastName : "",
+                          (UserSession.userData != null) ?UserSession.userData.firstName+" "+UserSession.userData.lastName : "",
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
@@ -89,10 +89,12 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
+
                     Positioned(
                       top: ((30/100)*height) / 2 - 70,
                       left: width / 2 - 60,
                       child: Container(
+                        alignment: Alignment.center,
                         height: 120,
                         width: 120,
                         decoration: BoxDecoration(
@@ -119,9 +121,6 @@ class _ProfileState extends State<Profile> {
                                   return CameraDialog();
                                 }
                             ).then((value){
-//image="";
-                              print(value);
-//image=value;
                               var img=value;
                               print(img);
                             });
@@ -158,13 +157,13 @@ class _ProfileState extends State<Profile> {
       onTap: (){
           switch(screenNo){
             case 1:
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo(userData: data,)));
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
               break;
             case 2:
 //              Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
               break;
             case 3:
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => GeneralSettings(userData: data,)));
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => GeneralSettings()));
               break;
             case 4:
 //              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
@@ -273,7 +272,8 @@ class _ProfileState extends State<Profile> {
             if (response.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(response.body);
               if(responseJson.containsKey('success')) {
-                data = UserDetail.fromJson(responseJson["success"]);
+                UserSession.userData = null;
+                UserSession.userData = UserDetail.fromJson(responseJson["success"]);
                 loading =false;
                 setState(() {});
               } else{
