@@ -523,7 +523,6 @@ class _BasicInfoState extends State<BasicInfo> {
                 UserSession.userData.city = val['lng'];
                 UserSession.userData.dob = dobTF.text;
                 UserSession.userData.height = heightTF.text;
-
                 apiCall =0;
                 setState(() {});
               }else{

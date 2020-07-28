@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lovedebate/Models/LoginModel.dart';
+import 'package:lovedebate/Modules/LoginSignup/SocialSignUpInfo.dart';
 import 'package:lovedebate/Utils/Constants/SharedPref.dart';
 import 'Modules/LoginSignup/Login.dart';
 import 'package:lovedebate/Screens/SplashScreen.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/Login': (BuildContext context) =>  Login(),
         '/TabBarControllerPage' : (BuildContext context) => TabBarControllerPage(),
+        '/SocialSignUp' : (BuildContext context) => SocialSignUpForm(),
       }
 
     );

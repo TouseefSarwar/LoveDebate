@@ -13,6 +13,7 @@ import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
 import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
 import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
 import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
+import 'package:lovedebate/Utils/Globals/UserSession.dart';
 
 
 class GeneralSettings extends StatefulWidget {
@@ -41,7 +42,12 @@ class _GeneralSettingsState extends State<GeneralSettings> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    emailTF.text = widget.userData.email;
+    if (UserSession.userData.email!= null){
+      emailTF.text = UserSession.userData.email;
+    }else{
+      emailTF.text = "";
+    }
+
   }
 
 

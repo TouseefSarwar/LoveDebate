@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:lovedebate/Models/LoginModel.dart';
 import 'package:lovedebate/Utils/Constants/SharedPref.dart';
@@ -208,7 +209,9 @@ class _LoginState extends State<Login> {
                 await prf.remove(UserSession.answers);
                 await prf.remove(UserSession.question);
                 apiCall =0;
-                Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+                Navigator.of(context).pushReplacementNamed('/TabBarControllerPage');
+//                Navigator.pop(context,CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+//                Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
 
               }else{
                 apiCall =0;

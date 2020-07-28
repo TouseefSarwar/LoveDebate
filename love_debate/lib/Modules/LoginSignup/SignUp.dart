@@ -275,7 +275,6 @@ class _SignUpState extends State<SignUp> {
             };
           }
 
-
           SocialSignUp(body);
           break;
         case FacebookLoginStatus.cancelledByUser:

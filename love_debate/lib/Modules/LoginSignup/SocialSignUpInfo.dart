@@ -381,7 +381,7 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
   }
 
   void SignUpUser(Map<String, dynamic> body ){
-    print(body);
+
     try {
       ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.updateProfile,body: body,isFormData: false).then(
               (response) async{
@@ -390,7 +390,6 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
             if (res.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(res.body);
               if(responseJson.containsKey('success')){
-
                 await prf.set(UserSession.signUp,true);
                 UserSession.isSignup = await prf.getBy(UserSession.signUp);
                 islaoding = false;

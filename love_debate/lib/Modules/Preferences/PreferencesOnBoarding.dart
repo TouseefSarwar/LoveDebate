@@ -818,7 +818,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
   }
 
 ///Save Answers.
-  saveAnswers() {
+  saveAnswers(){
     Map<String, dynamic> body = {
       'answers' : AnswersGlobal.answers,
       'profile_completion_status' : "1",
