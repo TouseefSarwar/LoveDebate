@@ -16,17 +16,17 @@ class _CameraDialogState extends State<CameraDialog> {
 
   ImagePicker _picker;
   var picture;
-  openCamera()async{
-    picture = await ImagePicker.pickImage(
-      source: ImageSource.camera,
-    );
-  }
-  openGallery() async{
-    picture = await ImagePicker.pickImage(
-      source: ImageSource.gallery,
-    );
-    print(picture);
-  }
+//  openCamera()async{
+//    picture = await ImagePicker.pickImage(
+//      source: ImageSource.camera,
+//    );
+//  }
+//  openGallery() async{
+//    picture = await ImagePicker.pickImage(
+//      source: ImageSource.gallery,
+//    );
+//    print(picture);
+//  }
 //  File _image;
 //  final picker = ImagePicker();
 //
@@ -64,7 +64,7 @@ class _CameraDialogState extends State<CameraDialog> {
                 InkWell(
                   onTap: (){
                     setState(() {
-                      openCamera();
+//                      openCamera();
 
                       Navigator.pop(context,picture);
 
@@ -82,7 +82,7 @@ class _CameraDialogState extends State<CameraDialog> {
                 InkWell(
                   onTap: (){
                     setState(() {
-                      openGallery();
+//                      openGallery();
                       Navigator.pop(context,picture);
                     });
                   },
