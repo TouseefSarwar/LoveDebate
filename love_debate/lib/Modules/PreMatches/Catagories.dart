@@ -1,9 +1,7 @@
 
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:lovedebate/Models/CategoryModel.dart';
-import 'package:lovedebate/Models/OnBoardingModel.dart';
 import 'package:lovedebate/Models/PreMatches.dart';
 import 'package:lovedebate/Utils/Constants/WebService.dart';
 import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
@@ -54,19 +52,6 @@ class _CatagoriesState extends State<Catagories> {
             return CatagoryItem(catData[index], context);
           },
         ):Center(child: Loading(),),
-
-//        child: ListView(
-//            children: <Widget>[
-//              CatagoryItem('Kids',context),
-//              CatagoryItem("Hobbies",context),
-//              CatagoryItem("Preferences",context),
-//              CatagoryItem("Family",context),
-//              CatagoryItem("Home Town",context),
-//              CatagoryItem("Job",context),
-//              CatagoryItem("Future ",context),
-//            ],
-//
-//        ),
       ),
     );
   }

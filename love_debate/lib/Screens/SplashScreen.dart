@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // TODO: implement initState
     super.initState();
 
-    getMessage();
+//    getMessage();
     startTime();
   }
 
@@ -50,6 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
     });
     _firebaseMessaging.getToken().then((token) => print(token));
   }
+
   startTime() async {
     var _duration = new Duration(seconds: 3);
     return new Timer(_duration, navigationPage);
