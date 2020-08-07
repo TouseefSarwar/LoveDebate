@@ -1,6 +1,6 @@
 
-import 'package:lovedebate/Models/AnswersModel.dart';
-import 'package:lovedebate/Models/OnBoardingModel.dart';
+import 'package:app_push_notifications/Models/AnswersModel.dart';
+import 'package:app_push_notifications/Models/OnBoardingModel.dart';
 
 class AnswersGlobal{
   static List<AnswersModel> answers =  List<AnswersModel>();

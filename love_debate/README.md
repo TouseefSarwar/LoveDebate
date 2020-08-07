@@ -1,4 +1,4 @@
-# lovedebate
+# app_push_notifications
 
 A new Flutter application.
 

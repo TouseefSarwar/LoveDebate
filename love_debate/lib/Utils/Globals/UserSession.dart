@@ -1,5 +1,5 @@
 
-import 'package:lovedebate/Models/UserDetailModel.dart';
+import 'package:app_push_notifications/Models/UserDetailModel.dart';
 
 class UserSession{
   static String token = "";

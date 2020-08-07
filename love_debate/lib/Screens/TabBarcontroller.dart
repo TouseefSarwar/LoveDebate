@@ -1,12 +1,12 @@
-import 'package:lovedebate/Modules/Preferences/PreferencesOnBoarding.dart';
-import 'package:lovedebate/Modules/Profile/Profile.dart';
-import 'package:lovedebate/Modules/Matched/Matched.dart';
-import 'package:lovedebate/Modules/Profile/MyPreferences.dart';
-import 'package:lovedebate/Modules/PreMatches/PreMatches.dart';
-import 'package:lovedebate/Modules/Stats/Stats.dart';
+import 'package:app_push_notifications/Modules/Preferences/PreferencesOnBoarding.dart';
+import 'package:app_push_notifications/Modules/Profile/Profile.dart';
+import 'package:app_push_notifications/Modules/Matched/Matched.dart';
+import 'package:app_push_notifications/Modules/Profile/MyPreferences.dart';
+import 'package:app_push_notifications/Modules/PreMatches/PreMatches.dart';
+import 'package:app_push_notifications/Modules/Stats/Stats.dart';
 import 'package:flutter/material.dart';
-import 'package:lovedebate/Modules/Chat/UserChatList.dart';
-import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:app_push_notifications/Modules/Chat/UserChatList.dart';
+import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 
 import '../Modules/PreMatches/Rounds/Rounds.dart';
 

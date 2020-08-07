@@ -1,7 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lovedebate/Utils/Designables/ErrorDialog.dart';
+import 'package:app_push_notifications/Utils/Designables/ErrorDialog.dart';
 
 class GFunction{
 

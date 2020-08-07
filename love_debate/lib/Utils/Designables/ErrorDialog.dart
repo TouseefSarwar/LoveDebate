@@ -2,9 +2,9 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
-import 'package:lovedebate/Utils/Globals/Colors.dart';
-import 'package:lovedebate/Utils/Globals/Fonts.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomButtons.dart';
+import 'package:app_push_notifications/Utils/Globals/Colors.dart';
+import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 
 
 //class ErrorDialog extends StatelessWidget {

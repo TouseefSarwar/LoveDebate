@@ -1,8 +1,8 @@
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:lovedebate/Utils/Constants/WebService.dart';
-import 'package:lovedebate/Utils/Globals/UserSession.dart';
+import 'package:app_push_notifications/Utils/Constants/WebService.dart';
+import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
 import 'dart:io';
 import 'AppExceptions.dart';
 class ApiBaseHelper {

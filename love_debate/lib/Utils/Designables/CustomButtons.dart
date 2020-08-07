@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lovedebate/Utils/Globals/Fonts.dart';
+import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 
 class CustomRaisedButton extends StatelessWidget {
   final String buttonText;

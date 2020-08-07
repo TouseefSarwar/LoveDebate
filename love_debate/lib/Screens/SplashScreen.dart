@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lovedebate/Utils/Constants/SharedPref.dart';
-import 'package:lovedebate/Utils/Globals/UserSession.dart';
+import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
+import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -12,45 +13,11 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  SharedPref prf = SharedPref();
+
+
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  String _message = '';
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-//    getMessage();
-    startTime();
-  }
-
-  void getMessage(){
-    if (Platform.isIOS) iOS_Permission();
-    _firebaseMessaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          print('on message $message');
-          setState(() => _message = message["notification"]["title"]);},
-        onResume: (Map<String, dynamic> message) async {
-          print('on resume $message');
-          setState(() => _message = message["notification"]["title"]);},
-        onLaunch: (Map<String, dynamic> message) async {
-          print('on launch $message');
-          setState(() => _message = message["notification"]["title"]);
-    });
-  }
-  void iOS_Permission() {
-    _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true)
-    );
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings)
-    {
-      print("Settings registered: $settings");
-    });
-    _firebaseMessaging.getToken().then((token) => print(token));
-  }
-
+  SharedPref prf = SharedPref();
   startTime() async {
     var _duration = new Duration(seconds: 3);
     return new Timer(_duration, navigationPage);
@@ -66,6 +33,48 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
   }
+
+  @override
+  void initState() {
+    super.initState();
+
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        _showItemDialog(message);
+      },
+//      onBackgroundMessage: Fcm.myBackgroundMessageHandler,
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        _showItemDialog(message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+        _showItemDialog(message);
+      },
+    );
+
+    if (Platform.isIOS) {
+      iOS_Permission();
+    }
+    _firebaseMessaging.getToken().then((String token) {
+      assert(token != null);
+      print("Push Messaging token: $token");
+    });
+
+    startTime();
+  }
+
+  void iOS_Permission() {
+    _firebaseMessaging.requestNotificationPermissions(
+        IosNotificationSettings(sound: true, badge: true, alert: true,provisional: false));
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -90,5 +99,29 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
+  }
+
+  void _showItemDialog(Map<String, dynamic> message) {
+    showDialog<bool>(
+        context: context,
+        builder: (_){
+          return AlertDialog(
+            content: Text("$message"),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('CLOSE'),
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+              ),
+              FlatButton(
+                child: const Text('SHOW'),
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+              ),
+            ],
+          );
+        });
   }
 }

@@ -4,19 +4,19 @@ import 'dart:wasm';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lovedebate/Models/AnswersModel.dart';
-import 'package:lovedebate/Models/OnBoardingModel.dart';
-import 'package:lovedebate/Utils/Constants/SharedPref.dart';
-import 'package:lovedebate/Utils/Constants/WebService.dart';
-import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
-import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
-import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
-import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
-import 'package:lovedebate/Utils/Globals/AnswersGlobals.dart';
-import 'package:lovedebate/Utils/Globals/Colors.dart';
-import 'package:lovedebate/Utils/Globals/Fonts.dart';
-import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
-import 'package:lovedebate/Utils/Globals/UserSession.dart';
+import 'package:app_push_notifications/Models/AnswersModel.dart';
+import 'package:app_push_notifications/Models/OnBoardingModel.dart';
+import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
+import 'package:app_push_notifications/Utils/Constants/WebService.dart';
+import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
+import 'package:app_push_notifications/Utils/Controllers/AppExceptions.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomButtons.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomTextFeilds.dart';
+import 'package:app_push_notifications/Utils/Globals/AnswersGlobals.dart';
+import 'package:app_push_notifications/Utils/Globals/Colors.dart';
+import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
+import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
+import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
 
 class DialogboxAddSlider extends StatefulWidget {
 

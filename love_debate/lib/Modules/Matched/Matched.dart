@@ -1,9 +1,9 @@
-import 'package:lovedebate/Models/ListModel.dart';
-import 'package:lovedebate/Screens/SubViews/RoundsListingCell.dart';
-import 'package:lovedebate/Utils/Globals/Colors.dart';
-import 'package:lovedebate/Screens/TabBarcontroller.dart';
-import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
-import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
+import 'package:app_push_notifications/Models/ListModel.dart';
+import 'package:app_push_notifications/Screens/SubViews/RoundsListingCell.dart';
+import 'package:app_push_notifications/Utils/Globals/Colors.dart';
+import 'package:app_push_notifications/Screens/TabBarcontroller.dart';
+import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomButtons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

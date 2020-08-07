@@ -1,10 +1,10 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
-import 'package:lovedebate/Models/ChatRoomModel.dart';
-import 'package:lovedebate/Utils/Globals/Colors.dart';
-import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
-import 'package:lovedebate/Utils/Globals/Fonts.dart';
-import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
+import 'package:app_push_notifications/Models/ChatRoomModel.dart';
+import 'package:app_push_notifications/Utils/Globals/Colors.dart';
+import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomTextFeilds.dart';
 
 class ChatRoom extends StatefulWidget {
   @override

@@ -1,12 +1,12 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lovedebate/Modules/Matched/Matched.dart';
-import 'package:lovedebate/Utils/Globals/Colors.dart';
-import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Modules/Matched/Matched.dart';
+import 'package:app_push_notifications/Utils/Globals/Colors.dart';
+import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
 
-import 'package:lovedebate/Utils/Designables/CustomButtons.dart';
-import 'package:lovedebate/Utils/Designables/CustomTextFeilds.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomButtons.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomTextFeilds.dart';
 
 class PreMatchesRounds extends StatefulWidget {
   @override

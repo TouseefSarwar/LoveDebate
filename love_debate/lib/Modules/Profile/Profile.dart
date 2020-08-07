@@ -1,20 +1,20 @@
 import 'dart:convert';
-import 'package:lovedebate/Models/UserDetailModel.dart';
-import 'package:lovedebate/Modules/Profile/GeneralSettings.dart';
-import 'package:lovedebate/Utils/Constants/SharedPref.dart';
-import 'package:lovedebate/Utils/Constants/WebService.dart';
-import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
-import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
-import 'package:lovedebate/Utils/Controllers/Loader.dart';
-import 'package:lovedebate/Utils/Globals/AnswersGlobals.dart';
-import 'package:lovedebate/Utils/Globals/Colors.dart';
+import 'package:app_push_notifications/Models/UserDetailModel.dart';
+import 'package:app_push_notifications/Modules/Profile/GeneralSettings.dart';
+import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
+import 'package:app_push_notifications/Utils/Constants/WebService.dart';
+import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
+import 'package:app_push_notifications/Utils/Controllers/AppExceptions.dart';
+import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
+import 'package:app_push_notifications/Utils/Globals/AnswersGlobals.dart';
+import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:lovedebate/Modules/Profile/BasicInfo.dart';
-import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
-import 'package:lovedebate/Utils/Globals/Fonts.dart';
-import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
-import 'package:lovedebate/Utils/Globals/UserSession.dart';
+import 'package:app_push_notifications/Modules/Profile/BasicInfo.dart';
+import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
+import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
+import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
 
 import 'CameraDialog.dart';
 

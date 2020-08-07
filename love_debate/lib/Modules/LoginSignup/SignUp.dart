@@ -5,25 +5,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lovedebate/Modules/LoginSignup/SocialSignUpInfo.dart';
-import 'package:lovedebate/Modules/Preferences/PreferencesOnBoarding.dart';
-import 'package:lovedebate/Screens/TabBarcontroller.dart';
-import 'package:lovedebate/Utils/Constants/SharedPref.dart';
-import 'package:lovedebate/Utils/Constants/WebService.dart';
-import 'package:lovedebate/Utils/Controllers/ApiBaseHelper.dart';
-import 'package:lovedebate/Utils/Controllers/AppExceptions.dart';
-import 'package:lovedebate/Utils/Controllers/Loader.dart';
-import 'package:lovedebate/Utils/Globals/Colors.dart';
-import 'package:lovedebate/Utils/Globals/CustomAppBar.dart';
-import 'package:lovedebate/Utils/Globals/GlobalFunctions.dart';
-import 'package:lovedebate/Utils/Globals/UserSession.dart';
+import 'package:app_push_notifications/Modules/LoginSignup/SocialSignUpInfo.dart';
+import 'package:app_push_notifications/Modules/Preferences/PreferencesOnBoarding.dart';
+import 'package:app_push_notifications/Screens/TabBarcontroller.dart';
+import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
+import 'package:app_push_notifications/Utils/Constants/WebService.dart';
+import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
+import 'package:app_push_notifications/Utils/Controllers/AppExceptions.dart';
+import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
+import 'package:app_push_notifications/Utils/Globals/Colors.dart';
+import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
+import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
 import '../../Utils/Globals/Fonts.dart';
 import 'SUPersonalInfo.dart';
 
 
 class SignUp extends StatefulWidget {
   @override
-  _SignUpState createState() => _SignUpState();
+  _SignUpState createState() => _SignUpState(); 
 }
 
 class _SignUpState extends State<SignUp> {
@@ -38,7 +38,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     double _height=MediaQuery.of(context).size.height;
-    double _width=MediaQuery.of(context).size.width;
+    double _width=MediaQuery.of(context).size.width; 
 
     double _signupButtonwidth=_width/0.75;
     double _signupButtonHeight=_height/1.4;
@@ -206,7 +206,7 @@ class _SignUpState extends State<SignUp> {
   Future<Null> _faceBooklogin() async {
 //
     final facebookLogin = FacebookLogin();
-
+    facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
     final _result = await facebookLogin.logIn(['email','public_profile',]);
     final token = _result.accessToken.token;
     if (token == null){
@@ -215,9 +215,6 @@ class _SignUpState extends State<SignUp> {
 
       final graphResponse = await http.get(
           'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
-//    final graphResponse = await http.get(
-//        'https://graph.facebook.com/v2.12/me?&access_token=${token}');
-      // final graph=await
       final profile = jsonDecode(graphResponse.body);
       print(jsonDecode(graphResponse.body));
       switch (_result.status) {
