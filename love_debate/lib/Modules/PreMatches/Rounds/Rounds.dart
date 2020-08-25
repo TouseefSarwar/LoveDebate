@@ -41,12 +41,8 @@ class _RoundsState extends State<Rounds> {
   RoundsModel roundsQuestion;
   int currentIndex = 0;
   int apiCall = 0;
-
   var check = "";
-
-
   String myName = "";
-
 
   @override
   void initState() {

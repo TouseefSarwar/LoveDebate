@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:app_push_notifications/Modules/PreMatches/Rounds/Rounds.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
 import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -17,7 +19,15 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   bool count = false;
+  //Firebase Notificaiton...
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  //Local Notificaiton...
+
+  FlutterLocalNotificationsPlugin pluginFLN = new FlutterLocalNotificationsPlugin();
+  var initializeSettingForIOS;
+  var initializeSettingForAndroid;
+  var initializeSettings;
 
   SharedPref prf = SharedPref();
   startTime() async {
@@ -25,49 +35,42 @@ class _SplashScreenState extends State<SplashScreen> {
     return new Timer(_duration, navigationPage);
   }
 
-  void navigationPage() async{
-    if (await prf.containKey(UserSession.authTokenkey)){
-      UserSession.authToken = await prf.getBy(UserSession.authTokenkey);
-      Navigator.of(context).pushReplacementNamed('/TabBarControllerPage');
-    }else{
-      UserSession.authToken = "";
-      Navigator.of(context).pushReplacementNamed('/Login');
-    }
 
-  }
 
   @override
   void initState() {
     super.initState();
     startTime();
+    initNotification();
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage Is: $message");
-//          Navigator.of(context).pushReplacementNamed('/Rounds');
-//        Navigator.push(
-//            context,
-//            MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["id"]}" ,catId:"${message["cate"]}"))
-//        );
-//        handleNotificationScreen(message);
+
+        // This function is
+        showNotification();
+        if (Platform.isIOS){
+          print("IOS"+message["id"]);
+          print(message["cate"]);
+          await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["id"]}" ,catId:"${message["cate"]}"))
+          );
+        }else{
+          print("Android"+message["data"]["id"]);
+          print(message["data"]["cate"]);
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["data"]["id"]}" ,catId:"${message["data"]["cate"]}"))
+          );
+        }
       },
 //      onBackgroundMessage: Fcm.myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
-//        _showItemDialog(message);
-//        Navigator.push(
-//            context,
-//            MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["id"]}" ,catId:"${message["cate"]}"))
-//        );
-
       },
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
-//        Navigator.push(
-//            context,
-//            MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["id"]}" ,catId:"${message["cate"]}"))
-//        );
-//        _showItemDialog(message);
       },
     );
 
@@ -95,17 +98,13 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-
-
-
-
   handleNotificationScreen(Map<String, dynamic> msg){
 
     if (msg.containsKey("cate") && msg.containsKey("id"))  {
       //rounds handling....
       print("Rounds \n Round Id: ${msg["id"]} \n Categeroy Id: ${msg["cate"]}  ");
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => Rounds(idNoti:"${msg["id"]}" ,catId:"${msg["cate"]}"))
+          MaterialPageRoute(builder: (context) => Rounds(idNoti:"${msg["id"]}" ,catId:"${msg["cate"]}"))
       );
 
 //      Navigator.push(context,MaterialPageRoute(builder: (BuildContext context) => Rounds(idNoti:"${msg["id"]}" ,catId:"${msg["cate"]}")));
@@ -115,6 +114,62 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
   }
+
+
+
+
+  ///Notifications Setting....
+  showNotification() async{
+    await _demoNotification();
+  }
+  Future<Void> _demoNotification() async{
+    var androidChannelSpecifics =  AndroidNotificationDetails(
+        'channel_ID', 'channel name', 'channel description',
+        importance:  Importance.Max ,
+        priority: Priority.High ,
+        ticker: 'test ticker' );
+    var iosChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(androidChannelSpecifics,iosChannelSpecifics);
+    await  pluginFLN.show(0, 'Test', 'this is a test local notification', platformChannelSpecifics, payload: 'test_payload');
+  }
+
+  initNotification(){
+    initializeSettingForAndroid = new AndroidInitializationSettings('app_icon');
+    initializeSettingForIOS = new IOSInitializationSettings(
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+    initializeSettings = new InitializationSettings(initializeSettingForAndroid, initializeSettingForIOS);
+    pluginFLN.initialize(initializeSettings,onSelectNotification: selectNotification);
+  }
+
+
+  Future selectNotification(String payload) async{
+    if (payload != null){
+      print("Click action performed");
+    }
+  }
+
+  //Used in the case of IOS....
+  Future onDidReceiveLocalNotification(int id, String title, String body, String payload)async{
+
+    //push to any view
+    print("Payloadssss"+payload);
+    print("Receiveddd heerrreee");
+  }
+
+  void navigationPage() async{
+    if (await prf.containKey(UserSession.authTokenkey)){
+      UserSession.authToken = await prf.getBy(UserSession.authTokenkey);
+      Navigator.of(context).pushReplacementNamed('/TabBarControllerPage');
+    }else{
+      UserSession.authToken = "";
+      Navigator.of(context).pushReplacementNamed('/Login');
+    }
+
+  }
+
+
+
+
 
 
 
@@ -169,3 +224,7 @@ class _SplashScreenState extends State<SplashScreen> {
         });
   }
 }
+
+
+
+
