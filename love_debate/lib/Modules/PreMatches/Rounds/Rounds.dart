@@ -1,479 +1,797 @@
-import 'package:bubble/bubble.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:app_push_notifications/Models/OnBoardingModel.dart';
-import 'package:app_push_notifications/Modules/Matched/Matched.dart';
+
+import 'package:app_push_notifications/Models/PreMatches.dart';
+import 'package:app_push_notifications/Models/RoundsModel.dart';
+import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
 import 'package:app_push_notifications/Utils/Constants/WebService.dart';
 import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:app_push_notifications/Utils/Controllers/AppExceptions.dart';
 import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
-import 'package:app_push_notifications/Utils/Globals/Colors.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomButtons.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomTextFeilds.dart';
+import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
+import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
+import 'package:bubble/bubble.dart';
+import 'package:flutter/cupertino.dart'; 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
-import 'SubViews/RoundsDataModelClass.dart';
+import 'package:flutter/widgets.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Rounds extends StatefulWidget {
   String catId;
-  Rounds({this.catId});
+  Matches perMatch;
+  String idNoti;
+  Rounds({this.catId, this.perMatch, this.idNoti});
   @override
   _RoundsState createState() => _RoundsState();
 }
 
 class _RoundsState extends State<Rounds> {
 
-  int _index=0;
-  bool isActiveRd1=true;
-  bool isActiveRd2=false;
-  bool isActiveRd3=false;
-  bool done=false;
-  int accept=0;
-  bool status=false;
-  int apiCall = 0;
-  var chatList=[
-    RoundsDataModelClass(isMe: 1.0,answerText: "What is your name"),
-  ];
 
-  List<OnBoardingDataModel> roundsQuestion = List<OnBoardingDataModel>();
+  TextEditingController answerTF = TextEditingController();
+  FocusNode answerFN = FocusNode();
+  SharedPref prf = SharedPref();
+
+  ///Variables....
+  RoundsModel roundsQuestion;
+  int currentIndex = 0;
+  int apiCall = 0;
+
+  var check = "";
+
+
+  String myName = "";
 
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getData();
+
+  }
+  getData() async{
+    myName = await prf.getBy(UserSession.name);
+    print("CHeckkkerr::: "+check);
     apiCall =1;
     setState(() {
       getRoundsQuestion();
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
-
-    double _height=(MediaQuery.of(context).size.height) -(AppBar().preferredSize.height);
-    double _width=MediaQuery.of(context).size.width;
-
-
-    double isMe=0;
-    double roundsNo=0;
-    double pixelRatio = MediaQuery
-        .of(context)
-        .devicePixelRatio;
-    double px = 1 / pixelRatio;
-
-    BubbleStyle styleSomebody = BubbleStyle(
-      nip: BubbleNip.no,
-      color: Colors.white,
-      elevation: 1 * px,
-      margin: BubbleEdges.only(top: 8, right: 50),
-      alignment: Alignment.topLeft,
-    );
-    BubbleStyle styleMe = BubbleStyle(
-      nip: BubbleNip.no,
-      elevation: 1 * px,
-      margin: BubbleEdges.only(top: 8.0, left: 50.0),
-      alignment: Alignment.topRight,
-    );
-
-// TextEditingController txt_ConfirmPassword = TextEditingController();
-
-    TextEditingController txtAnswerController = TextEditingController();
-    FocusNode txtAnswerFocusNode = FocusNode();
-
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: CustomAppbar.setNavigation("Rounds"),
+      appBar:  CustomAppbar.setNavigation("Rounds"),
       body: SafeArea(
         bottom: false,
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              _steps(_height,_width,isMe,styleSomebody,styleMe,txtAnswerFocusNode,txtAnswerController,context,roundsNo)
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _steps(double height,double width,double isMe, BubbleStyle styleSomebody, BubbleStyle styleMe, FocusNode txtEmailFocusNode, TextEditingController txtEmailController, BuildContext context,double roundsNo) => Container(
-
-    height: height,
-    color: Colors.white,
-    child: Theme(
-      data: ThemeData(
-
-      ),
-      child: Stepper(
-        type: StepperType.horizontal,
-        steps: [
-          Step(
-            isActive:(_index==0)?true:false,
-            title: Text("Round 1"),
-// content: Text(
-// "In this article, I will tell you how to create a page."),
-            content: RoundsItemWidget(height, width, isMe, styleSomebody, styleMe, txtEmailFocusNode, txtEmailController, context,1),
-          ),
-          Step(
-            isActive:(_index==1)?true:false,
-            title: Text("Round 2"),
-// content: Text("Let's look at its construtor."),
-            content: RoundsItemWidget(height, width, isMe, styleSomebody, styleMe, txtEmailFocusNode, txtEmailController, context,2),
-// state: StepState.editing,
-          ),
-          Step(
-            isActive:(_index==2)? true:false,
-            title: Text("Round 3"),
-// content: Text("Let's look at its construtor."),
-            content: RoundsItemWidget(height, width, isMe, styleSomebody, styleMe, txtEmailFocusNode, txtEmailController, context,3),
-// state: StepState.error
-          ),
-        ],
-
-        currentStep: _index,
-        onStepTapped: (index){
-          setState(() {
-          });
-        },
-        controlsBuilder: (BuildContext context, {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-          return Row(
-            children: <Widget>[
-              Container(
-                child: null,
-              ),
-              Container(
-                child: null,
-              ),
-            ],
-          );
-        },
-      ),
-    ),
-  );
-
-  Material RoundsItemWidget(double _height, double _width, double isMe, BubbleStyle styleSomebody, BubbleStyle styleMe, FocusNode txtAnswerFN, TextEditingController txtAnswerTF, BuildContext context,double roundsNo) {
-    return Material(
-      elevation: 0,
-      borderOnForeground: true,
-      child: (apiCall == 0)?Container(
-//color: Colors.cyan,
-        height: _height - AppBar().preferredSize.height - MediaQuery.of(context).padding.vertical,
-        decoration: BoxDecoration(
-            color: Color(0xffF1F1F1),
-//            color: Colors.white,
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(20.0),
-              topLeft: Radius.circular(20.0),
-            )
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-//mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-// Divider(thickness: 1,),
-              SizedBox(height: 24,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    height: 70,
-                    child: RoundUserItem(Color(0xffa1c4fd ),Color(0xffc2e9fb),0),
+        child: (apiCall == 0)?Column(
+          children: [
+            Expanded(
+              child: Stepper(
+                physics : FixedExtentScrollPhysics(),
+                type: StepperType.horizontal,
+//                onStepTapped: (index){
+//                  setState(() {
+//                    print(index);
+//                    currentIndex = index;
+//                  });
+//                },
+                steps: [
+                  Step(
+                    isActive: (currentIndex == 0)? true: false,
+                    title: Text(""),
+                    content: CreateQuestionItem(size),
                   ),
-                  Container(
-                    height: 70,
-                    child: RoundUserItem(Color(0xffffecd2),Color(0xfffcb69f),1),
+                  Step(
+                    isActive: (currentIndex == 1)? true: false,
+                    title: Text(""),
+                    content: CreateQuestionItem(size),
+                  ),
+                  Step(
+                    isActive: (currentIndex == 2)? true: false,
+                    title: Text(""),
+                    content: CreateQuestionItem(size),
                   ),
                 ],
-              ),
-              SizedBox(height: 12,),
-              Text(
-                roundsQuestion[_index].qaQuestion, style: TextStyle(fontSize: 21,fontWeight:FontWeight.bold,),
-                textAlign: TextAlign.center,),
-              SizedBox(height: 12,),
-
-              // Ider kisi or ka answer
-
-
-
-              // Accept decline Button
-              // Ider apna answer
-
-              Expanded(
-                child: Container(
-                  child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                      itemCount: chatList.length,
-                      itemBuilder:(BuildContext context,int index){
-                        return ChatItem((chatList[index].isMe!=1)?styleSomebody:styleMe,chatList[index].answerText,chatList[index].isMe.toDouble());
-                      }),
-                ),
-              ),
-              (done==false)?Container(
-                height: 45,
-                margin: EdgeInsets.all(8),
-                color: Colors.white,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child:UnderLineTextField(
-                        focusNode: txtAnswerFN,
-                        txtHint: " Your answer",
-                        isSecure: false,
-                        keyboardType: TextInputType.emailAddress,
-                        enableBorderColor: Colors.white,
-                        focusBorderColor: Colors.white,
-                        textColor: Colors.black,
-                        txtController: txtAnswerTF,
-                        onTapFunc: () {
-                          setState(() {
-                            FocusScope.of(context).requestFocus(txtAnswerFN);
-                          });
-                        },
+                currentStep: currentIndex,
+                controlsBuilder: (BuildContext context,  {VoidCallback onStepContinue, VoidCallback onStepCancel}){
+                  return Row(
+                    children: <Widget>[
+                      Container(
+                        child: null,
                       ),
-                    ),
-                    SizedBox(width: 16,),
-                    InkWell(
-                        onTap: (){
-                          setState(() {
-                            if(txtAnswerTF.text.isEmpty){
-                              GFunction.showError("Write your answer", context);
-                            }else{
-                              done=true;
-                              chatList.add(RoundsDataModelClass(isMe: 0.0,answerText: txtAnswerTF.text));
-                            }
+                      Container(
+                        child: null,
+                      ),
+                    ],
+                  );
+                },
 
-                          });
-                        },
-                        child: Icon(Icons.send,color: GlobalColors.firstColor,))
-                  ],
-                ),
-              ):Container(
-                width: double.infinity,
-                decoration:BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(22.5))
-                ),
-                child: (_index == 2) ? Container():btnRounds("Next",1),
+
               ),
-              (roundsNo==3)?Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  RoundsButton("Connect with user",GlobalColors.firstColor,),
-                  RoundsButton("Start Again",GlobalColors.firstColor,),
-                ],
-              ):Container(),
-// Divider(thickness: 1,)
-            ],
-          ),
-        ),
-
-      ):Center(child: Loading(),),
-    );
-  }
-  Widget btnRounds(String text,double round) {
-    return Container(
-      height: 50,
-      margin: EdgeInsets.all(8),
-      child: CustomRaisedButton(
-        buttonText: text,
-        cornerRadius: 5,
-        textColor: Colors.white,
-        backgroundColor:GlobalColors.firstColor,
-        borderWith: 0,
-        action: (){
-          setState(() {
-            done=false;
-            chatList.clear();
-            print("heerree1");
-            if(_index<3){
-              _index++;
-            }
-
-// roundsNo=round;
-
-          });
-        },
+            ),
+          ],
+        ) : Center(child: Loading(),),
       ),
     );
   }
 
-  Container RoundsButton(String text,Color color) {
+  Widget CreateQuestionItem(Size size){
     return Container(
-      height: 35,
-      margin: EdgeInsets.all(8),
-      child: CustomRaisedButton(
-        buttonText: text,
-        cornerRadius: 22.5,
-        textColor: Colors.white,
-        backgroundColor: color,
-        borderWith: 0,
-        action: () {
-          setState(() {
-            if(text=="Accept"){
-              Navigator.push(context, CupertinoPageRoute(builder: (context) =>Matched()));}
-          });
-        },
+      decoration: BoxDecoration(
+          color: Color(0xffF1F1F1),
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20.0),
+            topLeft: Radius.circular(20.0),
+          )
       ),
-    );
-  }
-
-  Container RoundUserItem(Color colorA,Color colorB,double user) {
-    return Container(
-      height: 40,
-      width: 100,
-      decoration:BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [colorA,colorB]),
-// color: color, //new Color.fromRGBO(255, 0, 0, 0.0),
-        borderRadius: (user==0)? BorderRadius.only(
-// bottomLeft:Radius.circular(40.0),
-          topRight: Radius.circular(40.0),
-          bottomRight: Radius.circular(40.0),
-
-        ):BorderRadius.only(
-          topLeft: Radius.circular(40.0),
-          bottomLeft: Radius.circular(40.0),
-
-        ),),
-      child: Center(child: Text("HA",style: TextStyle(fontSize: 18),)),
-    );
-  }
-
-  Container ChatItem(BubbleStyle style, String text,double isMe) {
-    return Container(
-//      height: (isMe!=0)?140:80,
-      width: double.infinity,
-//color: Colors.,
       child: Column(
-//mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Bubble(
-            padding:BubbleEdges.all(12),
-            style: style,
-            child: Column(
-              children: <Widget>[
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Expanded(
-                        child: Text(
-                          text,
-                          style: TextStyle(fontSize: GlobalFont.textFontSize),
-                          overflow: TextOverflow.ellipsis,
-                        )
-                    ),
-                    SizedBox(width: 6,),
-                  ],
-                ),
-
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 25,),
+          ///Avatars Row For Letf/Right
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                UserAvatar(isMe: true),
+                UserAvatar(isMe: false),
               ],
+            ),
+          SizedBox(height: 8,),
+          ///Questions
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              (currentIndex == 0)?roundsQuestion.questionOne:(currentIndex ==1)?roundsQuestion.questionTwo:roundsQuestion.questionThree,
+              style: TextStyle(fontSize: 19,fontWeight:FontWeight.bold,),
+              textAlign: TextAlign.center,
             ),
           ),
 
 
-          (status==true)?AnswerStatus(isMe):Padding(
+          (check == "user") ? AnswersChatItem(isRight: check)
+          :(check == "player") ? AnswersChatItem(isRight: check):
+          Container(),
+
+          SizedBox(height: 12,),
+          (check =="first" && currentIndex == 0 &&  roundsQuestion.rUserAnsOne == null && roundsQuestion.rStatus != 0)?Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ///Answer TextFeild
+              Expanded(child: AnswerTextFeild(answerTF, answerFN)),
+              SizedBox(width: 8,),
+              StatusButton(backgroundColor: Colors.transparent, icon: Icons.send,iconColor: GlobalColors.firstColor, radius: 0, size: 32,action: (){
+                SendAnswer();
+              })
+            ],
+          )
+          :(check == "player" && currentIndex == 0 &&  roundsQuestion.rUserAnsOne == null && roundsQuestion.rStatus != 0) ? Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ///Answer TextFeild
+            Expanded(child: AnswerTextFeild(answerTF, answerFN)),
+            SizedBox(width: 8,),
+            StatusButton(backgroundColor: Colors.transparent, icon: Icons.send,iconColor: GlobalColors.firstColor, radius: 0, size: 32,action: (){
+              SendAnswer();
+            })
+          ],
+        )
+          : (check == "player" &&currentIndex == 1 &&  roundsQuestion.rUserAnsTwo == null && roundsQuestion.rStatus != 0) ? Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        ///Answer TextFeild
+        Expanded(child: AnswerTextFeild(answerTF, answerFN)),
+        SizedBox(width: 8,),
+        StatusButton(backgroundColor: Colors.transparent, icon: Icons.send,iconColor: GlobalColors.firstColor, radius: 0, size: 32,action: (){
+          SendAnswer();
+        })
+      ],
+    )
+          :(check == "player" &&currentIndex == 2 &&  roundsQuestion.rUserAnsThree == null && roundsQuestion.rStatus != 0) ? Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        ///Answer TextFeild
+        Expanded(child: AnswerTextFeild(answerTF, answerFN)),
+        SizedBox(width: 8,),
+        StatusButton(backgroundColor: Colors.transparent, icon: Icons.send,iconColor: GlobalColors.firstColor, radius: 0, size: 32,action: (){
+          SendAnswer();
+        })
+      ],
+    )
+          :(check == "user" &&currentIndex == 0 &&  roundsQuestion.rPlayerAnsOne == null && roundsQuestion.rStatus != 0) ? Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ///Answer TextFeild
+          Expanded(child: AnswerTextFeild(answerTF, answerFN)),
+          SizedBox(width: 8,),
+          StatusButton(backgroundColor: Colors.transparent, icon: Icons.send,iconColor: GlobalColors.firstColor, radius: 0, size: 32,action: (){
+            SendAnswer();
+          })
+        ],
+      )
+          : (check == "user" &&currentIndex == 1 &&  roundsQuestion.rPlayerAnsTwo == null && roundsQuestion.rStatus != 0) ? Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ///Answer TextFeild
+          Expanded(child: AnswerTextFeild(answerTF, answerFN)),
+          SizedBox(width: 8,),
+          StatusButton(backgroundColor: Colors.transparent, icon: Icons.send,iconColor: GlobalColors.firstColor, radius: 0, size: 32,action: (){
+            SendAnswer();
+          })
+        ],
+      )
+          :(check == "user" &&currentIndex == 2 &&  roundsQuestion.rPlayerAnsThree == null && roundsQuestion.rStatus != 0) ? Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ///Answer TextFeild
+              Expanded(child: AnswerTextFeild(answerTF, answerFN)),
+              SizedBox(width: 8,),
+              StatusButton(backgroundColor: Colors.transparent, icon: Icons.send,iconColor: GlobalColors.firstColor, radius: 0, size: 32,action: (){
+                SendAnswer();
+              })
+            ],
+          )
+              :Container(),
+          SizedBox(height: 8,),
+          (currentIndex == 0 && roundsQuestion.rPlayerAnsOne!= null && roundsQuestion.rStatus != 0) ?Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
-//crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment:(isMe!=0)? MainAxisAlignment.end:MainAxisAlignment.start,
-              children: <Widget>[
-                (isMe!=0)?Container(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.green
-                    ),
-                    margin: EdgeInsets.all(4),
-                    child: InkWell(
-                        onTap: (){
-                          setState(() {
-                            accept=1;
-                            status=true;
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: CustomRaisedButton(
+                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Connect",
+                    cornerRadius: 5.0,
+                    textColor: Colors.white,
+                    backgroundColor: GlobalColors.firstColor,
+                    borderWith: 0.0,
+                    action: (){
+                      currentIndex = 1;
+                      setState(() {});
+                    },
 
-                          });
-                        },
-                        child: Icon(Icons.check,color: Colors.white,size: 34,))):Container(),
+                  ),
+                ),
                 SizedBox(width: 8,),
-                (isMe!=0)?Container(
-                    margin: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.red
-                    ),
-                    child: InkWell(
-                        onTap: (){
-                          setState(() {
-                            accept=2;
-                            status=true;
-                          });
-                        },
-                        child: Icon(Icons.clear,color: Colors.white,size: 34,))):Container(),
+                (currentIndex ==2)?
+                Expanded(
+                  child: CustomRaisedButton(
+                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Another Round",
+                    cornerRadius: 5.0,
+                    textColor: Colors.white,
+                    backgroundColor: GlobalColors.firstColor,
+                    borderWith: 0.0,
+                    action: (){
+                    },
+
+                  ),
+                ): Container(),
               ],
             ),
           )
+          :(currentIndex == 1 && roundsQuestion.rPlayerAnsTwo!= null && roundsQuestion.rStatus != 0) ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: CustomRaisedButton(
+                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Connect",
+                    cornerRadius: 5.0,
+                    textColor: Colors.white,
+                    backgroundColor: GlobalColors.firstColor,
+                    borderWith: 0.0,
+                    action: (){
+                      currentIndex = 2;
+                      setState(() {});
+                    },
+                  ),
+                ),
+                SizedBox(width: 8,),
+                (currentIndex ==2)?
+                Expanded(
+                  child: CustomRaisedButton(
+                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Another Round",
+                    cornerRadius: 5.0,
+                    textColor: Colors.white,
+                    backgroundColor: GlobalColors.firstColor,
+                    borderWith: 0.0,
+                    action: (){
+
+                    },
+
+                  ),
+                ): Container(),
+              ],
+
+            ),
+          )
+          :(currentIndex == 2 && roundsQuestion.rPlayerAnsThree!= null && roundsQuestion.rStatus != 0)? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: CustomRaisedButton(
+                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Connect",
+                    cornerRadius: 5.0,
+                    textColor: Colors.white,
+                    backgroundColor: GlobalColors.firstColor,
+                    borderWith: 0.0,
+                    action: (){
+                      print("connect is pressed");
+                    },
+
+                  ),
+                ),
+                SizedBox(width: 8,),
+                (currentIndex ==2)?
+                Expanded(
+                  child: CustomRaisedButton(
+                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Another Round",
+                    cornerRadius: 5.0,
+                    textColor: Colors.white,
+                    backgroundColor: GlobalColors.firstColor,
+                    borderWith: 0.0,
+                    action: (){
+                      print("Another is pressed");
+                      Navigator.pop(context);
+                    },
+
+                  ),
+                ): Container(),
+              ],
+
+            ),
+          )
+          :Container(),
+
+          SizedBox(height: 12,),
+
+
+        ],
+      ),
+    );
+  }
+  ///Avatars/Images of Both Player and user...
+  Container UserAvatar({bool isMe }) {
+    return Container(
+              height: 80,
+              width: 100,
+              decoration:BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: (isMe)? [Colors.orange, Colors.black]:[Colors.green, Colors.grey]),
+                borderRadius: (isMe)?BorderRadius.only(
+                  topRight: Radius.circular(40.0),
+                  bottomRight: Radius.circular(40.0),
+                ):BorderRadius.only(
+                  topLeft: Radius.circular(40.0),
+                  bottomLeft: Radius.circular(40.0),
+                ),),
+              child: Center(child: Text((isMe)?myName[0]:widget.perMatch.firstName[0],style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold, color: Colors.white),)),
+            );
+  }
+
+  //New One
+  Widget AnswersChatItem({String isRight = null, String isLeft = null}) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          (check =="user" && currentIndex == 0 && roundsQuestion.rUserAnsOne !=null)? Bubble(
+              padding:BubbleEdges.all(16),
+              style: BubbleStyle(
+                nip: BubbleNip.rightTop,
+                color: Colors.white,
+                elevation: 3,
+                margin: BubbleEdges.only(top: 8, left:8 ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    roundsQuestion.rUserAnsOne,
+                    style: TextStyle(fontSize: GlobalFont.textFontSize + 2,color: Colors.black54,),
+
+                  ),
+                  SizedBox(width: 6,),
+                ],
+              ),
+            )
+          :(check =="user" && currentIndex == 1 && roundsQuestion.rUserAnsTwo !=null)? Bubble(
+              padding:BubbleEdges.all(16),
+              style: BubbleStyle(
+                nip: BubbleNip.rightTop,
+                color: Colors.white,
+                elevation: 3,
+                margin: BubbleEdges.only(top: 8, left:100 ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    roundsQuestion.rUserAnsTwo,
+                    style: TextStyle(fontSize: GlobalFont.textFontSize + 2,color: Colors.black54,),
+
+                  ),
+                  SizedBox(width: 6,),
+                ],
+              ),
+            )
+          :(check =="user" && currentIndex == 2 && roundsQuestion.rUserAnsThree !=null)?  Bubble(
+              padding:BubbleEdges.all(16),
+              style: BubbleStyle(
+                nip: BubbleNip.rightTop,
+                color: Colors.white,
+                elevation: 3,
+                margin: BubbleEdges.only(top: 8, left:100 ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    roundsQuestion.rUserAnsThree,
+                    style: TextStyle(fontSize: GlobalFont.textFontSize + 2,color: Colors.black54,),
+                  ),
+                  SizedBox(width: 6,),
+                ],
+              ),
+            )
+          :(check =="player" && currentIndex == 0 && roundsQuestion.rPlayerAnsOne !=null)? Bubble(
+        padding:BubbleEdges.all(16),
+        style: BubbleStyle(
+          nip: BubbleNip.rightTop,
+          color: Colors.white,
+          elevation: 3,
+          margin: BubbleEdges.only(top: 8, left:100 ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              roundsQuestion.rPlayerAnsOne,
+              style: TextStyle(fontSize: GlobalFont.textFontSize + 2,color: Colors.black54,),
+            ),
+            SizedBox(width: 6,),
+          ],
+        ),
+      )
+          :(check =="player" && currentIndex == 1 && roundsQuestion.rPlayerAnsTwo !=null)?Bubble(
+        padding:BubbleEdges.all(16),
+        style: BubbleStyle(
+          nip: BubbleNip.rightTop,
+          color: Colors.white,
+          elevation: 3,
+          margin: BubbleEdges.only(top: 8, left:100 ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              roundsQuestion.rPlayerAnsTwo,
+              style: TextStyle(fontSize: GlobalFont.textFontSize + 2,color: Colors.black54,),
+
+            ),
+            SizedBox(width: 6,),
+          ],
+        ),
+      )
+          :(check =="player" && currentIndex == 2 && roundsQuestion.rPlayerAnsThree !=null)?Bubble(
+            padding:BubbleEdges.all(16),
+            style: BubbleStyle(
+              nip: BubbleNip.rightTop,
+              color: Colors.white,
+              elevation: 3,
+              margin: BubbleEdges.only(top: 8, left:100 ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  roundsQuestion.rPlayerAnsThree,
+                  style: TextStyle(fontSize: GlobalFont.textFontSize + 2,color: Colors.black54,),
+
+                ),
+                SizedBox(width: 6,),
+              ],
+            ),
+          )
+          :Container(),
+          SizedBox(height: 8,),
+          (roundsQuestion.rStatus == 1 && currentIndex == 0 && check == "user" && roundsQuestion.rUserAnsOne !=null)? Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              StatusButton(backgroundColor: Colors.red, icon: Icons.clear, radius: 13.0,size: 26.0,action: (){
+                DeclineUpdateStatus();
+              }),
+            ],
+          )
+          :(roundsQuestion.rStatus == 1 && currentIndex == 1 && check == "user" && roundsQuestion.rUserAnsTwo !=null)? Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                StatusButton(backgroundColor: Colors.red, icon: Icons.clear, radius: 13.0,size: 26.0,action: (){
+                  DeclineUpdateStatus();
+                }),
+              ],
+          )
+          :(roundsQuestion.rStatus == 1 && currentIndex == 2 && check == "user" && roundsQuestion.rUserAnsThree !=null)? Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          StatusButton(backgroundColor: Colors.red, icon: Icons.clear, radius: 13.0,size: 26.0,action: (){
+            DeclineUpdateStatus();
+          }),
+        ],
+      )
+          :(roundsQuestion.rStatus == 1 && check == "player" && currentIndex == 0 && roundsQuestion.rPlayerAnsOne !=null)? Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          StatusButton(backgroundColor: Colors.red, icon: Icons.clear, radius: 13.0,size: 26.0,action: (){
+            DeclineUpdateStatus();
+          }),
+        ],
+      )
+          :(roundsQuestion.rStatus == 1 && check == "player" && currentIndex == 1 && roundsQuestion.rPlayerAnsTwo !=null)? Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          StatusButton(backgroundColor: Colors.red, icon: Icons.clear, radius: 13.0,size: 26.0,action: (){
+            DeclineUpdateStatus();
+          }),
+        ],
+      )
+          :(roundsQuestion.rStatus == 1 &&  check == "player" && currentIndex == 2 && roundsQuestion.rPlayerAnsThree !=null)? Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          StatusButton(backgroundColor: Colors.red, icon: Icons.clear, radius: 13.0,size: 26.0,action: (){
+            DeclineUpdateStatus();
+          }),
+        ],
+      )
+          :Container(),
+          (isRight =="player" && currentIndex == 0 && roundsQuestion.rUserAnsOne !=null)? Bubble(
+            padding:BubbleEdges.all(16),
+            style: BubbleStyle(
+              nip: BubbleNip.leftBottom,
+              color: Colors.blueGrey,
+              elevation: 3,
+              margin:BubbleEdges.only(top: 8.0, right: 16.0),
+            ),
+            child: Text(
+              roundsQuestion.rUserAnsOne,
+              style: TextStyle(fontSize: GlobalFont.textFontSize + 2,color: Colors.white ,),
+
+            ),
+          )
+          :(isRight =="player" && currentIndex == 1 && roundsQuestion.rUserAnsTwo !=null)? Bubble(
+        padding:BubbleEdges.all(16),
+        style: BubbleStyle(
+          nip: BubbleNip.leftBottom,
+          color: Colors.blueGrey,
+          elevation: 3,
+          margin:BubbleEdges.only(top: 8.0, right: 16.0),
+        ),
+        child: Text(
+            roundsQuestion.rUserAnsTwo,
+          style: TextStyle(fontSize: GlobalFont.textFontSize + 2,color: Colors.white ,),
+
+        ),
+      )
+          :(isRight =="player" && currentIndex == 2 && roundsQuestion.rUserAnsThree !=null)? Bubble(
+        padding:BubbleEdges.all(16),
+        style: BubbleStyle(
+          nip: BubbleNip.leftBottom,
+          color: Colors.blueGrey,
+          elevation: 3,
+          margin:BubbleEdges.only(top: 8.0, right: 16.0),
+        ),
+        child: Text(
+          roundsQuestion.rUserAnsThree,
+          style: TextStyle(fontSize: GlobalFont.textFontSize + 2,color: Colors.white ,),
+
+        ),
+      )
+          :(isRight =="user" && currentIndex == 0 && roundsQuestion.rPlayerAnsOne !=null)? Bubble(
+        padding:BubbleEdges.all(16),
+        style: BubbleStyle(
+          nip: BubbleNip.leftBottom,
+          color: Colors.blueGrey,
+          elevation: 3,
+          margin:BubbleEdges.only(top: 8.0, right: 16.0),
+        ),
+        child: Text(
+          roundsQuestion.rPlayerAnsOne,
+          style: TextStyle(fontSize: GlobalFont.textFontSize + 2,color: Colors.white ,),
+
+        ),
+      )
+          :(isRight =="user" && currentIndex == 1 && roundsQuestion.rPlayerAnsTwo !=null)? Bubble(
+        padding:BubbleEdges.all(16),
+        style: BubbleStyle(
+          nip: BubbleNip.leftBottom,
+          color: Colors.blueGrey,
+          elevation: 3,
+          margin:BubbleEdges.only(top: 8.0, right: 16.0),
+        ),
+        child: Text(
+         roundsQuestion.rPlayerAnsTwo,
+          style: TextStyle(fontSize: GlobalFont.textFontSize + 2,color: Colors.white ,),
+
+        ),
+      )
+          :(isRight =="user" && currentIndex == 2 && roundsQuestion.rPlayerAnsThree !=null)? Bubble(
+        padding:BubbleEdges.all(16),
+        style: BubbleStyle(
+          nip: BubbleNip.leftBottom,
+          color: Colors.blueGrey,
+          elevation: 3,
+          margin:BubbleEdges.only(top: 8.0, right: 16.0),
+        ),
+        child: Text(
+          roundsQuestion.rPlayerAnsThree,
+          style: TextStyle(fontSize: GlobalFont.textFontSize + 2,color: Colors.white ,),
+
+        ),
+      )
+          :Container(),
         ],
       ),
     );
   }
 
-  Widget AnswerStatus(double isMe){
+  ///Accept and Decline Status Buttons
+  Widget StatusButton({Color backgroundColor, IconData icon,Color iconColor , double radius, double size, VoidCallback action}){
+    return CupertinoButton(
+      minSize: double.minPositive,
+      color: backgroundColor,
+      padding: EdgeInsets.zero,
+      borderRadius: BorderRadius.all(Radius.circular(radius)),
+      child: Icon(
+          icon,
+          color: (iconColor == null) ?Colors.white: iconColor,
+          size: size,
+      ),
+      onPressed: action,
+    );
 
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(right: 8,top: 8),
-      child: (isMe!=0)?Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          (accept==1)?Text("Accepted",style: TextStyle(fontSize: 12),):Text("Rejected",style: TextStyle(fontSize: 12),)
-        ],
-      ):Container(),
+  }
+  Widget AnswerTextFeild(TextEditingController tf, FocusNode fn){
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: UnderLineTextField(
+        focusNode: fn,
+        txtHint: "Write your answer",
+        isSecure: false,
+        keyboardType: TextInputType.emailAddress,
+        enableBorderColor: Colors.white,
+        focusBorderColor: Colors.grey,
+        textColor: Colors.black,
+        txtController: tf,
+        onTapFunc: () {
+          setState(() {
+            FocusScope.of(context).requestFocus(fn);
+          });
+        },
+      ),
     );
   }
+  ///Send My Answer action
+  void SendAnswer(){
 
-  Widget answerTextField( FocusNode focusNode, TextEditingController txtFeild,String text ,bool isSecure, TextInputType keyboardType ) {
-    return UnderLineTextField(
-      focusNode: focusNode,
-      txtHint: text,
-      isSecure: isSecure,
-      keyboardType: keyboardType,
-// enableBorderColor: Colors.white,
-      focusBorderColor: Colors.grey,
-      textColor: Colors.black,
-      txtController: txtFeild,
-      onTapFunc: () {
-        setState(() {
-          FocusScope.of(context).requestFocus(FocusNode());
-
-        });
-      },
-    );
+    if (answerTF.text.isNotEmpty){
+      AnswerQuestion();
+    }else{
+      GFunction.showError("Write your answer please!", context);
+    }
   }
-
-  ///API Call
+  ///API Call Round Details getting....
   void getRoundsQuestion(){
     Map<String, dynamic> body = {
+      "cate_id":"${widget.catId}",
+      "id" :  (widget.idNoti == null)?"${widget.perMatch.prUserId}":"${widget.idNoti}",  //player_id
     };
-
     try {
-      ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: false, url: WebService.rounds+"/${widget.catId}",body: body,isFormData: false).then(
+      ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.rounds,body: body,isFormData: true).then(
               (response) async{
 
             var res = response as http.Response;
             if (res.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(res.body);
               if(responseJson.containsKey('success')){
-                responseJson["success"].forEach((v) {
-                  roundsQuestion.add(OnBoardingDataModel.fromJson(v));
-                });
+                roundsQuestion = RoundsModel.fromJson(responseJson['success']);
+                print("Response: ${responseJson['success']}");
+                if(widget.perMatch.prUserId == roundsQuestion.rUserId && roundsQuestion.rUserId!=null){
+                  check = "user";
+                }else if (widget.perMatch.prUserId == roundsQuestion.rPlayerId && roundsQuestion.rPlayerId!=null){
+                  check = "player";
+                }else{
+                  check = "first";
+                }
+
+                if (roundsQuestion.rStatus != 0){
+                  if (roundsQuestion.rUserAnsThree != null && roundsQuestion.rPlayerAnsThree != null){
+                    GFunction.showSuccess(() {
+                      Navigator.pop(context); //First to close popup
+                      Navigator.pop(context); // Second to close rounds.
+                    }, context,title: "Round Status",subMsg: "This round has been completed.",imageStatus: true);
+                  }else {
+                    if (roundsQuestion.rUserAnsTwo != null && roundsQuestion.rPlayerAnsTwo != null){
+                      currentIndex = 2;
+                    }else{
+                      if (roundsQuestion.rUserAnsOne != null && roundsQuestion.rPlayerAnsOne != null){
+                        currentIndex = 1;
+                      }else{
+                        currentIndex = 0;
+                      }
+                    }
+                  }
+                }else {
+                  GFunction.showSuccess(() {
+                    Navigator.pop(context);//First to close popup
+                    Navigator.pop(context);// Second to close rounds.
+                  }, context,title: "Round Status",subMsg: "This round has been Rejected.",imageStatus: false);
+                }
                 apiCall = 0;
                 setState(() {});
+              }else{
+                apiCall = 0;
+                setState(() {});
+              }
+            }else if (res.statusCode == 401){
+              apiCall = 0;
+              setState(() {});
+              Map<String, dynamic> err = json.decode(res.body);
+              GFunction.showError(err['error'].toString(), context);
+            }else{
+              apiCall = 0;
+              setState(() {});
+              GFunction.showError(res.reasonPhrase.toString(), context);
+            }
+          });
+    } on FetchDataException catch(e) {
+      apiCall = 0;
+      setState(() {
+        GFunction.showError(e.toString(), context);
+      });
 
+    }
+  }
+  ///API Call Round Decline Status....
+  void DeclineUpdateStatus(){
+
+    Map<String, dynamic> body = {
+      "status": "${roundsQuestion.rStatus}",
+      "round_id": "${roundsQuestion.rId}",
+      "id": "${widget.perMatch.prUserId}",
+      "cate_id":"${roundsQuestion.rCateId}"
+    };
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.updateStatusDecline,body: body,isFormData: true).then(
+              (response) async{
+
+            var res = response as http.Response;
+            if (res.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(res.body);
+              if(responseJson.containsKey('success')){
+                print("Response ====> "+ responseJson['success']);
+                apiCall = 0;
+                Navigator.pop(context);
               }else{
                 apiCall = 0;
                 setState(() {});
@@ -497,9 +815,68 @@ class _RoundsState extends State<Rounds> {
     }
   }
 
+  ///API Call Round Decline Status....
+  void AnswerQuestion(){
+    Map<String, dynamic> body = {
+      'cate_id' : "${widget.catId}",
+      'id' : "${widget.perMatch.prUserId}", //player_id
+      'answer':'${answerTF.text}',
+      'question_id' : (currentIndex == 0) ? "${roundsQuestion.rQuesOneId}" : (currentIndex==1) ? "${roundsQuestion.rQuesTwoId}" : "${roundsQuestion.rQuesThreeId}",
+      'q1': "${roundsQuestion.rQuesOneId}",
+      'q2' : "${roundsQuestion.rQuesTwoId}",
+      'q3' : "${roundsQuestion.rQuesThreeId}",
+    };
+    print(body);
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.answerRound,body: body,isFormData: true).then(
+              (response) async{
 
+            var res = response as http.Response;
+            if (res.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(res.body);
+              if(responseJson.containsKey('success')){
+                print("Response ====> "+ responseJson['success']);
 
+                if (check == "player" && currentIndex == 0 && roundsQuestion.rUserAnsOne ==null){
+                  roundsQuestion.rUserAnsOne = answerTF.text;
+                }else if (check == "player" && currentIndex == 1 && roundsQuestion.rUserAnsTwo ==null){
+                  roundsQuestion.rUserAnsTwo = answerTF.text;
+                }else if (check == "player" && currentIndex == 2 && roundsQuestion.rUserAnsThree ==null){
+                  roundsQuestion.rUserAnsThree = answerTF.text;
+                }else if (check == "user" && currentIndex == 0 && roundsQuestion.rPlayerAnsOne ==null){
+                  roundsQuestion.rPlayerAnsOne = answerTF.text;
+                }else if (check == "user" && currentIndex == 1 && roundsQuestion.rPlayerAnsTwo ==null){
+                  roundsQuestion.rPlayerAnsTwo = answerTF.text;
+                }else if (check == "user" && currentIndex == 2 && roundsQuestion.rPlayerAnsThree ==null){
+                  roundsQuestion.rPlayerAnsThree = answerTF.text;
+                }else if (check =="first" && currentIndex == 0){
+                  roundsQuestion.rPlayerId = widget.perMatch.prUserId;
+                  roundsQuestion.rUserAnsOne = answerTF.text;
+                  check = "player";
+                }
+                answerTF.text = "";
+                apiCall = 0;
+                setState(() {});
+              }else{
+                apiCall = 0;
+                setState(() {});
+                print("Oh no response");
+              }
+            }else if (res.statusCode == 401){
+              apiCall = 0;
+              setState(() {});
+              Map<String, dynamic> err = json.decode(res.body);
+              GFunction.showError(err['error'].toString(), context);
+            }else{
+              apiCall = 0;
+              setState(() {});
+              GFunction.showError(res.reasonPhrase.toString(), context);
+            }
+          });
+    } on FetchDataException catch(e) {
+      apiCall = 0;
+      setState(() {});
+      GFunction.showError(e.toString(), context);
+    }
+  }
 }
-
-
-

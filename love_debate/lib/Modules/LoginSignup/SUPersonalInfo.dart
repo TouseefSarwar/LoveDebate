@@ -5,7 +5,7 @@ import 'package:app_push_notifications/Modules/LoginSignup/HeightDialogBox.dart'
 import 'package:app_push_notifications/Modules/LoginSignup/SUAccountInfo.dart';
 import 'package:app_push_notifications/Utils/Designables/Toast.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomTextFeilds.dart';
 import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
@@ -54,29 +54,21 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
-    //if (picked != null && picked != selectedDate)
+        firstDate: DateTime(1900, 1),
+        lastDate: DateTime.now());
     setState(() {
       DateTime now = DateTime.now();
-      String limit=DateFormat("yyyy-MM-dd").format(now);
-      print("Today"+limit);
       selectedDate = picked;
       final selected=DateFormat("yyyy-MM-dd").format(selectedDate);
-      //dobTF.text=selected;
       final difference=DateTime.now().difference(picked).inDays;
-      print("Diffderence "+difference.toString());
+      print("Difference "+difference.toString());
       if(!difference.isNegative){
         dobTF.text=selected;
         print(dobTF.text);
-      }
-      else{
-        dobTF.text=" ";
+      }else{
+        dobTF.text="";
         Toast.show("Invalid Date", context);
       }
-      // print(DateFormat("dd/MM/yyyy").format(selectedDate));
-      //DateFormat.M.format(selectedDate);
-      //dobTF.text = selectedDate.toString();
     });
   }
   Widget _selectTimeIos(){
@@ -85,21 +77,13 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
       mode: CupertinoDatePickerMode.date,
       initialDateTime: DateTime.now(),
       onDateTimeChanged: (DateTime date){
-        //dobTF.text=DateFormat("yyyy-MM-dd").format(selectedDate);
         DateTime now = DateTime.now();
         String limit=DateFormat("yyyy-MM-dd").format(now);
-        print("Today"+limit);
         selectedDate = date;
         final selected=DateFormat("yyyy-MM-dd").format(selectedDate);
-
-        print("selected date"+selected);
-        //dobTF.text=selected;
-
         final difference=DateTime.now().difference(selectedDate).inDays;
-        print("Diffderence "+difference.toString());
         if(!difference.isNegative){
           dobTF.text=selected;
-          print(dobTF.text);
         }
         else{
           dobTF.text=" ";

@@ -14,7 +14,7 @@ import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:app_push_notifications/Utils/Controllers/AppExceptions.dart';
 import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
 import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
 import '../../Utils/Globals/Fonts.dart';
@@ -31,10 +31,14 @@ class _SignUpState extends State<SignUp> {
   bool isloading = false;
   SharedPref prf = SharedPref();
 
-  var result;
-  static final FacebookLogin facebookSignIn = new FacebookLogin();
-  String _message = 'Log in/out by pressing the buttons below.';
-  final GoogleSignIn googleSignIn = GoogleSignIn();
+  final GoogleSignIn googleSignIn = GoogleSignIn(
+      scopes: <String>[
+        'email',
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile",
+//        "https://www.googleapis.com/auth/user.birthday.read",
+//        "https://www.googleapis.com/auth/user.gender.read",
+      ]);
   @override
   Widget build(BuildContext context) {
     double _height=MediaQuery.of(context).size.height;
@@ -170,15 +174,19 @@ class _SignUpState extends State<SignUp> {
   Future<void> _googleSignIn() async {
 
     try {
-      GoogleSignIn _googleSignIn = GoogleSignIn(
-          scopes: <String>[
-            'email',
-            "https://www.googleapis.com/auth/userinfo.email",
-            "https://www.googleapis.com/auth/userinfo.profile"
-          ]
-
-      );
+//      GoogleSignIn _googleSignIn = GoogleSignIn(
+//          scopes: <String>[
+//            'email',
+//            "https://www.googleapis.com/auth/userinfo.email",
+//            "https://www.googleapis.com/auth/userinfo.profile",
+//            "https://www.googleapis.com/auth/user.birthday.read",
+//            "https://www.googleapis.com/auth/user.gender.read",
+//
+//          ]
+//
+//      );
       GoogleSignInAccount data = await googleSignIn.signIn() ?? null;
+//      GoogleSignInAccount data = await googleSignIn.signIn();
 
       print(data.toString());
       isloading = true;
@@ -204,83 +212,52 @@ class _SignUpState extends State<SignUp> {
 
   ///Facebook signup
   Future<Null> _faceBooklogin() async {
-//
     final facebookLogin = FacebookLogin();
-    facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
-    final _result = await facebookLogin.logIn(['email','public_profile',]);
+    facebookLogin.loginBehavior = FacebookLoginBehavior.webOnly;
+    final _result = await facebookLogin.logIn(['email','public_profile']);
     final token = _result.accessToken.token;
     if (token == null){
       facebookLogin.logOut();
     }else{
-
+      isloading = true;
+      setState(() {});
       final graphResponse = await http.get(
           'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
       final profile = jsonDecode(graphResponse.body);
-      print(jsonDecode(graphResponse.body));
-      switch (_result.status) {
-        case FacebookLoginStatus.loggedIn:
-          final FacebookAccessToken accessToken = _result.accessToken;
-
-//        final token = result.accessToken.token;
-//        final graphResponse = await http.get(
-//            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
-//        final profile = JSON.decode(graphResponse.body);
-//        print(profile['name'].toString());
-//        print(profile['user_mobile_no'].toString());
-//        print(profile['user_gender'].toString());
-//        print(profile['name'].toString());
-//        print(profile['name'].toString());
-//       print(result.accessToken);
-//        print(result.status);
-//        print(result.accessToken.token);
-          //print(result.accessToken.permissions[1].toString());
-//        print(result.accessToken.userId);
-//        first_name=data.displayName.split(" ")[0];
-//        last_name=data.displayName.split(" ")[1];
-//        email=data.email;
-//        social_login_type="google";
-//        social_login_id=data.id;
-//        print(first_name+"  "+last_name);
-//        print(profile["name"]);
-//        print(profile["email"]);
-//        print(profile['id'].toString());
-//        print(profile['first_name'].toString());
-//        print(profile['last_name'].toString());
-//        print("email");
-//        print(profile['email'].toString());
-//        print(profile.toString());
-//        first_name=profile['first_name'].toString();
-//        last_name=profile['last_name'].toString();
-//        email=profile['email'].toString();
-//        social_login_id=profile['id'].toString();
-//        social_login_type='fb';
-//        email="shadyrecordslp99@gmail.com";
-//        print(first_name+""+last_name+''+email+''+social_login_id+''+social_login_type);
-          Map<String, dynamic> body;
-          if (profile['email'] == null){
-            body = {
-              'FB_SID' : profile['id'].toString(),
-              'first_name' : profile['first_name'].toString(),
-              'last_name' : profile['last_name'].toString(),
-            };
-          }else{
-            body = {
-              'FB_SID' : profile['id'].toString(),
-              'first_name' : profile['first_name'].toString(),
-              'last_name' : profile['last_name'].toString(),
-              'email' : profile['email'].toString(),
-            };
-          }
+      if (profile['error'] != null){
+        isloading = false;
+        setState(() {});
+        GFunction.showError(profile['error']['message'], context);
+      }else{
+        switch (_result.status) {
+          case FacebookLoginStatus.loggedIn:
+            Map<String, dynamic> body;
+            if (profile['email'] == null){
+              body = {
+                'FB_SID' : profile['id'].toString(),
+                'first_name' : profile['first_name'].toString(),
+                'last_name' : profile['last_name'].toString(),
+              };
+            }else{
+              body = {
+                'FB_SID' : profile['id'].toString(),
+                'first_name' : profile['first_name'].toString(),
+                'last_name' : profile['last_name'].toString(),
+                'email' : profile['email'].toString(),
+              };
+            }
 
           SocialSignUp(body);
-          break;
-        case FacebookLoginStatus.cancelledByUser:
-          GFunction.showError('Login cancelled by the user.', context);
-          break;
-        case FacebookLoginStatus.error:
-          GFunction.showError("Something went wrong with the login process.\nHeres the error Facebook gave us: ${_result.errorMessage}", context);
-          break;
+            break;
+          case FacebookLoginStatus.cancelledByUser:
+            GFunction.showError('Login cancelled by the user.', context);
+            break;
+          case FacebookLoginStatus.error:
+            GFunction.showError("Something went wrong with the login process.\nHeres the error Facebook gave us: ${_result.errorMessage}", context);
+            break;
+        }
       }
+
     }
   }
 
@@ -293,10 +270,10 @@ class _SignUpState extends State<SignUp> {
             if (response.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(response.body);
               if(responseJson.containsKey('success')) {
-
+                isloading = false;
                 if(responseJson['success']['already_exist'] == false){
-                  UserSession.token =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
-                  await prf.set(UserSession.tokenkey,UserSession.token);
+                  UserSession.authToken =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
+                  await prf.set(UserSession.authTokenkey,UserSession.authToken);
                   Navigator.push(context, CupertinoPageRoute(fullscreenDialog: true,builder: (context) => SocialSignUpForm(
                     email: responseJson['success']['user']['email'].toString(),
                     firstName: responseJson['success']['user']['name'].toString().split(' ').first,
@@ -304,15 +281,17 @@ class _SignUpState extends State<SignUp> {
                   )));
                 }else{
                   if( responseJson['success']['user']['onboading_status'].toString() == '0'){
-                    UserSession.token =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
-                    await prf.set(UserSession.tokenkey,UserSession.token);
+                    UserSession.authToken =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
+                    await prf.set(UserSession.authTokenkey,UserSession.authToken);
                     await prf.set(UserSession.signUp,true);
+                    await prf.set(UserSession.name,responseJson['success']['user']['name'].toString());
                     UserSession.isSignup = await prf.getBy(UserSession.signUp);
                     Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
                   }else{
-                    UserSession.token =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
-                    await prf.set(UserSession.tokenkey,UserSession.token);
+                    UserSession.authToken =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
+                    await prf.set(UserSession.authTokenkey,UserSession.authToken);
                     await prf.set(UserSession.signUp,true);
+                    await prf.set(UserSession.name,responseJson['success']['user']['name'].toString());
                     UserSession.isSignup = await prf.getBy(UserSession.signUp);
                     await prf.remove(UserSession.answers);
                     await prf.remove(UserSession.question);

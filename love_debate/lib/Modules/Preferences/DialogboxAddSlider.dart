@@ -247,8 +247,6 @@ class _DialogboxAddSliderState extends State<DialogboxAddSlider> {
     );
   }
 
-
-
   ///Save Answers.
   saveSingleAnswers(List<AnswersModel> ans,List<String> val) {
     Map<String, dynamic> body = {

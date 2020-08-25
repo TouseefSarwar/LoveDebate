@@ -7,7 +7,6 @@ class WebService{
   static var login = "login";
   static var onboardingApi = "questions/1";
   static var data = "data";
-  static var rounds = "questions/2";
   static var answers = "answers";
   static var test = "test";
   static var prematches = "prematches";
@@ -17,6 +16,13 @@ class WebService{
   static var updatePassword = "update_password";
   static var logout = "logout";
   static var roundCategories = "categories/1";
+
+  ///Rounds Module Api's
+  static var updateStatusDecline = "update_status"; ///parameters Should be { status : 1 , round_id : r_id.....}
+  static var answerRound = "question_answer";  ///{cate_id' => 'required','id','question_id','answer','q1' 'q2','q3'};
+//  static var rounds = "questions/2";
+  static var rounds = "rounds";
+
 
 
 

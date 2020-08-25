@@ -2,8 +2,7 @@ import 'package:app_push_notifications/Modules/Profile/BasicInfo.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gradient_app_bar/gradient_app_bar.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 
 
 class MyPreferences extends StatefulWidget {

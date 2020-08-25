@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:app_push_notifications/Models/UserDetailModel.dart';
 import 'package:app_push_notifications/Modules/Profile/GeneralSettings.dart';
 import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
@@ -11,10 +12,11 @@ import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:app_push_notifications/Modules/Profile/BasicInfo.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
 import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'CameraDialog.dart';
 
@@ -27,8 +29,11 @@ class _ProfileState extends State<Profile> {
   SharedPref prf = SharedPref();
   bool loading = false;
 
-  String image='images/conor.jpg';
+//  dynamic selectedImage;
 
+
+  File image;
+  final picker = ImagePicker();
   @override
   void initState() {
     // TODO: implement initState
@@ -101,7 +106,7 @@ class _ProfileState extends State<Profile> {
                           border: Border.all(color: Colors.white),
                           shape: BoxShape.circle,
                           image: DecorationImage(
-                              image: AssetImage('images/conor.jpg'),
+                              image: (image == null)? AssetImage('images/conor.jpg'): FileImage(image) ,
                               fit: BoxFit.fitHeight
                           ),
                         ),
@@ -113,19 +118,32 @@ class _ProfileState extends State<Profile> {
                       left: width / 1.6 - 30,
                       child: InkWell(
                         onTap: (){
-                          setState(() {
+
                             showDialog(
-                                barrierDismissible: false,
+                                barrierDismissible: true,
                                 context: context,
                                 builder: (context) {
                                   return CameraDialog();
                                 }
                             ).then((value){
-                              var img=value;
-                              print(img);
+                              print("Value is: $value");
+                              if (value != null){
+                                switch (value){
+                                  case "gallery":
+                                    openGallery();
+                                    break;
+                                  case "camera":
+                                    openCamera();
+                                    break;
+                                }
+//                                selectedImage=value;
+//                              UpdateProfileImage(value);
+                              }
+
+
+                              setState(() {});
                             });
 
-                          });
                         },
                         child: Container(
                             decoration: BoxDecoration(
@@ -140,7 +158,6 @@ class _ProfileState extends State<Profile> {
               ),
               SizedBox(height: 8,),
               ProfileListItems("Basic Info",Icons.info_outline,1),
-//              ProfileListItems("Preferences & Filters",Icons.menu,2),
               ProfileListItems("General Settings",Icons.settings,3),
               ProfileListItems("Notifications",Icons.notifications,4),
               ProfileListItems("Deactivate Account",Icons.cancel,5),
@@ -203,22 +220,35 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
           ),
-
-//          Padding(
-//            padding: const EdgeInsets.only(right: 16, left: 16),
-//            child: Container(
-//              height: 1,
-//              color:  GlobalColors.firstColor,//Colors.grey,
-//            ),
-//          )
         ],
       ),
     );
   }
 
 
+///Image Picker
+
+
+  Future openCamera() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    if(pickedFile != null){
+      image = File(pickedFile.path);
+      setState(() {});
+    }
+  }
+  Future openGallery() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery,imageQuality: 50);
+    if(pickedFile != null){
+      image = File(pickedFile.path);
+      setState(() {});
+    }
+
+
+  }
+
+
   ///Logout Api Call
-    logoutUserSession(){
+  logoutUserSession(){
 
       Map<String, dynamic> body = {};
       try {
@@ -228,11 +258,11 @@ class _ProfileState extends State<Profile> {
               if (response.statusCode == 200){
                 Map<String, dynamic> responseJson = json.decode(response.body);
                 if(responseJson.containsKey('success')) {
-                  if (await prf.containKey(UserSession.tokenkey)){
+                  if (await prf.containKey(UserSession.authTokenkey)){
                     AnswersGlobal.questions.clear();
                     AnswersGlobal.answers.clear();
                     AnswersGlobal.questionIndex = -1;
-                    await prf.remove(UserSession.tokenkey);
+                    await prf.remove(UserSession.authTokenkey);
                     await prf.remove(UserSession.answers);
                     await prf.remove(UserSession.question);
                     await prf.remove(UserSession.email);
@@ -298,5 +328,43 @@ class _ProfileState extends State<Profile> {
       });
     }
   }
+
+
+  ///Upload Profile Photo.... Set Profile Image
+
+  UpdateProfileImage(File imgFile){
+
+    try{
+      ApiBaseHelper().uploadFile(imgFile).then((response) async {
+        print(response);
+        if (response.statusCode == 200){
+          print("Uploaded Successfully....");
+//          Map<String, dynamic> responseJson = json.decode(response.body);
+//          if(responseJson.containsKey('success')) {
+//          } else{
+//            print("Oh no response");
+//          }
+
+        }else if (response.statusCode == 401){
+          loading =false;
+          setState(() {});
+          GFunction.showError(response.body["error"].toString(), context);
+
+        }else{
+          loading =false;
+          setState(() {});
+          GFunction.showError(response.reasonPhrase.toString(), context);
+        }
+
+      });
+
+    }on FetchDataException catch(e) {
+      setState(() {
+        GFunction.showError(e.toString(), context);
+      });
+    }
+
+  }
+
 
 }

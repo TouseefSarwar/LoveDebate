@@ -24,12 +24,12 @@ class GFunction{
     });
   }
 
-  static showSuccess(String msg,VoidCallback action ,BuildContext context){
+  static showSuccess(VoidCallback action ,BuildContext context, {String subMsg,String title, bool imageStatus = true} ){
     showDialog(
         barrierDismissible: false,
         context: context,
         builder: (context) {
-          return SuccesfullDialog(sucMsg: msg,action: action,);
+          return SuccesfullDialog(titleMsg: title,subTitle: subMsg, imageStatus: imageStatus,action: action,);
         }
     ).then((value){
     });

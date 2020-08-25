@@ -14,35 +14,21 @@ class CameraDialog extends StatefulWidget {
 
 class _CameraDialogState extends State<CameraDialog> {
 
-  ImagePicker _picker;
-  var picture;
-//  openCamera()async{
-//    picture = await ImagePicker.pickImage(
-//      source: ImageSource.camera,
-//    );
-//  }
-//  openGallery() async{
-//    picture = await ImagePicker.pickImage(
-//      source: ImageSource.gallery,
-//    );
-//    print(picture);
-//  }
-//  File _image;
-//  final picker = ImagePicker();
-//
-//  Future getImage() async {
-//    final pickedFile = await picker.getImage(source: ImageSource.camera);
-//
-//    setState(() {Future getImage() async {
-//      final pickedFile = await picker.getImage(source: ImageSource.camera);
-//
-//      setState(() {
-//        _image = File(pickedFile.path);
-//      });
-//    }
-//      _image = File(pickedFile.path);
-//    });
-//  }
+
+  File image;
+  final picker = ImagePicker();
+  Future openCamera() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    image = File(pickedFile.path);
+    Navigator.pop(context,image);
+  }
+  Future openGallery() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery,imageQuality: 50);
+    image = File(pickedFile.path);
+    Navigator.pop(context,image);
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +49,8 @@ class _CameraDialogState extends State<CameraDialog> {
               children: <Widget>[
                 InkWell(
                   onTap: (){
-                    setState(() {
 //                      openCamera();
-
-                      Navigator.pop(context,picture);
-
-                    });
+                      Navigator.pop(context,"camera");
                   },
                   child: Column(
                     children: <Widget>[
@@ -78,13 +60,13 @@ class _CameraDialogState extends State<CameraDialog> {
                     ],
                   ),
                 ),
+
                 SizedBox(width: 16,),
+
                 InkWell(
                   onTap: (){
-                    setState(() {
-//                      openGallery();
-                      Navigator.pop(context,picture);
-                    });
+//                    openGallery();
+                    Navigator.pop(context,"gallery");
                   },
                   child: Column(
                     children: <Widget>[
@@ -96,9 +78,12 @@ class _CameraDialogState extends State<CameraDialog> {
                 ),
               ],
             ),
+
+
           ],
         ),
       ),
     );
   }
+
 }

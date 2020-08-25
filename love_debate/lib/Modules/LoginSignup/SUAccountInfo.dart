@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:app_push_notifications/Modules/Preferences/PreferencesOnBoarding.dart';
 import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
 import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
-import 'package:app_push_notifications/Utils/Designables/ErrorDialog.dart';
-import 'package:app_push_notifications/Utils/Designables/Toast.dart';
 import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomTextFeilds.dart';
@@ -56,7 +54,6 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print(SignUpGlobal.f_name);
   }
 
   @override
@@ -237,10 +234,11 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
             if (res.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(res.body);
               if(responseJson.containsKey('success')){
-                UserSession.token =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
-                print(UserSession.token);
-                await prf.set(UserSession.tokenkey,UserSession.token);
+                UserSession.authToken =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
+                print(UserSession.authToken);
+                await prf.set(UserSession.authTokenkey,UserSession.authToken);
                 await prf.set(UserSession.signUp,true);
+                await prf.set(UserSession.name,SignUpGlobal.f_name+" "+SignUpGlobal.l_name);
                 UserSession.isSignup = await prf.getBy(UserSession.signUp);
                 apiCall = 0;
                 SignUpGlobal.f_name = null;
@@ -252,7 +250,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
                 SignUpGlobal.personHeight =null;
                 SignUpGlobal.dob=null;
 
-                GFunction.showSuccess("", () {
+                GFunction.showSuccess( () {
                   Navigator.push(context, CupertinoPageRoute(fullscreenDialog: true,builder: (context) => PreferencesOnBoarding()) );
                 }, context);
 

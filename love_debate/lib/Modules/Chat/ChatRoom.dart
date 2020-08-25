@@ -2,7 +2,7 @@ import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:app_push_notifications/Models/ChatRoomModel.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomTextFeilds.dart';
 
@@ -18,15 +18,15 @@ class _ChatRoomState extends State<ChatRoom> {
 
 
   BubbleStyle styleSomebody = BubbleStyle(
-    nip: BubbleNip.no,
-    color:Color(0xFFE9E9EA),
+    nip: BubbleNip.leftBottom,
+    color: GlobalColors.firstColor,
     elevation: 1,
     margin: BubbleEdges.only(top: 8, right: 50),
     alignment: Alignment.topLeft,
   );
   BubbleStyle styleMe = BubbleStyle(
-    nip: BubbleNip.no,
-    color: GlobalColors.firstColor,
+    nip: BubbleNip.rightTop,
+    color:Color(0xFFE9E9EA),
     elevation: 1,
     margin: BubbleEdges.only(top: 8.0, left: 50.0),
     alignment: Alignment.topRight,
@@ -76,9 +76,9 @@ class _ChatRoomState extends State<ChatRoom> {
                 itemBuilder: (context,index){
 
                   if (msgList[index].isMe){
-                    return ChatItem(styleMe, msgList[index].msg);
+                    return chatItem(styleMe, msgList[index].msg);
                   }else{
-                    return ChatItem(styleSomebody, msgList[index].msg);
+                    return chatItem(styleSomebody, msgList[index].msg);
                   }
 
 //          return index != 9? ChatItem(styleMe, "Welcome to LoveDebate! \nThis is test message to checking the User Interface.", true): sendMsgTextFeild();
@@ -95,7 +95,7 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 
 
-  Container ChatItem(BubbleStyle style, String text) {
+  Container chatItem(BubbleStyle style, String text) {
     return Container(
       //width:200,
       //color: Colors.,
@@ -106,7 +106,7 @@ class _ChatRoomState extends State<ChatRoom> {
             padding: const EdgeInsets.only(left: 12, right: 12),
             child: Bubble(
               style: style,
-              child: Text(text, style: TextStyle(fontSize:GlobalFont.textFontSize,fontWeight: FontWeight.w500, color: style == styleMe ? Colors.white : Colors.black),),
+              child: Text(text, style: TextStyle(fontSize:GlobalFont.textFontSize,fontWeight: FontWeight.w500, color: style != styleMe ? Colors.white : Colors.black),),
             ),
           ),
           SizedBox(height: 8,),

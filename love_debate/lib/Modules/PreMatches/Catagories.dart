@@ -10,22 +10,23 @@ import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:app_push_notifications/Utils/Controllers/AppExceptions.dart';
 import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
-import 'package:app_push_notifications/Modules/PreMatches/Rounds/Rounds.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'Rounds/Rounds.dart';
 
-class Catagories extends StatefulWidget {
+// ignore: must_be_immutable
+class CatagoriesView extends StatefulWidget {
   Matches roundDetail;
-  Catagories({this.roundDetail});
+  CatagoriesView({this.roundDetail});
 
   @override
-  _CatagoriesState createState() => _CatagoriesState();
+  _CatagoriesViewState createState() => _CatagoriesViewState();
 }
 
-class _CatagoriesState extends State<Catagories> {
+class _CatagoriesViewState extends State<CatagoriesView> {
   int apiCall = 0;
   List<CatagoryModel> catData = List<CatagoryModel>();
 
@@ -33,7 +34,6 @@ class _CatagoriesState extends State<Catagories> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print(widget.roundDetail.prId);
     apiCall =1;
     setState(() {
       getCatogeries();
@@ -51,30 +51,18 @@ class _CatagoriesState extends State<Catagories> {
         child: (apiCall == 0) ? ListView.builder(
           itemCount: catData.length,
           itemBuilder: (context,index){
-            return CatagoryItem(catData[index], context);
+            return catagoryItem(catData[index], context);
           },
         ):Center(child: Loading(),),
-
-//        child: ListView(
-//            children: <Widget>[
-//              CatagoryItem('Kids',context),
-//              CatagoryItem("Hobbies",context),
-//              CatagoryItem("Preferences",context),
-//              CatagoryItem("Family",context),
-//              CatagoryItem("Home Town",context),
-//              CatagoryItem("Job",context),
-//              CatagoryItem("Future ",context),
-//            ],
-//
-//        ),
       ),
     );
   }
 
-  InkWell CatagoryItem(CatagoryModel cat,BuildContext context) {
+  InkWell catagoryItem(CatagoryModel cat,BuildContext context) {
     return InkWell(
       onTap: (){
-        Navigator.push(context, CupertinoPageRoute(builder: (context) => Rounds(catId: cat.cId.toString(),)));
+        print(widget.roundDetail.prUserId);
+        Navigator.push(context, CupertinoPageRoute(builder: (context) => Rounds(catId: cat.cId.toString(), perMatch: widget.roundDetail)));
 
       },
       child: Container(
@@ -103,7 +91,6 @@ class _CatagoriesState extends State<Catagories> {
   void getCatogeries(){
     Map<String, dynamic> body = {
     };
-    print(body);
     try {
       ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: false, url: WebService.roundCategories,body: body,isFormData: false).then(
               (response) async{

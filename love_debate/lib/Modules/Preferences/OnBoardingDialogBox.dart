@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'package:app_push_notifications/Models/QaOptions.dart';
+import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:app_push_notifications/Models/AnswersModel.dart';
@@ -9,13 +10,11 @@ import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
 import 'package:app_push_notifications/Utils/Constants/WebService.dart';
 import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:app_push_notifications/Utils/Controllers/AppExceptions.dart';
-import 'package:app_push_notifications/Utils/Designables/Toast.dart';
 import 'package:app_push_notifications/Utils/Globals/AnswersGlobals.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomButtons.dart';
 import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
-import 'package:app_push_notifications/Utils/Globals/SignUpGlobal.dart';
 import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
 
 
@@ -23,42 +22,27 @@ class OnBoardingDialogBox extends StatefulWidget {
 
   OnBoardingDataModel Question;
   List<CheckBoxDataModel> questionsCheckBox;
-  OnBoardingDialogBox({this.Question,this.questionsCheckBox});
+  String api;
+  OnBoardingDialogBox({this.Question,this.questionsCheckBox, this.api});
   @override
   _OnBoardingDialogBoxState createState() => _OnBoardingDialogBoxState();
 }
 
 class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
   SharedPref prf = SharedPref();
-
-  @override
-  void dispose() {
-    super.dispose();
-    this.dispose();
-  }
+  int apiCall = 0;
 
   @override
   void initState() {
-    super.initState();
+    if (widget.api != null){
+      print("here....");
+      apiCall =1;
+      setState(()  {
+          callOnBoardingSubOptions(widget.api, widget.Question);
+      });
 
-//    print(AnswersGlobal.questionIndex);
-//    print(widget.questionsCheckBox);
-    if (widget.Question.qaAns != null){
-      print("Hereee");
-    }
-    if (widget.Question.qaAns != null && widget.Question.qaAns != ""){
+    }else if(widget.Question.qaAns != null && widget.Question.qaAns != ""){
       ///If you want to send
-//      print(widget.Question.qaAns);
-//      List<String> qv = widget.Question.qaAns.split(',');
-//      for(int i=0; i<widget.questionsCheckBox.length ; i++){
-//        for (int j=0; j<qv.length;j++){
-//          if (qv[j] == widget.questionsCheckBox[i].value){
-//            widget.questionsCheckBox[i].checkvalue = true;
-//            break;
-//          }
-//        }
-//      }
-//      List<String> qv = widget.Question.qaAns.split(',');
       for(int i=0; i<widget.questionsCheckBox.length ; i++){
         for (int j=0; j<widget.Question.qaAns.length;j++){
           if (widget.Question.qaAns[j] == widget.questionsCheckBox[i].value){
@@ -79,7 +63,7 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
     var width=MediaQuery.of(context).size.width;
 
 
-    return Dialog(
+    return apiCall == 0 ? Dialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(22.5))
       ),
@@ -91,8 +75,8 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
           OnBoardingDropDownList(totalDialogWidth,width,widget.Question ,widget.questionsCheckBox),
 
         ],
-      ),
-    );
+      )
+    ): Center(child: Loading());
   }
   Container OnBoardingDropDownList(double totalDialogWidth ,double width,OnBoardingDataModel Question,List<CheckBoxDataModel> questionsCheckBox) {
     return Container(
@@ -370,6 +354,87 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
   }
 
 
+  ///Editedddd
+  callOnBoardingSubOptions(String webserviceUrl, OnBoardingDataModel question) {
+    Map<String, dynamic> body = {
+    };
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: false, url: webserviceUrl,body: body,isFormData: true).then(
+              (response) {
+            var data = List<QaOptions>();
+            if (response.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(response.body);
+              if(responseJson.containsKey('success')) {
+                switch (webserviceUrl){
+                  case "data/professions":
+                    responseJson['success'].forEach((v){
+                      var itm = QaOptions(text: v['pro_name'], value: '${v['pro_id']}' );
+                      data.add(itm);
+                    });
+                    break;
+                  case "data/children_preferences":
+                    responseJson['success'].forEach((v){
+                      var itm = QaOptions(text: v['cp_text'], value: '${v['cp_id']}' );
+                      data.add(itm);
+                    });
+                    break;
+                  case "data/faith":
+                    responseJson['success'].forEach((v){
+                      var itm = QaOptions(text: v['f_name'], value: '${v['f_id']}' );
+                      data.add(itm);
+                    });
+                    break;
+                  case "data/ethnicity":
+                    responseJson['success'].forEach((v){
+                      var itm = QaOptions(text: v['e_name'], value: '${v['e_id']}' );
+                      data.add(itm);
+                    });
+                    break;
+                  case "data/vacation_types":
+                    responseJson['success'].forEach((v){
+                      var itm = QaOptions(text: v['vt_name'], value: '${v['vt_id']}' );
+                      data.add(itm);
+                    });
+                    break;
+                  case "data/hobbies":
+                    responseJson['success'].forEach((v){
+                      var itm = QaOptions(text: v['hb_name'], value: '${v['hb_id']}' );
+                      data.add(itm);
+                    });
+                    break;
+                  default:
+                    print("Nothing found");
+                }
+
+                apiCall = 0;
+                setState(() {
+                  widget.questionsCheckBox.clear();
+                  for(int i=0;i<data.length;i++) {
+                    var itm = CheckBoxDataModel(id: question.qaId,checkboxText: data[i].text,checkvalue: false,value: data[i].value);
+                    widget.questionsCheckBox.add(itm);
+                  }
+                  widget.api = null;
+                  initState();
+                });
+              }else{
+              }
+            }else if (response.statusCode == 401){
+              apiCall = 0;
+              setState(() {});
+              GFunction.showError(jsonDecode(response.body)["error"].toString(), context);
+            }else{
+              setState(() {
+                apiCall = 0;
+              });
+              GFunction.showError(response.reasonPhrase.toString(), context);
+            }
+          });
+    } on FetchDataException catch(e) {
+      setState(() {
+        GFunction.showError(e.toString(), context);
+      });
+    }
+  }
 
 }
 

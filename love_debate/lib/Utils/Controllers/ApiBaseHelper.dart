@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:app_push_notifications/Utils/Constants/WebService.dart';
 import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
@@ -7,14 +8,12 @@ import 'dart:io';
 import 'AppExceptions.dart';
 class ApiBaseHelper {
  final String _baseUrl = WebService.baseURL;
-  //String _baseUrl ;
   Future<dynamic> fetchService({String method,String url,bool authorization = false, dynamic body, bool isFormData}) async {
     var _header;
-
     if (authorization){
       _header = {
         'Content-Type' : (isFormData) ? 'application/x-www-form-urlencoded' : 'application/json',
-        'Authorization' : UserSession.token,
+        'Authorization' : UserSession.authToken,
       };
     }else{
       _header = {
@@ -47,6 +46,42 @@ class ApiBaseHelper {
       return responseJson;
     }
   }
+
+
+  /// front_user_id, trip_id, images
+ Future<dynamic> uploadFile(File imageFile) async {
+    print("1-${DateTime.now().toString()}-${imageFile.path.split('/').last}");
+    var postUri = Uri.parse("http://demo.themlmglobal.com/project101/appguide/wizardstep_20");
+    var request = new http.MultipartRequest("POST", postUri);
+    request.fields['front_user_id'] = '195';
+    request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+
+
+
+    var res = await request.send();
+    return res;
+  }
+
+ Future<dynamic> uploadFile1(File  imageFile) async{
+    Response response;
+    FormData formData = new FormData.fromMap({
+      "front_user_id": "195",
+      "image": await MultipartFile.fromFile(imageFile.path,filename: "1-${DateTime.now().toString()}-${imageFile.path.split('/').last}"),
+    });
+    response = await Dio().post("http://demo.themlmglobal.com/project101/appguide/wizardstep_3",
+      data: formData,
+      onSendProgress: (int send, int total){print("Send: ${send}, Total: ${total} ");},
+    );
+
+
+
+    print("The result is: ${response.statusCode}");
+    print("The response is: ${response}");
+//    print(jsonDecode(response["result"]["userdata"]));
+  }
+
+
+
 }
 
 dynamic _returnResponse(http.Response response) {

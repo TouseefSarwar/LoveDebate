@@ -7,64 +7,6 @@ import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 
 
-//class ErrorDialog extends StatelessWidget {
-//
-//
-//  String errorMsg;
-//
-//  ErrorDialog({this.errorMsg});
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    var totalDialogWidth = (MediaQuery.of(context).size.width - 20)/2.2;
-//    // var centerBoxWidth = (MediaQuery.of(context).size.width - 80)/ 2.2;
-//    var totalHeight = totalDialogWidth + 121;
-//    return Dialog(
-//      shape: RoundedRectangleBorder(
-//          borderRadius: BorderRadius.all(Radius.circular(22.5))
-//      ),
-//      child: Container(
-//        decoration: BoxDecoration(
-//          //color: Colors.pink,
-//            borderRadius: BorderRadius.all(Radius.circular(22.5))
-//        ),
-//        child: Column(
-//          mainAxisAlignment: MainAxisAlignment.center,
-//          crossAxisAlignment: CrossAxisAlignment.center,
-//          children: <Widget>[
-//            SizedBox(height: 12,),
-//            Container(
-//              height: 30,
-//              width: 30,
-//              child: Image.asset("images/close.png"),
-//            ),
-//            SizedBox(height: 16,),
-//            Text("Oops!",style: TextStyle(fontSize: GlobalFont.textFontSize,fontWeight: FontWeight.bold),),
-//            SizedBox(height: 16,),
-//            Text(errorMsg,style: TextStyle(fontSize: GlobalFont.textFontSize,),textDirection: TextDirection.ltr,maxLines: 5,),
-//            SizedBox(height: 16,),
-//            Container(
-//              height: 45,
-//              width: 100,
-//              // color: Colors.pink,
-//              child: CustomRaisedButton(
-//                buttonText: 'Ok',
-//                cornerRadius:22.5,
-//                textColor: Colors.white,
-//                backgroundColor:Color(0xffff0000),
-//                borderWith: 0,
-//                action: (){
-//                  ///validateFields();
-//                },
-//              ),
-//            ),
-//
-//          ],
-//        ),
-//      ),
-//    );
-//  }
-//}
 
 
 class ErrorDialog extends StatefulWidget {
@@ -131,11 +73,12 @@ class _ErrorDialogState extends State<ErrorDialog> {
 
 class SuccesfullDialog extends StatefulWidget {
 
-  String sucMsg;
+  String subTitle;
   String titleMsg;
+  bool imageStatus;
   VoidCallback action;
 
-  SuccesfullDialog({this.sucMsg,this.titleMsg, this.action});
+  SuccesfullDialog({this.subTitle,this.titleMsg, this.imageStatus, this.action});
   @override
   _SuccesfullDialog createState() => _SuccesfullDialog();
 }
@@ -158,12 +101,12 @@ class _SuccesfullDialog extends State<SuccesfullDialog> {
             Container(
               height: 40,
               width: 40,
-              child: Image.asset("images/tick.png"),
+              child: widget.imageStatus?Image.asset("images/tick.png") :Image.asset("images/close.png") ,
             ),
             SizedBox(height: 16,),
-            Text("Welcome to LoveDebate!",style: TextStyle(fontSize: GlobalFont.textFontSize,fontWeight: FontWeight.bold),),
+            Text((widget.titleMsg == null)?"Welcome to LoveDebate!":widget.titleMsg,style: TextStyle(fontSize: GlobalFont.textFontSize,fontWeight: FontWeight.bold),),
             SizedBox(height: 16,),
-            Text("Please continue to our onboarding process so that we come up with the best possible matches for you.",style: TextStyle(fontSize: GlobalFont.textFontSize,),textAlign: TextAlign.center,maxLines: 5,),
+            Text((widget.subTitle ==null)?"Please continue to our onboarding process so that we come up with the best possible matches for you.":widget.subTitle,style: TextStyle(fontSize: GlobalFont.textFontSize,),textAlign: TextAlign.center,maxLines: 5,),
             SizedBox(height: 16,),
             Container(
               height: 45,

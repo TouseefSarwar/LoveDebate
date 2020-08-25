@@ -7,25 +7,15 @@ import 'package:app_push_notifications/Utils/Constants/WebService.dart';
 import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:app_push_notifications/Utils/Controllers/AppExceptions.dart';
 import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
-import 'package:app_push_notifications/Utils/Designables/ErrorDialog.dart';
-import 'package:app_push_notifications/Utils/Designables/Toast.dart';
-import 'package:app_push_notifications/Utils/Globals/AnswersGlobals.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 import 'package:app_push_notifications/Modules/LoginSignup/SignUp.dart';
-import 'package:app_push_notifications/Screens/TabBarcontroller.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomButtons.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomTextFeilds.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
-import 'package:app_push_notifications/Utils/Globals/SignUpGlobal.dart';
 import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
-import '../../Screens/TabBarcontroller.dart';
 import '../../Utils/Globals/Colors.dart';
 import '../../Utils/Globals/Fonts.dart';
-import '../../Utils/HexColor.dart';
-
-
 
 class Login extends StatefulWidget {
   @override
@@ -47,7 +37,6 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     double _height=MediaQuery.of(context).size.height - MediaQuery.of(context).padding.vertical;
     double _width=MediaQuery.of(context).size.width;
-    double imageWidth = MediaQuery.of(context).size.width / 2;
     return Scaffold(
       body: SafeArea(
         top: true,
@@ -191,6 +180,7 @@ class _LoginState extends State<Login> {
     Map<String, dynamic> body = {
       'email': txtEmailController.text,
       'password' : txtPasswordController.text,
+      "device_token": UserSession.fcmToken,
     };
 
     try {
@@ -199,20 +189,17 @@ class _LoginState extends State<Login> {
             var res = response as http.Response;
             if (res.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(res.body);
-              print(responseJson);
               if(responseJson.containsKey('success')){
                 var loginResponse = LoginModel.fromJson(responseJson["success"]);
-                UserSession.token =  loginResponse.token == null? "": "Bearer ${loginResponse.token}";
-                await prf.set(UserSession.tokenkey,UserSession.token);
+                UserSession.authToken =  loginResponse.token == null? "": "Bearer ${loginResponse.token}";
+                await prf.set(UserSession.authTokenkey,UserSession.authToken);
+                await prf.set(UserSession.name,loginResponse.user.name);
                 await prf.set(UserSession.signUp,false);
                 UserSession.isSignup = await prf.getBy(UserSession.signUp);
                 await prf.remove(UserSession.answers);
                 await prf.remove(UserSession.question);
                 apiCall =0;
                 Navigator.of(context).pushReplacementNamed('/TabBarControllerPage');
-//                Navigator.pop(context,CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
-//                Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
-
               }else{
                 apiCall =0;
                 setState(() {});

@@ -167,7 +167,7 @@ import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
 import 'package:app_push_notifications/Utils/Designables/Toast.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomButtons.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomTextFeilds.dart';
@@ -248,8 +248,8 @@ class _BasicInfoState extends State<BasicInfo> {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
+        firstDate: DateTime(1900, 1),
+        lastDate: DateTime.now());
     setState(() {
       DateTime now = DateTime.now();
       String limit=DateFormat("yyyy-MM-dd").format(now);
@@ -278,7 +278,6 @@ class _BasicInfoState extends State<BasicInfo> {
         selectedDate = selectedDate;
         final selected=DateFormat("yyyy-MM-dd").format(selectedDate);
         final difference=DateTime.now().difference(selectedDate).inDays;
-        print("Diffderence "+difference.toString());
         if(!difference.isNegative){
           dobTF.text=selected;
         }
@@ -303,36 +302,6 @@ class _BasicInfoState extends State<BasicInfo> {
             emailTextField(lnameFN,lnameTF,'Last Name'),
             dateTime(dobFN,dobTF,'Date of Birth'),
             emailTextField(heightFN,heightTF,'Height'),
-//            Padding(
-//              padding: const EdgeInsets.only(left: 16,top: 16),
-//              child: Text("Gender",style: TextStyle(fontSize: GlobalFont.textFontSize,color: Colors.grey),),
-//            ),
-//            SizedBox(height: 0,),
-//            Row(
-//              children: <Widget>[
-//                Expanded(
-//                  child: Container(
-//                      width: 100,
-//                      child:customRadioButton(index1, selectedradio, 'Male ',context, (value){
-//                        setState(() {
-//                          selectedradio=index1;
-//                        });
-//                      })
-//                  ),
-//                ),
-//                Expanded(
-//                  child: Container(
-//                      width: 100,
-//                      child: customRadioButton(index2, selectedradio, 'Female',context, (value){
-//                        var index =index2;
-//                        setState(() {
-//                          selectedradio=index2;
-//                        });
-//                      })
-//                  ),
-//                ),
-//              ],
-//            ),
             emailTextField(countryFN,addressTF,'Current Address'),
             btnContinue(),
           ],
@@ -357,7 +326,6 @@ class _BasicInfoState extends State<BasicInfo> {
             FocusScope.of(context).requestFocus(txtEmailFocusNode);
 
             if(text=='Height'){
-//focusNode.unfocus();
               FocusScope.of(context).requestFocus(FocusNode());
               showDialog(
                   barrierDismissible: false,

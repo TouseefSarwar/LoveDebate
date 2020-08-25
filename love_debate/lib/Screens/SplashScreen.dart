@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:app_push_notifications/Modules/PreMatches/Rounds/Rounds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
@@ -14,7 +16,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
 
-
+  bool count = false;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   SharedPref prf = SharedPref();
@@ -24,11 +26,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigationPage() async{
-    if (await prf.containKey(UserSession.tokenkey)){
-      UserSession.token = await prf.getBy(UserSession.tokenkey);
+    if (await prf.containKey(UserSession.authTokenkey)){
+      UserSession.authToken = await prf.getBy(UserSession.authTokenkey);
       Navigator.of(context).pushReplacementNamed('/TabBarControllerPage');
     }else{
-      UserSession.token = "";
+      UserSession.authToken = "";
       Navigator.of(context).pushReplacementNamed('/Login');
     }
 
@@ -37,21 +39,35 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
+    startTime();
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        _showItemDialog(message);
+        print("onMessage Is: $message");
+//          Navigator.of(context).pushReplacementNamed('/Rounds');
+//        Navigator.push(
+//            context,
+//            MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["id"]}" ,catId:"${message["cate"]}"))
+//        );
+//        handleNotificationScreen(message);
       },
 //      onBackgroundMessage: Fcm.myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
-        _showItemDialog(message);
+//        _showItemDialog(message);
+//        Navigator.push(
+//            context,
+//            MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["id"]}" ,catId:"${message["cate"]}"))
+//        );
+
       },
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
-        _showItemDialog(message);
+//        Navigator.push(
+//            context,
+//            MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["id"]}" ,catId:"${message["cate"]}"))
+//        );
+//        _showItemDialog(message);
       },
     );
 
@@ -61,9 +77,13 @@ class _SplashScreenState extends State<SplashScreen> {
     _firebaseMessaging.getToken().then((String token) {
       assert(token != null);
       print("Push Messaging token: $token");
+      if(token != null){
+        UserSession.fcmToken = token;
+      }
+
     });
 
-    startTime();
+
   }
 
   void iOS_Permission() {
@@ -74,6 +94,30 @@ class _SplashScreenState extends State<SplashScreen> {
       print("Settings registered: $settings");
     });
   }
+
+
+
+
+
+  handleNotificationScreen(Map<String, dynamic> msg){
+
+    if (msg.containsKey("cate") && msg.containsKey("id"))  {
+      //rounds handling....
+      print("Rounds \n Round Id: ${msg["id"]} \n Categeroy Id: ${msg["cate"]}  ");
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => Rounds(idNoti:"${msg["id"]}" ,catId:"${msg["cate"]}"))
+      );
+
+//      Navigator.push(context,MaterialPageRoute(builder: (BuildContext context) => Rounds(idNoti:"${msg["id"]}" ,catId:"${msg["cate"]}")));
+
+    }else{
+      print("Handle other notifications screens like chat etc.");
+    }
+
+  }
+
+
+
 
 
   @override

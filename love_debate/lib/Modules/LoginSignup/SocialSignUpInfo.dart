@@ -12,14 +12,14 @@ import 'package:app_push_notifications/Utils/Designables/CustomButtons.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomTextFeilds.dart';
 import 'package:app_push_notifications/Utils/Designables/Toast.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:intl/intl.dart';
 import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
-import 'package:app_push_notifications/Utils/Globals/SignUpGlobal.dart';
 import 'package:app_push_notifications/Utils/Controllers/AppExceptions.dart';
 import 'package:http/http.dart' as http;
 import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
 
+// ignore: must_be_immutable
 class SocialSignUpForm extends StatefulWidget {
 
   String email;
@@ -391,6 +391,7 @@ class _SocialSignUpFormState extends State<SocialSignUpForm> {
               Map<String, dynamic> responseJson = json.decode(res.body);
               if(responseJson.containsKey('success')){
                 await prf.set(UserSession.signUp,true);
+                await prf.set(UserSession.name,body["last_name"].toString()+""+body["last_name"].toString());
                 UserSession.isSignup = await prf.getBy(UserSession.signUp);
                 islaoding = false;
                 setState(() {});

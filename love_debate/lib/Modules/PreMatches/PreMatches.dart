@@ -1,218 +1,5 @@
-//import
-//import 'package:app_push_notifications/Models/ListModel.dart';
-//import 'package:app_push_notifications/Screens/SubViews/RoundsListingCell.dart';
-//import 'package:app_push_notifications/Utils/Globals/Colors.dart';
-//import 'package:app_push_notifications/Modules/PreMatches/Catagories.dart';
-//import 'package:flutter/cupertino.dart';
-//import 'package:flutter/material.dart';
-//import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
-//
-//class PreMatches extends StatefulWidget {
-//  @override
-//  _PreMatchesState createState() => _PreMatchesState();
-//}
-//
-//class _PreMatchesState extends State<PreMatches> {
-//
-//  List<ListModel> list = [ ListModel(title: "Start Round" ,colorCell: Colors.blue ),
-//    ListModel(title: "Start Round" ,colorCell: Colors.green),
-//    ListModel(title: "Start Round" ,colorCell: Colors.redAccent),
-//    ListModel(title: "Start Round" ,colorCell: Colors.purple),
-//    ListModel(title: "Start Round" ,colorCell: Colors.yellow),
-//    ListModel(title: "Start Round" ,colorCell: Colors.pink),
-//    ListModel(title: "Start Round" ,colorCell: Colors.indigo)
-//  ];
-//
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    double height=(MediaQuery.of(context).size.height-MediaQuery.of(context).padding.vertical)-AppBar().preferredSize.height;
-//    double width=MediaQuery.of(context).size.width-90;
-//    double itemheight =(15/100)*height;
-//    return Scaffold(
-//      appBar: CustomAppbar.setNavigation("Pre Matches"),
-//
-//      body: SafeArea(
-//        child:ListView.builder(
-//          itemCount: list.length,
-//          itemBuilder: (context,index){
-//            return RoundListingCell(
-//              title: list[index].title,
-//              gender: "Male",
-//              age: "30",
-//              personHeight: "5'4",
-//              height: itemheight,
-//              width: width,
-//              data: "A",
-//              avatarColor: list[index].colorCell,
-//              iconColor: GlobalColors.firstColor,
-//              index: index,
-//              action: (){
-//                Navigator.push(context, CupertinoPageRoute(builder: (context) => Catagories()));
-//              },
-//            );
-//          },
-//        ),
-////        ListView(
-////          children: <Widget>[
-////
-////            RoundListingCell(
-////              title: "Start Round",
-////              gender: "Male",
-////              age: "30",
-////              personHeight: "5'4",
-////              height: _itemheight,
-////              width: _width,
-////              data: "A",
-////              avatarColor: Colors.pink,
-////              iconColor: GlobalColors.firstColor,
-////            ),
-////            RoundListingCell(
-////                title: "Start Round",
-////                gender: "Male",
-////                age: "30",
-////                personHeight: "5'4",
-////                height: _itemheight,
-////                width: _width,
-////                data: "S",
-////                avatarColor: Colors.blue,
-////                iconColor:  GlobalColors.firstColor
-////            ),
-////            RoundListingCell(
-////                title: "Start Round",
-////                gender: "Male",
-////                age: "30",
-////                personHeight: "5'4",
-////                height: _itemheight,
-////                width: _width,
-////                data: "F",
-////                avatarColor: Colors.yellow,
-////                iconColor:  GlobalColors.firstColor
-////            ),
-////            RoundListingCell(
-////                title: "Start Round",
-////                gender: "Male",
-////                age: "30",
-////                personHeight: "5'4",
-////                height: _itemheight,
-////                width: _width,
-////                data: "G",
-////                avatarColor: Colors.green,
-////                iconColor: Colors.grey
-////            ),
-////            RoundListingCell(
-////                title: "Start Round",
-////                gender: "Male",
-////                age: "30",
-////                personHeight: "5'4",
-////                height: _itemheight,
-////                width: _width,
-////                data: "H",
-////                avatarColor: Colors.purple,
-////                iconColor: Colors.grey
-////            ),
-////            RoundListingCell(
-////                title: "Start Round",
-////                gender: "Male",
-////                age: "30",
-////                personHeight: "5'4",height: _itemheight,
-////                width: _width,
-////                data: "N",
-////                avatarColor: Colors.teal,
-////                iconColor: Colors.grey
-////            ),
-//////              PreMatchesItem(_itemheight, _width, "A",Colors.green,context),
-//////
-//////              PreMatchesItem(_itemheight, _width, "M",Colors.blue,context),
-//////              PreMatchesItem(_itemheight, _width, "B",Colors.pink,context),
-////          ],
-////        ),
-//      ),
-//    );
-//  }
-//
-//}
-//
-//InkWell PreMatchesItem(double itemheight, double width, String text, Color background,BuildContext context) {
-//  return InkWell(
-//    onTap: (){
-//      Navigator.push(context, CupertinoPageRoute(builder: (context) => Catagories()));
-//    },
-//
-//    child: Container(
-//      height: itemheight,
-//      width: width,
-//      // color: Colors.black,
-//      child: Card(
-//        elevation: 5,
-//        child: Row(
-//          children: <Widget>[
-//            SizedBox(width: 8,),
-//            Stack(
-//              children: <Widget>[
-//                Container(
-//                    width: 75,
-//                    height: 75,
-//                    // margin: EdgeInsets.only(left: 24),
-//                    decoration: new BoxDecoration(
-//                      color: background,
-//                      shape: BoxShape.circle,
-//                    )
-//                ),
-//                Container(
-//                    width: 75,
-//                    height: 75,
-//                    decoration: new BoxDecoration(
-//                      color: Colors.black.withOpacity(0.2),
-//                      shape: BoxShape.circle,
-//                    )
-//                ),
-//                Container(
-//                  width: 75,
-//                  height: 75,
-//                  child: Center(
-//                    child: Text(
-//                      text,style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.bold),
-//                    ),
-//                  ),
-//                ),
-//
-//              ],
-//            ),
-//            Expanded(
-//              child: Container(
-//                height: itemheight,
-//                margin: EdgeInsets.only(left: 16),
-//                child: Column(
-//                  mainAxisAlignment: MainAxisAlignment.center,
-//                  crossAxisAlignment: CrossAxisAlignment.start,
-//                  children: <Widget>[
-//                    Text("Start Round", maxLines: 2,style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold ,color:Color(0xff2E3032)),),
-//                    SizedBox(height: 4,),
-//                    Text("This is a start round description.... it is test for double line",style: TextStyle(fontSize: 15,color:Color(0xff2E3022)))
-//                  ],
-//                ),
-//              ),
-//            ),
-//            SizedBox(width: 8,),
-//            Container(
-//              height: itemheight,
-//              child: Row(
-//                mainAxisAlignment: MainAxisAlignment.end,
-//                children: <Widget>[
-//                  Icon(Icons.navigate_next,size: 35,color: GlobalColors.firstColor),
-//                ],
-//              ),
-//            ),
-//          ],
-//        ),
-//
-//      ),
-//    ),
-//  );
-//}
-
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 
 import 'package:app_push_notifications/Models/ListModel.dart';
@@ -226,7 +13,7 @@ import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 import 'package:app_push_notifications/Modules/PreMatches/Catagories.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:app_push_notifications/Utils/Controllers/AppExceptions.dart';
 import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 
@@ -241,14 +28,8 @@ class _PreMatchesState extends State<PreMatches> {
   List<Matches> matches = List<Matches>();
   int apiCall=0;
 
-  List<ListModel> list = [ ListModel(title: "Start Round" ,colorCell: Colors.blue ),
-    ListModel(title: "Start Round" ,colorCell: Colors.green),
-    ListModel(title: "Start Round" ,colorCell: Colors.redAccent),
-    ListModel(title: "Start Round" ,colorCell: Colors.purple),
-    ListModel(title: "Start Round" ,colorCell: Colors.yellow),
-    ListModel(title: "Start Round" ,colorCell: Colors.pink),
-    ListModel(title: "Start Round" ,colorCell: Colors.indigo)
-  ];
+  //For Avatar Colors
+  List<int> colorsR = [0xFF9055A2,0xFFF7C548,0xFFFF66D8,0xFFDC493A,0xFF4392F1,0xFF3D0814,0xFFF7EC59,0xFFFF66D8,0xFFA98743,0xFFEEEBD3,0xFF011638];
 
   @override
   void initState() {
@@ -272,24 +53,18 @@ class _PreMatchesState extends State<PreMatches> {
           itemBuilder: (context,index){
             return RoundListingCell(
               title: 'Start Round',
-              gender: (matches[index].gender!=null)?(matches[index].gender==1)?'Male':'Female':" ",
-//              age: (matches[index].dob!=null)?matches[index].dob:'',
-              age: '25',
-              personHeight:(matches[index].height!=null)? matches[index].height: " ",
+              gender: (matches[index].gender!=null)?(matches[index].gender==1)?'Male':'Female':"N/A",
+              age: (matches[index].dob!= null)?(DateTime.now().difference(DateTime.parse(matches[index].dob)).inDays/365).floor().toString():"N/A",
+              personHeight:(matches[index].height==null )? "N/A" :matches[index].height,
               height: itemheight,
               width: width,
               data: (matches[index].firstName!=null)?matches[index].firstName[0].toString():'',
               address: (matches[index].city!=null && matches[index].state!=null)?"${matches[index].city}, ${matches[index].state}":"Address not found",
-              avatarColor: Colors.red,
               iconColor: GlobalColors.firstColor,
               index: index,
+              avatarColor: Color(colorsR[Random().nextInt(colorsR.length)]),
               action: (){
-//DateTime dob = DateTime.parse(matches[index].dob);
-                DateTime dob = DateTime.parse('1967-10-12');
-                Duration dur = DateTime.now().difference(dob);
-                String differenceInYears = (dur.inDays/365).floor().toString();
-                print(differenceInYears);
-                Navigator.push(context, CupertinoPageRoute(builder: (context) => Catagories(roundDetail:  matches[index],)));
+                Navigator.push(context, CupertinoPageRoute(builder: (context) => CatagoriesView(roundDetail:  matches[index],)));
               },
             );
           },
@@ -301,7 +76,6 @@ class _PreMatchesState extends State<PreMatches> {
               
  Please make some changes to your preferences and filters and try again.
               ''',
-//              "No matches found.\n\nPlease make some changes to your preferences and filters and try again.",
               maxLines: 5,
               style: TextStyle(
                 fontSize: GlobalFont.textFontSize,
@@ -332,19 +106,13 @@ class _PreMatchesState extends State<PreMatches> {
                 print("HEre is yourrr response : ${responseJson["success"]}");
                 responseJson["success"].forEach((v) {
                   Matches item = Matches.fromJson(v);
+                  print(item.height);
                   data.add(Matches.fromJson(v));
                 });
-
                 setState(() {
                   matches=data;
                   apiCall=0;
                 });
-// print(responseJson);
-// Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
-// var loginResponse = LoginModel.fromJson(responseJson["success"]);
-// print(res.statusCode.toString());
-// print(loginResponse.user.email);
-// print(loginResponse.user.name);
               }else{
                 print("Oh no response");
               }
@@ -354,24 +122,6 @@ class _PreMatchesState extends State<PreMatches> {
             }else{
               Toast.show(res.reasonPhrase.toString(), context, duration: Toast.LENGTH_LONG);
             }
-
-
-
-//
-// var data=List<Matches>();
-// Map<String, dynamic> responseJson = json.decode(response);
-// if(responseJson.containsKey('success')){
-//
-// responseJson['success'].forEach((v) {
-// data.add(Matches.fromJson(v));
-// print(Matches.fromJson(v));
-// });
-// matches=data;
-
-// print("responce");
-// }else{
-// print(responseJson);
-// }
           });
     } on FetchDataException catch(e) {
       setState(() {
@@ -386,7 +136,7 @@ class _PreMatchesState extends State<PreMatches> {
 InkWell PreMatchesItem(double itemheight, double width, String text, Color background,BuildContext context) {
   return InkWell(
     onTap: (){
-      Navigator.push(context, CupertinoPageRoute(builder: (context) => Catagories()));
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => CatagoriesView()));
     },
 
     child: Container(

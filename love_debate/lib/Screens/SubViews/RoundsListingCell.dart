@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
@@ -16,12 +18,8 @@ class RoundListingCell extends StatelessWidget {
   int index;
   String address;
   VoidCallback action;
-
   ///Here we can use the model instead of "String" variable in future
   String data;
-
-
-
   RoundListingCell({this.height, this.width, this.data,this.address ,this.avatarColor, this.iconColor, this.title, this.age, this.gender,this.personHeight,this.index, this.action});
 
   @override
@@ -97,13 +95,13 @@ class RoundListingCell extends StatelessWidget {
 //                        SizedBox(width: 12,),
 //                        Icon(Icons.person, color: iconColor,size: 20,),
                           SizedBox(width: 4,),
-                          Text("$age years, ",style: TextStyle(fontSize: GlobalFont.textFontSize - 2,color:Color(0xff2E3022))),
+                          Text((age == "N/A")?"$age ,":"$age years, ",style: TextStyle(fontSize: GlobalFont.textFontSize - 2,color:Color(0xff2E3022))),
 
                           ///Height Icon And text
 //                        SizedBox(width: 12,),
 //                        Icon(Icons.person, color: iconColor,size: 20,),
                           SizedBox(width: 4,),
-                          Text("$personHeight\"",style: TextStyle(fontSize: GlobalFont.textFontSize - 2,color:Color(0xff2E3022))),
+                          Text(  (personHeight == "null" ||personHeight == null)?"N/A" :"$personHeight\"",style: TextStyle(fontSize: GlobalFont.textFontSize - 2,color:Color(0xff2E3022))),
 
 
                         ],

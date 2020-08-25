@@ -61,7 +61,7 @@ class _HeightDialogBoxState extends State<HeightDialogBox> {
                   _heightList.add(height);
                   print(_heightList);
                 }
-                return HeightListItem();
+                return heightListItem();
 
               },
             ))),
@@ -73,9 +73,9 @@ class _HeightDialogBoxState extends State<HeightDialogBox> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Expanded(child: OnBoardingDialogBoxBtn("Cancel",Colors.grey,Colors.black)),
+                  Expanded(child: onBoardingDialogBoxBtn("Cancel",Colors.grey,Colors.black)),
                   SizedBox(width: 16,),
-                  Expanded(child: OnBoardingDialogBoxBtn("Done",GlobalColors.firstColor,Colors.white)),
+                  Expanded(child: onBoardingDialogBoxBtn("Done",GlobalColors.firstColor,Colors.white)),
                 ],
               ),
             ),
@@ -84,7 +84,7 @@ class _HeightDialogBoxState extends State<HeightDialogBox> {
       ),
     );
   }
-  ListView HeightListItem() {
+  ListView heightListItem() {
     return ListView.builder(
         itemCount:_heightList.length,
         itemBuilder:(BuildContext context,int index){
@@ -147,7 +147,7 @@ class _HeightDialogBoxState extends State<HeightDialogBox> {
           );
         });
   }
-  Widget OnBoardingDialogBoxBtn(String text,Color color,Color textColor) {
+  Widget onBoardingDialogBoxBtn(String text,Color color,Color textColor) {
     return SizedBox(
       height: 45,
       //width: width,

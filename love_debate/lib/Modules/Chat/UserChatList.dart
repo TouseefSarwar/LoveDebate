@@ -2,11 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_push_notifications/Models/ChatListModel.dart';
 import 'package:app_push_notifications/Modules/Chat/ChatRoom.dart';
-import 'package:app_push_notifications/Utils/Globals/Colors.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 import 'package:flutter/material.dart';
-import 'package:gradient_app_bar/gradient_app_bar.dart';
 
 
 class UserChatList extends StatefulWidget {
@@ -78,7 +76,7 @@ class _UserChatListState extends State<UserChatList> {
           child: ListView.builder(
             itemCount: list.length,
             itemBuilder: (context,index){
-              return ChatListItem(_width, list[index]);
+              return chatListItem(_width, list[index]);
             }
           ),
         ),
@@ -87,7 +85,7 @@ class _UserChatListState extends State<UserChatList> {
     );
   }
 
-  InkWell ChatListItem(double _width, ChatListModel data) {
+  InkWell chatListItem(double _width, ChatListModel data) {
     return InkWell(
       onTap: (){
         Navigator.push(context, CupertinoPageRoute(builder: (context) => ChatRoom()));
@@ -100,7 +98,7 @@ class _UserChatListState extends State<UserChatList> {
                   elevation: 5,
                   child: Row(
                     children: <Widget>[
-                      AppBarPic(),
+                      appBarPic(),
                       Expanded(
                         child: Container(
                           height: 90,
@@ -189,7 +187,7 @@ class _UserChatListState extends State<UserChatList> {
   }
 }
 
-Container AppBarPic() {
+Container appBarPic() {
     return Container(
             width: 60,
             height: 60,

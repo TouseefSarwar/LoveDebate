@@ -1,14 +1,11 @@
 import 'package:app_push_notifications/Modules/Preferences/PreferencesOnBoarding.dart';
 import 'package:app_push_notifications/Modules/Profile/Profile.dart';
 import 'package:app_push_notifications/Modules/Matched/Matched.dart';
-import 'package:app_push_notifications/Modules/Profile/MyPreferences.dart';
 import 'package:app_push_notifications/Modules/PreMatches/PreMatches.dart';
-import 'package:app_push_notifications/Modules/Stats/Stats.dart';
 import 'package:flutter/material.dart';
 import 'package:app_push_notifications/Modules/Chat/UserChatList.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 
-import '../Modules/PreMatches/Rounds/Rounds.dart';
 
 
 class TabBarControllerPage extends StatefulWidget {

@@ -1,8 +1,10 @@
+import 'dart:math';
+
 import 'package:app_push_notifications/Models/ListModel.dart';
 import 'package:app_push_notifications/Screens/SubViews/RoundsListingCell.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 import 'package:app_push_notifications/Screens/TabBarcontroller.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomButtons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,12 @@ class _MatchedState extends State<Matched> {
     ListModel(title: "Completed Round: " ,colorCell: Colors.pink),
     ListModel(title: "Completed Round: " ,colorCell: Colors.indigo)
   ];
+
+
+  //For Avatar Colors
+  List<int> colorsR = [0xFF9055A2,0xFFF7C548,0xFFFF66D8,0xFFDC493A,0xFF4392F1,0xFF3D0814,0xFFF7EC59,0xFFFF66D8,0xFFA98743,0xFFEEEBD3,0xFF011638];
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -44,7 +52,8 @@ class _MatchedState extends State<Matched> {
               height: _itemheight,
               width: width,
               data: "A",
-              avatarColor: list[index].colorCell,
+              avatarColor: Color(colorsR[Random().nextInt(colorsR.length)]),
+              address: "N/A",
               iconColor: GlobalColors.firstColor,
               index: index,
               action: (){

@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:app_push_notifications/Models/AnswersModel.dart';
-import 'package:app_push_notifications/Models/LoginModel.dart';
 import 'package:app_push_notifications/Models/OnBoardingModel.dart';
-import 'package:app_push_notifications/Models/QaOptions.dart';
 import 'package:app_push_notifications/Modules/Preferences/DialogboxAddSlider.dart';
 import 'package:app_push_notifications/Modules/Preferences/GooglePlaces.dart';
 import 'package:app_push_notifications/Modules/Preferences/OnBoardingDialogBox.dart';
@@ -13,19 +11,18 @@ import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
 import 'package:app_push_notifications/Utils/Constants/WebService.dart';
 import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
-import 'package:app_push_notifications/Utils/Designables/Toast.dart';
 import 'package:app_push_notifications/Utils/Globals/AnswersGlobals.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
-import 'package:app_push_notifications/Utils/Globals/CustomAppBar.dart';
+import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 import 'package:app_push_notifications/Utils/Controllers/AppExceptions.dart';
 import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
-import 'package:app_push_notifications/Utils/Globals/SignUpGlobal.dart';
 import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
 import 'PreferencesModel/CheckBoxDataModel.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'dart:math';
+
 
 
 
@@ -45,6 +42,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
   List<CheckBoxDataModel> questionsCheckBox = List<CheckBoxDataModel>();
   List<CheckBoxDataModel> apiQuestionsCheckBox = List<CheckBoxDataModel>();
 
+
 ///ends
   ///
   int apiCall = 0;
@@ -58,7 +56,6 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
   @override
   void initState() {
     super.initState();
-    print(UserSession.isSignup);
     get();
   }
 
@@ -137,7 +134,6 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
       child: (apiCall==0)?Padding(
         padding: const EdgeInsets.all(4.0),
         child: ListView.builder(
-//          key: ValueKey<int>(Random(DateTime.now().millisecondsSinceEpoch).nextInt(4294967296)),
           itemCount: AnswersGlobal.questions.length,
           itemBuilder: (context, index){
             return PreferenceQuestion(
@@ -158,7 +154,6 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
                 if (AnswersGlobal.questions[index].qaSlug == "address"){
                     AnswersGlobal.questionIndex = index;
                     _handlePressButton();
-
                 }else if (AnswersGlobal.questions[index].qaSlug == "match_area"){
                     showDialog(
                         barrierDismissible: false,
@@ -168,10 +163,9 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
                           return DialogboxAddSlider(Question: AnswersGlobal.questions[index],);
                         }
                     ).then((value){
-                      print(value);
+
                       setState(() {
-  //                        AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = value;
-                        print("Yahn pa.... :${AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns}");
+                        print("${AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns}");
                       });
                     });
                 }else{
@@ -185,17 +179,19 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
                     }
                     if(qOptions.myKey.first.text=="api"){
                       var dialogApi=qOptions.myKey.first.value;
-                      print(dialogApi);
 
-                      ///here is change
+                      ///Heree is change
                       AnswersGlobal.questionIndex = index;
-//                      print(AnswersGlobal.questionIndex);
-                      callOnBoardingSubOptions(dialogApi, AnswersGlobal.questions[index]);
-                      setState(() {
-                        apiCall = 1;
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) {
+                            return OnBoardingDialogBox(Question: AnswersGlobal.questions[AnswersGlobal.questionIndex],questionsCheckBox: questionsCheckBox,api: dialogApi,);
+                          }
+                      ).then((value){
+                        setState(() {});
                       });
                     }else{
-
                       showDialog(
                           barrierDismissible: false,
                           context: context,
@@ -204,11 +200,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
                             return OnBoardingDialogBox(Question: AnswersGlobal.questions[index],questionsCheckBox: questionsCheckBox,);
                           }
                       ).then((value){
-
-                        setState(() {
-  //                        AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns = value;
-                          print("Yahn pa Baki sab.... :${AnswersGlobal.questions[AnswersGlobal.questionIndex].qaAns}");
-                        });
+                        setState(() {});
                       });
                     }
                 }
@@ -220,108 +212,6 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
     ),
     );
   }
-
-  Card QuestionsContainer(double _height, double _width, FocusNode txtEmailFocusNode, TextEditingController txtAnswerController, BuildContext context,String questiontext,int _questionType,String fieldtype,OnBoardingDataModel QuestionObj,) {
-    return Card(
-      margin: const EdgeInsets.all(8),
-      elevation:  5,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-
-          Container(
-            width: _width,
-            margin: EdgeInsets.all(24),
-              child: Text(questiontext,style: TextStyle(
-                  fontSize: GlobalFont.textFontSize,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-                textAlign: TextAlign.justify,
-              )
-          ),
-          (fieldtype!="Slider")?Container(
-           // height: 120,
-            margin: EdgeInsets.all(4),
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  AnswerContainer(_width,"Enter Required value",QuestionObj)
-//                  (fieldtype=="Dropdown"||fieldtype=="Checkbox")? AnswerContainer(_width,"Enter Required value",QuestionObj):
-//                  Padding(
-//                    padding: const EdgeInsets.all(16),
-//                    child: NumberTextFeildContainer(txtAnswerController, fieldtype, context, QuestionObj),
-//                  ),
-                ],
-              ),
-            ),
-          ):OnBoardingSlider(_width),
-        ],
-      ),
-    );
-  }
-
-  InkWell AnswerContainer(double _width,String answerText,OnBoardingDataModel QuestionObj,) {
-    return InkWell(
-      onTap: (){
-        setState(() {
-          if (QuestionObj.qaId !=null){
-            qOptions = Autogenerated.fromJson(json.decode('{"MyKey" : ${QuestionObj.qaOptions}}'));
-            print(qOptions.myKey.length);
-          }
-          for(int i=0;i<qOptions.myKey.length;i++)
-          {
-            var itm = CheckBoxDataModel(id: QuestionObj.qaId,checkboxText: qOptions.myKey[i].text,checkvalue: false,value: qOptions.myKey[i].value);
-            questionsCheckBox.add(itm);
-          }
-          if(qOptions.myKey.first.text=="api"){
-            callOnBoardingSubOptions(qOptions.myKey.first.value, QuestionObj);
-          }
-          showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context) {
-
-                return OnBoardingDialogBox(Question: QuestionObj);
-              }
-          ).then((value){
-            setState(() {
-            });
-
-          });
-
-        });
-      }, child:
-    //   Row(
-    //      children: <Widget>[
-    Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Container(
-          margin: EdgeInsets.only(bottom: 8, left: 8),
-          child: Text((answer==" ")?answerText:answer,
-            style: TextStyle(
-                  fontSize: GlobalFont.textFontSize,
-                  color: Colors.grey,
-                ),
-            textAlign: TextAlign.justify,
-            overflow: TextOverflow.ellipsis,maxLines: 2,),
-
-        ),
-        SizedBox(height: 8,),
-        Container(height: 1,width:_width-54 ,color:Colors.grey,),
-        SizedBox(height: 16,),
-      ],
-    ),
-      //       SizedBox(width:8,),
-      //       ],
-      //       ),
-    );
-  }
-
   Container OnBoardingSlider(double width) {
     return Container(
       height: 75,
@@ -688,24 +578,15 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
               (response) async {
             if (response.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(response.body);
-              print("Your Api Response ;${responseJson}");
               if(responseJson.containsKey('success')) {
-                print("hereeeee");
-
                 await prf.remove(UserSession.question);
                 Map<String, dynamic> resp = {
                   'success': AnswersGlobal.questions,
                 };
                 await prf.set(UserSession.question, json.encode(resp));
-
-//                if(!(await prf.containKey(UserSession.answers))){
-//                  Map<String, dynamic> respAns = {
-//                    'answers': AnswersGlobal.answers,
-//                  };
-//                  await prf.set(UserSession.answers, json.encode(respAns));
-//                }
                 apiCall = 0;
                 setState(() {});
+
               } else{
                 print("Oh No....! response");
               }
@@ -726,96 +607,93 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
   }
 
   ///additional
-  callOnBoardingSubOptions(String webserviceUrl, OnBoardingDataModel question) {
-    Map<String, dynamic> body = {
-    };
-    try {
-      ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: false, url: webserviceUrl,body: body,isFormData: true).then(
-              (response) {
-            var data = List<QaOptions>();
-            if (response.statusCode == 200){
-              print(webserviceUrl);
-              Map<String, dynamic> responseJson = json.decode(response.body);
-              if(responseJson.containsKey('success')) {
-
-                switch (webserviceUrl){
-                  case "data/professions":
-                    responseJson['success'].forEach((v){
-                      var itm = QaOptions(text: v['pro_name'], value: '${v['pro_id']}' );
-                      data.add(itm);
-                    });
-                    break;
-                  case "data/children_preferences":
-                    responseJson['success'].forEach((v){
-                      var itm = QaOptions(text: v['cp_text'], value: '${v['cp_id']}' );
-                      data.add(itm);
-                    });
-                    break;
-                  case "data/faith":
-                    responseJson['success'].forEach((v){
-                      var itm = QaOptions(text: v['f_name'], value: '${v['f_id']}' );
-                      data.add(itm);
-                    });
-                    break;
-                  case "data/ethnicity":
-                    responseJson['success'].forEach((v){
-                      var itm = QaOptions(text: v['e_name'], value: '${v['e_id']}' );
-                      data.add(itm);
-                    });
-                    break;
-                  case "data/vacation_types":
-                    responseJson['success'].forEach((v){
-                      var itm = QaOptions(text: v['vt_name'], value: '${v['vt_id']}' );
-                      data.add(itm);
-                    });
-                    break;
-                  case "data/hobbies":
-                    responseJson['success'].forEach((v){
-                      var itm = QaOptions(text: v['hb_name'], value: '${v['hb_id']}' );
-                      data.add(itm);
-                    });
-                    break;
-                  default:
-                    print("Nothing found");
-                }
-                setState(() {
-                  apiCall = 0;
-                });
-                questionsCheckBox.clear();
-                for(int i=0;i<data.length;i++) {
-                  var itm = CheckBoxDataModel(id: question.qaId,checkboxText: data[i].text,checkvalue: false,value: data[i].value);
-                  questionsCheckBox.add(itm);
-                }
-                showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (context) {
-                      return OnBoardingDialogBox(Question: AnswersGlobal.questions[AnswersGlobal.questionIndex],questionsCheckBox: questionsCheckBox,);
-                    }
-
-                ).then((value){
-                  setState(() {});
-                });
-              } else{
-                print("Oh no response");
-              }
-            }else if (response.statusCode == 401){
-              apiCall = 0;
-              setState(() {});
-              GFunction.showError(jsonDecode(response.body)["error"].toString(), context);
-            }else{
-              setState(() {
-                apiCall = 0;
-              });
-              GFunction.showError(response.reasonPhrase.toString(), context);
-            }
-          });
-    } on FetchDataException catch(e) {
-      setState(() {
-        GFunction.showError(e.toString(), context);
-      });
-    }
-  }
+//  callOnBoardingSubOptions(String webserviceUrl, OnBoardingDataModel question) {
+//    Map<String, dynamic> body = {
+//    };
+//    try {
+//      ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: false, url: webserviceUrl,body: body,isFormData: true).then(
+//              (response) {
+//            var data = List<QaOptions>();
+//            if (response.statusCode == 200){
+//              Map<String, dynamic> responseJson = json.decode(response.body);
+//              if(responseJson.containsKey('success')) {
+//                switch (webserviceUrl){
+//                  case "data/professions":
+//                    responseJson['success'].forEach((v){
+//                      var itm = QaOptions(text: v['pro_name'], value: '${v['pro_id']}' );
+//                      data.add(itm);
+//                    });
+//                    break;
+//                  case "data/children_preferences":
+//                    responseJson['success'].forEach((v){
+//                      var itm = QaOptions(text: v['cp_text'], value: '${v['cp_id']}' );
+//                      data.add(itm);
+//                    });
+//                    break;
+//                  case "data/faith":
+//                    responseJson['success'].forEach((v){
+//                      var itm = QaOptions(text: v['f_name'], value: '${v['f_id']}' );
+//                      data.add(itm);
+//                    });
+//                    break;
+//                  case "data/ethnicity":
+//                    responseJson['success'].forEach((v){
+//                      var itm = QaOptions(text: v['e_name'], value: '${v['e_id']}' );
+//                      data.add(itm);
+//                    });
+//                    break;
+//                  case "data/vacation_types":
+//                    responseJson['success'].forEach((v){
+//                      var itm = QaOptions(text: v['vt_name'], value: '${v['vt_id']}' );
+//                      data.add(itm);
+//                    });
+//                    break;
+//                  case "data/hobbies":
+//                    responseJson['success'].forEach((v){
+//                      var itm = QaOptions(text: v['hb_name'], value: '${v['hb_id']}' );
+//                      data.add(itm);
+//                    });
+//                    break;
+//                  default:
+//                    print("Nothing found");
+//                }
+//
+//
+//                questionsCheckBox.clear();
+//                for(int i=0;i<data.length;i++) {
+//                  var itm = CheckBoxDataModel(id: question.qaId,checkboxText: data[i].text,checkvalue: false,value: data[i].value);
+//                  questionsCheckBox.add(itm);
+//                }
+//                showDialog(
+//                    barrierDismissible: false,
+//                    context: context,
+//                    builder: (context) {
+//                      return OnBoardingDialogBox(Question: AnswersGlobal.questions[AnswersGlobal.questionIndex],questionsCheckBox: questionsCheckBox,);
+//                    }
+//
+//                ).then((value){
+//                  apiCall = 0;
+//                  setState(() {});
+//                });
+//              }else{
+//              }
+//            }else if (response.statusCode == 401){
+//              apiCall = 0;
+//              setState(() {});
+//              GFunction.showError(jsonDecode(response.body)["error"].toString(), context);
+//            }else{
+//              setState(() {
+//                apiCall = 0;
+//              });
+//              GFunction.showError(response.reasonPhrase.toString(), context);
+//            }
+//          });
+//    } on FetchDataException catch(e) {
+//      setState(() {
+//        GFunction.showError(e.toString(), context);
+//      });
+//    }
+//  }
 
 ///Save Answers.
   saveAnswers(){
