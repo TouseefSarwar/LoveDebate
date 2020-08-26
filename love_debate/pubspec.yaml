@@ -36,6 +36,8 @@ dependencies:
   flutter_google_places: ^0.2.5
   flutter_password_strength: ^0.1.4
   http: ^0.12.0+4
+#  get:
+  flutter_launcher_icons: ^0.7.5
   shared_preferences: ^0.5.7+3
   image_picker: ^0.6.7+4
   flutter_facebook_login: ^3.0.0
@@ -44,6 +46,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "images/app_icon_1.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

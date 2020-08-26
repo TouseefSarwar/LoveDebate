@@ -76,9 +76,10 @@ class SuccesfullDialog extends StatefulWidget {
   String subTitle;
   String titleMsg;
   bool imageStatus;
+  String buttonText;
   VoidCallback action;
 
-  SuccesfullDialog({this.subTitle,this.titleMsg, this.imageStatus, this.action});
+  SuccesfullDialog({this.subTitle,this.titleMsg, this.imageStatus, this.action, this.buttonText});
   @override
   _SuccesfullDialog createState() => _SuccesfullDialog();
 }
@@ -113,7 +114,7 @@ class _SuccesfullDialog extends State<SuccesfullDialog> {
               width: 100,
               // color: Colors.pink,
               child: CustomRaisedButton(
-                buttonText: 'Continue',
+                buttonText: widget.buttonText == null ? 'Continue': widget.buttonText,
                 cornerRadius:22.5,
                 textColor: Colors.white,
                 backgroundColor: GlobalColors.firstColor,

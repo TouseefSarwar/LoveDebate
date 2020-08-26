@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
-
 import 'package:app_push_notifications/Modules/PreMatches/Rounds/Rounds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +8,7 @@ import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
 import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+//import 'package:get/route_manager.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -23,7 +22,6 @@ class _SplashScreenState extends State<SplashScreen> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   //Local Notificaiton...
-
   FlutterLocalNotificationsPlugin pluginFLN = new FlutterLocalNotificationsPlugin();
   var initializeSettingForIOS;
   var initializeSettingForAndroid;
@@ -36,44 +34,81 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
 
+  ///NOTIFICATIONS  Variables....
+//  var id="1";
+//  var cate="1";
+
 
   @override
   void initState() {
     super.initState();
+//    prf.remove('isNotification');
     startTime();
     initNotification();
 
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage Is: $message");
 
-        // This function is
-        showNotification();
-        if (Platform.isIOS){
-          print("IOS"+message["id"]);
-          print(message["cate"]);
-          await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["id"]}" ,catId:"${message["cate"]}"))
-          );
-        }else{
-          print("Android"+message["data"]["id"]);
-          print(message["data"]["cate"]);
-          await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["data"]["id"]}" ,catId:"${message["data"]["cate"]}"))
-          );
-        }
-      },
+      _firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage Is: $message");
+
+          // This function is for local notification
+//        showNotification();
+
+          if (Platform.isIOS){
+            print("IOS"+message["id"]);
+            print(message["cate"]);
+            await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["id"]}" ,catId:"${message["cate"]}"))
+            );
+          }else{
+            print("Android"+message["data"]["id"]);
+            print(message["data"]["cate"]);
+            await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["data"]["id"]}" ,catId:"${message["data"]["cate"]}"))
+            );
+          }
+        },
 //      onBackgroundMessage: Fcm.myBackgroundMessageHandler,
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-      },
-    );
-
+        onLaunch: (Map<String, dynamic> message) async {
+          print("onLaunch: $message");
+//          prf.set("isNotification", true);
+          if (Platform.isIOS){
+            print("IOS"+message["id"]);
+            print(message["cate"]);
+            await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["id"]}" ,catId:"${message["cate"]}"))
+            );
+          }else{
+            print("Android"+message["data"]["id"]);
+            print(message["data"]["cate"]);
+            await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["data"]["id"]}" ,catId:"${message["data"]["cate"]}"))
+            );
+          }
+        },
+        onResume: (Map<String, dynamic> message) async {
+//          prf.set("isNotification", true);
+          if (Platform.isIOS){
+            print("IOS"+message["id"]);
+            print(message["cate"]);
+//            await Navigator.push(
+//                context,
+//                MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["id"]}" ,catId:"${message["cate"]}"))
+//            );
+          }else{
+            print("Android"+message["data"]["id"]);
+            print(message["data"]["cate"]);
+            await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Rounds(idNoti:"${message["data"]["id"]}" ,catId:"${message["data"]["cate"]}"))
+            );
+          }
+        },
+      );
     if (Platform.isIOS) {
       iOS_Permission();
     }
@@ -83,7 +118,6 @@ class _SplashScreenState extends State<SplashScreen> {
       if(token != null){
         UserSession.fcmToken = token;
       }
-
     });
 
 
@@ -106,7 +140,6 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => Rounds(idNoti:"${msg["id"]}" ,catId:"${msg["cate"]}"))
       );
-
 //      Navigator.push(context,MaterialPageRoute(builder: (BuildContext context) => Rounds(idNoti:"${msg["id"]}" ,catId:"${msg["cate"]}")));
 
     }else{
@@ -157,22 +190,19 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigationPage() async{
-    if (await prf.containKey(UserSession.authTokenkey)){
-      UserSession.authToken = await prf.getBy(UserSession.authTokenkey);
-      Navigator.of(context).pushReplacementNamed('/TabBarControllerPage');
-    }else{
-      UserSession.authToken = "";
-      Navigator.of(context).pushReplacementNamed('/Login');
-    }
-
+//    if (await prf.containKey("isNotification")){
+//      prf.remove("isNotification");
+//      Get.to(Rounds(idNoti: id,catId: cate,));
+//    }else{
+      if (await prf.containKey(UserSession.authTokenkey)){
+        UserSession.authToken = await prf.getBy(UserSession.authTokenkey);
+        Navigator.of(context).pushReplacementNamed('/TabBarControllerPage');
+      }else{
+        UserSession.authToken = "";
+        Navigator.of(context).pushReplacementNamed('/Login');
+      }
+//    }
   }
-
-
-
-
-
-
-
 
 
   @override

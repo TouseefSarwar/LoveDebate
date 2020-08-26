@@ -80,6 +80,7 @@ class _LoginState extends State<Login> {
                     child: RichText(
                       text: TextSpan(
                         text: "Don't have an account? ",
+                        // ignore: deprecated_member_use
                         style: Theme.of(context).textTheme.body1.copyWith(fontSize: GlobalFont.textFontSize,),
                         children: <TextSpan>[
                           TextSpan(text: 'SignUp', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),

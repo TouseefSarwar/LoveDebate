@@ -114,6 +114,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
                         maxLines: 3,
                         text: TextSpan(
                           text: 'By clicking sign up, you agree to our ',
+                          // ignore: deprecated_member_use
                           style: Theme.of(context).textTheme.body1.copyWith(fontSize: GlobalFont.textFontSize,),
                           children: <TextSpan>[
                             TextSpan(text: 'Terms of Service', style: TextStyle(fontSize:  GlobalFont.textFontSize,fontWeight: FontWeight.w500, color: Colors.blue)),
@@ -162,7 +163,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
         backgroundColor: GlobalColors.firstColor,
         onPressed: () => {
           setState(() {
-            ValidateFields();
+            validateFields();
           })
         },
         tooltip: 'Increment',
@@ -214,7 +215,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
   }
 
 
-  void SignUpUser(){
+  void signUpUser(){
     Map<String, dynamic> body = {
       'first_name': SignUpGlobal.f_name.toString(),
       'last_name': SignUpGlobal.l_name.toString(),
@@ -277,7 +278,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
     }
   }
 
-  void ValidateFields(){
+  void validateFields(){
     if (emailTF.text != "" && emailTF.text != null){
       if (GFunction.validateEmail(emailTF.text)){
         if (passTF.text != "" && passTF.text != null){
@@ -286,7 +287,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
 //              if(SignUpGlobal.password.length >7){
                 apiCall = 1;
                 setState(() {
-                  SignUpUser();
+                  signUpUser();
                 });
 //              }else{
 //                GFunction.showError("Minimum 8 characters.", context);

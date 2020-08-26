@@ -1,4 +1,4 @@
-import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:app_push_notifications/Modules/LoginSignup/HeightDialogBox.dart';
@@ -10,9 +10,6 @@ import 'package:app_push_notifications/Utils/Globals/Fonts.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomTextFeilds.dart';
 import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
 import 'package:app_push_notifications/Utils/Globals/SignUpGlobal.dart';
-import '../../Utils/Constants/WebService.dart';
-import '../../Utils/Controllers/ApiBaseHelper.dart';
-import '../../Utils/Controllers/AppExceptions.dart';
 import 'package:intl/intl.dart';
 
 
@@ -55,9 +52,9 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
         context: context,
         initialDate: selectedDate,
         firstDate: DateTime(1900, 1),
-        lastDate: DateTime.now());
+        lastDate: DateTime.now()
+    );
     setState(() {
-      DateTime now = DateTime.now();
       selectedDate = picked;
       final selected=DateFormat("yyyy-MM-dd").format(selectedDate);
       final difference=DateTime.now().difference(picked).inDays;
@@ -77,8 +74,6 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
       mode: CupertinoDatePickerMode.date,
       initialDateTime: DateTime.now(),
       onDateTimeChanged: (DateTime date){
-        DateTime now = DateTime.now();
-        String limit=DateFormat("yyyy-MM-dd").format(now);
         selectedDate = date;
         final selected=DateFormat("yyyy-MM-dd").format(selectedDate);
         final difference=DateTime.now().difference(selectedDate).inDays;
@@ -295,7 +290,7 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
         backgroundColor: GlobalColors.firstColor,
         onPressed: () => {
           setState(() {
-            ValidateFields();
+            validateFields();
           })
         },
         tooltip: 'Increment',
@@ -317,7 +312,7 @@ class _SUPersonalInfoState extends State<SUPersonalInfo> {
 //    );
   }
 
-  void ValidateFields(){
+  void validateFields(){
     if (fnameTF.text != "" && fnameTF.text!=null){
       if (lnameTF.text != "" && lnameTF.text!=null){
         if (dobTF.text != "" && dobTF.text != null){
