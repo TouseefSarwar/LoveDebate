@@ -1,5 +1,7 @@
 
 import 'dart:convert';
+import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,8 @@ import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
 import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
 import '../../Utils/Globals/Fonts.dart';
 import 'SUPersonalInfo.dart';
+import 'package:apple_sign_in/apple_sign_in.dart';
+
 
 
 class SignUp extends StatefulWidget {
@@ -31,6 +35,9 @@ class _SignUpState extends State<SignUp> {
   bool isloading = false;
   SharedPref prf = SharedPref();
 
+  //Apple SignIn
+  final _firebaseAuth = FirebaseAuth.instance;
+
   final GoogleSignIn googleSignIn = GoogleSignIn(
       scopes: <String>[
         'email',
@@ -39,6 +46,21 @@ class _SignUpState extends State<SignUp> {
 //        "https://www.googleapis.com/auth/user.birthday.read",
 //        "https://www.googleapis.com/auth/user.gender.read",
       ]);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    if(Platform.isIOS){
+      AppleSignIn.onCredentialRevoked.listen((_) {
+        print("Credentials revoked");
+      });
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     double _height=MediaQuery.of(context).size.height;
@@ -74,6 +96,14 @@ class _SignUpState extends State<SignUp> {
           SignupMethod(context,_signupButtonheight,"email", width,'Sign Up with Email',true,GlobalColors.firstColor,'images/mail.png',Colors.white),
           SignupMethod(context,_signupButtonheight, "fb",width,'Sign Up with Facebook',true,Color(0xff0072CD),'images/icons8-facebook-f-48.png',Colors.white),
           SignupMethod(context,_signupButtonheight,"google", width,'Sign Up with Google',true,Colors.white,'images/googleicon.png',Colors.black),
+          AppleSignInButton(
+            style: ButtonStyle.black,
+            type: ButtonType.signIn,
+            onPressed: appleLogIn,
+          ),
+
+
+
           Expanded(
             child: Container(
 //            height:((50/100)*height),
@@ -141,7 +171,6 @@ class _SignUpState extends State<SignUp> {
           );
         }
 
-
       },
       child: Container(
         height: 55,
@@ -169,6 +198,37 @@ class _SignUpState extends State<SignUp> {
     );
 
   }
+
+
+  ///Apple Login
+  Future appleLogIn() async{
+      // if(await AppleSignIn.isAvailable()) {
+        final AuthorizationResult result = await
+        AppleSignIn.performRequests([
+          AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
+        ]);
+        switch (result.status) {
+          case AuthorizationStatus.authorized:
+            print("Name :${Scope.fullName.toString()}");
+            print("email: ${Scope.email.toString()}");
+            print("")
+            print(result.credential.user);
+            //All the required credentials
+          break;
+          case AuthorizationStatus.error:
+            GFunction.showError("Sign in failed: ${result.error.localizedDescription}", context);
+            // print("Sign in failed: ${result.error.localizedDescription}");
+            break;
+          case AuthorizationStatus.cancelled:
+            print('User cancelled');
+            break;
+        }
+      // }else{
+      //   print('Apple SignIn is not available for your device');
+      // }
+  }
+
+
 
   ///Google SignUp
   Future<void> _googleSignIn() async {

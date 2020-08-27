@@ -33,7 +33,6 @@ class Rounds extends StatefulWidget {
 
 class _RoundsState extends State<Rounds> {
 
-
   TextEditingController answerTF = TextEditingController();
   FocusNode answerFN = FocusNode();
   SharedPref prf = SharedPref();
@@ -263,20 +262,6 @@ class _RoundsState extends State<Rounds> {
 
                   ),
                 ),
-                SizedBox(width: 8,),
-                (currentIndex ==2)?
-                Expanded(
-                  child: CustomRaisedButton(
-                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Another Round",
-                    cornerRadius: 5.0,
-                    textColor: Colors.white,
-                    backgroundColor: GlobalColors.firstColor,
-                    borderWith: 0.0,
-                    action: (){
-                    },
-
-                  ),
-                ): Container(),
               ],
             ),
           )
@@ -298,174 +283,73 @@ class _RoundsState extends State<Rounds> {
                     },
                   ),
                 ),
-                SizedBox(width: 8,),
-                (currentIndex ==2)?
-                Expanded(
-                  child: CustomRaisedButton(
-                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Another Round",
-                    cornerRadius: 5.0,
-                    textColor: Colors.white,
-                    backgroundColor: GlobalColors.firstColor,
-                    borderWith: 0.0,
-                    action: (){
-
-                    },
-
-                  ),
-                ): Container(),
               ],
 
             ),
           )
           :(currentIndex == 2 && roundsQuestion.rPlayerAnsThree!= null && roundsQuestion.rUserAnsThree!= null && roundsQuestion.rStatus != 0)? Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: CustomRaisedButton(
-                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Connect",
-                    cornerRadius: 5.0,
-                    textColor: Colors.white,
-                    backgroundColor: GlobalColors.firstColor,
-                    borderWith: 0.0,
-                    action: (){
-                      print("connect is pressed");
-                    },
+            child: (roundsQuestion.rStatus == 2)?Container(
+                child: Center(
+                    child: Text(
+                      'Congratulations! This Round is Finished.',
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                        fontSize: GlobalFont.textFontSize - 2
+                      ),
+                    )
+                )
+            ) :(check == "player" )? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: CustomRaisedButton(
+                  buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Connect",
+                  cornerRadius: 5.0,
+                  textColor: Colors.white,
+                  backgroundColor: GlobalColors.firstColor,
+                  borderWith: 0.0,
+                  action: (){
+                    print("connect is pressed");
+                    apiCall=1;
+                    setState(() {
+                      makeConnection();
+                    });
+                  },
 
-                  ),
                 ),
-                SizedBox(width: 8,),
-                (currentIndex ==2)?
-                Expanded(
-                  child: CustomRaisedButton(
-                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Another Round",
-                    cornerRadius: 5.0,
-                    textColor: Colors.white,
-                    backgroundColor: GlobalColors.firstColor,
-                    borderWith: 0.0,
-                    action: (){
-                      print("Another is pressed");
-                      Navigator.pop(context);
-                    },
+              ),
+              SizedBox(width: 8,),
+              Expanded(
+                child: CustomRaisedButton(
+                  buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Another Round",
+                  cornerRadius: 5.0,
+                  textColor: Colors.white,
+                  backgroundColor: GlobalColors.firstColor,
+                  borderWith: 0.0,
+                  action: (){
+                    DeclineUpdateStatus("2");
+                  },
 
-                  ),
-                ): Container(),
-              ],
+                ),
+              ),
+            ],
 
-            ),
+          ):Container()
           )
-//          :(currentIndex == 0 && roundsQuestion.rUserAnsOne== null && roundsQuestion.rStatus != 0) ?Padding(
-//            padding: const EdgeInsets.all(8.0),
-//            child: Row(
-//              mainAxisAlignment: MainAxisAlignment.center,
-//              children: [
-//                Expanded(
-//                  child: CustomRaisedButton(
-//                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Connect",
-//                    cornerRadius: 5.0,
-//                    textColor: Colors.white,
-//                    backgroundColor: GlobalColors.firstColor,
-//                    borderWith: 0.0,
-//                    action: (){
-//                      currentIndex = 1;
-//                      setState(() {});
-//                    },
-//
-//                  ),
-//                ),
-//                SizedBox(width: 8,),
-//                (currentIndex ==2)?
-//                Expanded(
-//                  child: CustomRaisedButton(
-//                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Another Round",
-//                    cornerRadius: 5.0,
-//                    textColor: Colors.white,
-//                    backgroundColor: GlobalColors.firstColor,
-//                    borderWith: 0.0,
-//                    action: (){
-//                    },
-//
-//                  ),
-//                ): Container(),
-//              ],
-//            ),
-//          )
-//          :(currentIndex == 1 && roundsQuestion.rUserAnsTwo== null && roundsQuestion.rStatus != 0) ? Padding(
-//            padding: const EdgeInsets.all(8.0),
-//            child: Row(
-//              mainAxisAlignment: MainAxisAlignment.center,
-//              children: [
-//                Expanded(
-//                  child: CustomRaisedButton(
-//                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Connect",
-//                    cornerRadius: 5.0,
-//                    textColor: Colors.white,
-//                    backgroundColor: GlobalColors.firstColor,
-//                    borderWith: 0.0,
-//                    action: (){
-//                      currentIndex = 2;
-//                      setState(() {});
-//                    },
-//                  ),
-//                ),
-//                SizedBox(width: 8,),
-//                (currentIndex ==2)?
-//                Expanded(
-//                  child: CustomRaisedButton(
-//                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Another Round",
-//                    cornerRadius: 5.0,
-//                    textColor: Colors.white,
-//                    backgroundColor: GlobalColors.firstColor,
-//                    borderWith: 0.0,
-//                    action: (){
-//
-//                    },
-//
-//                  ),
-//                ): Container(),
-//              ],
-//
-//            ),
-//          )
-//          :(currentIndex == 2 && roundsQuestion.rUserAnsThree== null && roundsQuestion.rStatus != 0)? Padding(
-//            padding: const EdgeInsets.all(8.0),
-//            child: Row(
-//              mainAxisAlignment: MainAxisAlignment.center,
-//              children: [
-//                Expanded(
-//                  child: CustomRaisedButton(
-//                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Connect",
-//                    cornerRadius: 5.0,
-//                    textColor: Colors.white,
-//                    backgroundColor: GlobalColors.firstColor,
-//                    borderWith: 0.0,
-//                    action: (){
-//                      print("connect is pressed");
-//                    },
-//
-//                  ),
-//                ),
-//                SizedBox(width: 8,),
-//                (currentIndex ==2)?
-//                Expanded(
-//                  child: CustomRaisedButton(
-//                    buttonText: (currentIndex==0 || currentIndex==1)?"Next": "Another Round",
-//                    cornerRadius: 5.0,
-//                    textColor: Colors.white,
-//                    backgroundColor: GlobalColors.firstColor,
-//                    borderWith: 0.0,
-//                    action: (){
-//                      print("Another is pressed");
-//                      Navigator.pop(context);
-//                    },
-//
-//                  ),
-//                ): Container(),
-//              ],
-//
-//            ),
-//          )
+          :(roundsQuestion.rStatus == 0)?Container(
+              child: Center(
+                  child: Text(
+                    'Oops! This Round is Declined.',
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                        fontSize: GlobalFont.textFontSize - 2
+                    ),
+                  )
+              )
+          )
           :Container(),
 
           SizedBox(height: 12,),
@@ -627,7 +511,7 @@ class _RoundsState extends State<Rounds> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               StatusButton(backgroundColor: Colors.red, icon: Icons.clear, radius: 13.0,size: 26.0,action: (){
-                DeclineUpdateStatus();
+                DeclineUpdateStatus("0");
               }),
             ],
           )
@@ -635,7 +519,7 @@ class _RoundsState extends State<Rounds> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 StatusButton(backgroundColor: Colors.red, icon: Icons.clear, radius: 13.0,size: 26.0,action: (){
-                  DeclineUpdateStatus();
+                  DeclineUpdateStatus("0");
                 }),
               ],
           )
@@ -643,7 +527,7 @@ class _RoundsState extends State<Rounds> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           StatusButton(backgroundColor: Colors.red, icon: Icons.clear, radius: 13.0,size: 26.0,action: (){
-            DeclineUpdateStatus();
+            DeclineUpdateStatus("0");
           }),
         ],
       )
@@ -651,7 +535,7 @@ class _RoundsState extends State<Rounds> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           StatusButton(backgroundColor: Colors.red, icon: Icons.clear, radius: 13.0,size: 26.0,action: (){
-            DeclineUpdateStatus();
+            DeclineUpdateStatus("0");
           }),
         ],
       )
@@ -659,7 +543,7 @@ class _RoundsState extends State<Rounds> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           StatusButton(backgroundColor: Colors.red, icon: Icons.clear, radius: 13.0,size: 26.0,action: (){
-            DeclineUpdateStatus();
+            DeclineUpdateStatus("0");
           }),
         ],
       )
@@ -667,7 +551,7 @@ class _RoundsState extends State<Rounds> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           StatusButton(backgroundColor: Colors.red, icon: Icons.clear, radius: 13.0,size: 26.0,action: (){
-            DeclineUpdateStatus();
+            DeclineUpdateStatus("0");
           }),
         ],
       )
@@ -831,19 +715,19 @@ class _RoundsState extends State<Rounds> {
                 }
 
                 if (roundsQuestion.rStatus != 0){
-                  if (roundsQuestion.rUserAnsThree != null && roundsQuestion.rPlayerAnsThree != null){
+                  if (roundsQuestion.rUserAnsThree != null || roundsQuestion.rPlayerAnsThree != null){
                     currentIndex = 2;
-                    GFunction.showSuccess(() {
-                      Navigator.pop(context); // Second to close rounds
-                      Navigator.push(context, CupertinoPageRoute(builder: (context)=>UserChatList()));
-
-                    }, context,title: "Round Status",subMsg: "This round has been completed.",imageStatus: true, btnTxt: 'Connect');
+                    // GFunction.showSuccess(() {
+                    //   Navigator.pop(context); // Second to close rounds
+                    //   Navigator.push(context, CupertinoPageRoute(builder: (context)=>UserChatList()));
+                    //
+                    // }, context,title: "Round Status",subMsg: "This round has been completed.",imageStatus: true, btnTxt: 'Connect');
                   }else {
-                    if (roundsQuestion.rUserAnsTwo != null && roundsQuestion.rPlayerAnsTwo != null){
-                      currentIndex = 2;
+                    if (roundsQuestion.rUserAnsTwo != null || roundsQuestion.rPlayerAnsTwo != null){
+                      currentIndex = 1;
                     }else{
-                      if (roundsQuestion.rUserAnsOne != null && roundsQuestion.rPlayerAnsOne != null){
-                        currentIndex = 1;
+                      if (roundsQuestion.rUserAnsOne != null || roundsQuestion.rPlayerAnsOne != null){
+                        currentIndex = 0;
                       }else{
                         currentIndex = 0;
                       }
@@ -851,7 +735,7 @@ class _RoundsState extends State<Rounds> {
                   }
                 }else {
                   GFunction.showSuccess(() {
-                    Navigator.pop(context);//First to close popup
+                    // Navigator.pop(context);//First to close popup
                     Navigator.pop(context);// Second to close rounds.
                   }, context,title: "Round Status",subMsg: "This round has been Rejected.",imageStatus: false,btnTxt: 'Cancel');
                 }
@@ -881,10 +765,10 @@ class _RoundsState extends State<Rounds> {
     }
   }
   ///API Call Round Decline Status....
-  void DeclineUpdateStatus(){
+  void DeclineUpdateStatus(String status){
 
     Map<String, dynamic> body = {
-      "status": "${roundsQuestion.rStatus}",
+      "status": status,
       "round_id": "${roundsQuestion.rId}",
       "id": "${widget.perMatch.prUserId}",
       "cate_id":"${roundsQuestion.rCateId}"
@@ -899,7 +783,7 @@ class _RoundsState extends State<Rounds> {
               if(responseJson.containsKey('success')){
                 print("Response ====> "+ responseJson['success']);
                 apiCall = 0;
-                Navigator.pop(context);
+                // Navigator.pop(context);
               }else{
                 apiCall = 0;
                 setState(() {});
@@ -923,7 +807,7 @@ class _RoundsState extends State<Rounds> {
     }
   }
 
-  ///API Call Round Decline Status....
+  ///API Call Round AnswerQuestion....
   void AnswerQuestion(){
     Map<String, dynamic> body = {
       'cate_id' : "${widget.catId}",
@@ -934,7 +818,6 @@ class _RoundsState extends State<Rounds> {
       'q2' : "${roundsQuestion.rQuesTwoId}",
       'q3' : "${roundsQuestion.rQuesThreeId}",
     };
-    print(body);
     try {
       ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.answerRound,body: body,isFormData: true).then(
               (response) async{
@@ -965,6 +848,46 @@ class _RoundsState extends State<Rounds> {
                 answerTF.text = "";
                 apiCall = 0;
                 setState(() {});
+              }else{
+                apiCall = 0;
+                setState(() {});
+                print("Oh no response");
+              }
+            }else if (res.statusCode == 401){
+              apiCall = 0;
+              setState(() {});
+              Map<String, dynamic> err = json.decode(res.body);
+              GFunction.showError(err['error'].toString(), context);
+            }else{
+              apiCall = 0;
+              setState(() {});
+              GFunction.showError(res.reasonPhrase.toString(), context);
+            }
+          });
+    } on FetchDataException catch(e) {
+      apiCall = 0;
+      setState(() {});
+      GFunction.showError(e.toString(), context);
+    }
+  }
+
+  ///API Call Make Connection => currentIndex:2....
+  void makeConnection(){
+    Map<String, dynamic> body = {
+      'user_id' : "${roundsQuestion.rUserId}",
+    };
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.makeConnection,body: body,isFormData: true).then(
+              (response) async{
+
+            var res = response as http.Response;
+            if (res.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(res.body);
+              if(responseJson.containsKey('success')){
+                print("Response ====> "+ responseJson['success']);
+                apiCall = 0;
+                setState(() {});
+                // Navigator.push(context, CupertinoPageRoute(builder: Bui))
               }else{
                 apiCall = 0;
                 setState(() {});

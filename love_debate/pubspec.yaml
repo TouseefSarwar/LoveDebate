@@ -36,12 +36,17 @@ dependencies:
   flutter_google_places: ^0.2.5
   flutter_password_strength: ^0.1.4
   http: ^0.12.0+4
+  #this sdks are used for apple Login.....
+  firebase_auth: ^0.15.3
+  apple_sign_in: ^0.1.0
+  provider: ^4.0.1
 #  get:
   flutter_launcher_icons: ^0.7.5
   shared_preferences: ^0.5.7+3
   image_picker: ^0.6.7+4
   flutter_facebook_login: ^3.0.0
   google_sign_in: ^4.5.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

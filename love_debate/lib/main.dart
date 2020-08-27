@@ -2,12 +2,13 @@ import 'package:app_push_notifications/Modules/PreMatches/Rounds/Rounds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:app_push_notifications/Modules/LoginSignup/SocialSignUpInfo.dart';
-import 'package:flutter/services.dart';
 import 'Modules/LoginSignup/Login.dart';
 import 'package:app_push_notifications/Screens/SplashScreen.dart';
 import 'Screens/TabBarcontroller.dart';
+import 'package:apple_sign_in/apple_sign_in.dart';
 
-void main() {
+void main() async{
+
   runApp(MyApp());
 }
 
@@ -28,6 +29,17 @@ class MyApp extends StatelessWidget {
         }
     );
   }
+
 }
 
 
+
+
+class AppleSignInAvailable {
+  AppleSignInAvailable(this.isAvailable);
+  final bool isAvailable;
+
+  static Future<AppleSignInAvailable> check() async {
+    return AppleSignInAvailable(await AppleSignIn.isAvailable());
+  }
+}
