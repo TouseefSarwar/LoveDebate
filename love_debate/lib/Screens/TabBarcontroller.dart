@@ -3,7 +3,7 @@ import 'package:app_push_notifications/Modules/Profile/Profile.dart';
 import 'package:app_push_notifications/Modules/Matched/Matched.dart';
 import 'package:app_push_notifications/Modules/PreMatches/PreMatches.dart';
 import 'package:flutter/material.dart';
-import 'package:app_push_notifications/Modules/Chat/UserChatList.dart';
+import 'package:app_push_notifications/Modules/Chat/UI/chatUsersList.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 
 
@@ -19,7 +19,7 @@ class _TabBarControllerPageState extends State<TabBarControllerPage> {
   var _curIndex = 2;
   var tabBarChildren = [
     Matched(),
-    UserChatList(),
+    UsersChatList(),
     PreMatches(),
     PreferencesOnBoarding(),
     Profile(),

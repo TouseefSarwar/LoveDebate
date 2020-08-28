@@ -18,6 +18,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   bool count = false;
+
+
   //Firebase Notificaiton...
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
@@ -42,6 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
 //    prf.remove('isNotification');
     startTime();
     initNotification();

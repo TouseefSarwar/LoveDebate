@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:app_push_notifications/Modules/ForgotPassword/forgotPassword.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:app_push_notifications/Models/LoginModel.dart';
@@ -41,11 +42,10 @@ class _LoginState extends State<Login> {
       body: SafeArea(
         top: true,
         bottom: true,
-        child: (apiCall==0)? SingleChildScrollView(
+        child: SingleChildScrollView(
           child: Container(
             height:  _height,
             width: _width,
-
             child: Stack(
               children: <Widget>[
                 Column(
@@ -55,10 +55,11 @@ class _LoginState extends State<Login> {
                     bottomSection(_height,_width)
                   ],
                 ),
+                apiCall == 1 ? Center(child: Loading()) : Container(),
               ],
             ),
           ),
-        ):Center(child: Loading(),),
+        ),
       ),
     );
   }
@@ -115,7 +116,9 @@ class _LoginState extends State<Login> {
           SizedBox(height: 16,),
           btnContinue(),
           SizedBox(height: 16),
-          Text('Forgot Password ?',style: TextStyle(color:Colors.lightBlue,fontSize: 18,),textAlign: TextAlign.center,),
+          GestureDetector(
+            onTap: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => ForgotPasswoprd())),
+              child: Text('Forgot Password ?',style: TextStyle(color:Colors.lightBlue,fontSize: 18,),textAlign: TextAlign.center,)),
         ],
       ),
     );
@@ -192,7 +195,9 @@ class _LoginState extends State<Login> {
               Map<String, dynamic> responseJson = json.decode(res.body);
               if(responseJson.containsKey('success')){
                 var loginResponse = LoginModel.fromJson(responseJson["success"]);
+
                 UserSession.authToken =  loginResponse.token == null? "": "Bearer ${loginResponse.token}";
+                await prf.saveSocketId(socketId: loginResponse.user.socketId);
                 await prf.set(UserSession.authTokenkey,UserSession.authToken);
                 await prf.set(UserSession.name,loginResponse.user.name);
                 await prf.set(UserSession.signUp,false);

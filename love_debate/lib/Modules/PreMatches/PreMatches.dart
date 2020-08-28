@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:app_push_notifications/Modules/Chat/ChatBloc/blocProvider.dart';
+import 'package:app_push_notifications/Modules/Chat/ChatBloc/chatBloc.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:app_push_notifications/Models/ListModel.dart';
@@ -27,7 +29,7 @@ class _PreMatchesState extends State<PreMatches> {
 
   List<Matches> matches = List<Matches>();
   int apiCall=0;
-
+  var bloc;
   //For Avatar Colors
   List<int> colorsR = [0xFF9055A2,0xFFF7C548,0xFFFF66D8,0xFFDC493A,0xFF4392F1,0xFF3D0814,0xFFF7EC59,0xFFFF66D8,0xFFA98743,0xFFEEEBD3,0xFF011638];
 
@@ -36,6 +38,7 @@ class _PreMatchesState extends State<PreMatches> {
     funPreMatches();
     apiCall=1;
     super.initState();
+    bloc = BlocProvider.of<ChatBloc>(context).createSocketConnection();
   }
 
   String dateofBirth;

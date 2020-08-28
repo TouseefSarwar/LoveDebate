@@ -24,7 +24,8 @@ class WebService{
   static var makeConnection = "make_connection";
   static var rounds = "rounds";
 
-
+  static var chatUsersList = 'conv_list';
+  static var conversationList = 'user_chat';
 
 
 }

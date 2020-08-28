@@ -1,5 +1,10 @@
+import 'dart:convert';
 import 'dart:math';
-
+import 'package:app_push_notifications/Models/MatchedModel.dart';
+import 'package:app_push_notifications/Utils/Constants/WebService.dart';
+import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
+import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
+import 'package:http/http.dart' as http;
 import 'package:app_push_notifications/Models/ListModel.dart';
 import 'package:app_push_notifications/Screens/SubViews/RoundsListingCell.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
@@ -8,6 +13,7 @@ import 'package:app_push_notifications/Utils/Designables/CustomAppBar.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomButtons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:app_push_notifications/Utils/Controllers/AppExceptions.dart';
 
 class Matched extends StatefulWidget {
   @override
@@ -25,10 +31,19 @@ class _MatchedState extends State<Matched> {
     ListModel(title: "Completed Round: " ,colorCell: Colors.indigo)
   ];
 
+  int apiCall = 0;
+  List<MatchedModel> matchedUsers = List<MatchedModel>();
 
   //For Avatar Colors
   List<int> colorsR = [0xFF9055A2,0xFFF7C548,0xFFFF66D8,0xFFDC493A,0xFF4392F1,0xFF3D0814,0xFFF7EC59,0xFFFF66D8,0xFFA98743,0xFFEEEBD3,0xFF011638];
 
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getMatchedData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +60,7 @@ class _MatchedState extends State<Matched> {
           itemCount: list.length,
           itemBuilder: (context,index){
             return RoundListingCell(
-              title: list[index].title+"$index",
+              title: "Completed Round: 1",
               gender: "Male",
               age: "30",
               personHeight: "5'4",
@@ -56,6 +71,7 @@ class _MatchedState extends State<Matched> {
               address: "N/A",
               iconColor: GlobalColors.firstColor,
               index: index,
+//              img: WebService.baseURL+"/"+matchedUsers[index].profilePic,
               action: (){
 //                Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
               },
@@ -245,4 +261,50 @@ class _MatchedState extends State<Matched> {
             )
         ));
   }
+
+
+  getMatchedData(){
+    Map<String, dynamic> body= {};
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: true, url: WebService.chatUsersList,body: body,isFormData: true).then(
+              (response) async{
+
+            var res = response as http.Response;
+            if (res.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(res.body);
+              if(responseJson.containsKey('success')){
+                print("response is =====> "+responseJson['success']);
+                responseJson["success"].forEach((v) {
+                MatchedModel item = MatchedModel.fromJson(v);
+                matchedUsers.add(MatchedModel.fromJson(v));
+                });
+                apiCall=0;
+                setState(() {});
+              }else{
+                apiCall = 0;
+                setState(() {});
+                print("Oh no response");
+              }
+            }else if (res.statusCode == 401){
+              apiCall = 0;
+              setState(() {});
+              Map<String, dynamic> err = json.decode(res.body);
+              GFunction.showError(err['error'].toString(), context);
+            }else{
+              apiCall = 0;
+              setState(() {});
+              GFunction.showError(res.reasonPhrase.toString(), context);
+            }
+          });
+    } on FetchDataException catch(e) {
+      apiCall = 0;
+      setState(() {});
+      GFunction.showError(e.toString(), context);
+    }
+  }
+
 }
+
+
+
+

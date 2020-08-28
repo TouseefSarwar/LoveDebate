@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'package:app_push_notifications/Utils/Globals/UserSession.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPref {
@@ -22,6 +23,15 @@ class SharedPref {
   containKey(String key) async{
     final prefs = await SharedPreferences.getInstance();
     return prefs.containsKey(key);
+  }
+
+
+  saveSocketId({String socketId})async{
+    await set(UserSession.socketId, socketId);
+  }
+
+  getSocketId()async{
+    return await getBy(UserSession.socketId);
   }
 }
 

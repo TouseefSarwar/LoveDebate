@@ -93,13 +93,16 @@ class _SignUpState extends State<SignUp> {
       child: Column(
         children: <Widget>[
           // SizedBox(height: 18,),
-          SignupMethod(context,_signupButtonheight,"email", width,'Sign Up with Email',true,GlobalColors.firstColor,'images/mail.png',Colors.white),
-          SignupMethod(context,_signupButtonheight, "fb",width,'Sign Up with Facebook',true,Color(0xff0072CD),'images/icons8-facebook-f-48.png',Colors.white),
-          SignupMethod(context,_signupButtonheight,"google", width,'Sign Up with Google',true,Colors.white,'images/googleicon.png',Colors.black),
-          AppleSignInButton(
-            style: ButtonStyle.black,
-            type: ButtonType.signIn,
-            onPressed: appleLogIn,
+          SignupMethod(context,_signupButtonheight,"email", width,'Continue with Email',true,GlobalColors.firstColor,'images/mail.png',Colors.white),
+          SignupMethod(context,_signupButtonheight, "fb",width,'Continue with Facebook',true,Color(0xff0072CD),'images/icons8-facebook-f-48.png',Colors.white),
+          SignupMethod(context,_signupButtonheight,"google", width,'Continue with Google',true,Colors.white,'images/googleicon.png',Colors.black),
+          Padding(
+            padding: const EdgeInsets.only(left: 16,right: 16),
+            child: AppleSignInButton(
+//              style: ButtonStyle.black,
+              type: ButtonType.continueButton,
+              onPressed: appleLogIn,
+            ),
           ),
 
 
@@ -133,7 +136,6 @@ class _SignUpState extends State<SignUp> {
               ),
             ),
           ),
-
         ],
       ),
     );
@@ -180,17 +182,26 @@ class _SignUpState extends State<SignUp> {
           color: bgColor,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              SizedBox(width: 16,),
               Container(
                 child:  bgColor ==GlobalColors.firstColor ? Image.asset(image,fit: BoxFit.fitWidth,color: Colors.white ) :Image.asset(image,fit: BoxFit.fitWidth,),
-                width: 25.0,
-                height: 25.0,  // borde width
+                width: 16.0,
+                height: 16.0,  // borde width
               ),
-              SizedBox(width: 12,),
+              SizedBox(width: 4,),
               Container(
-                  width: 200,
-                  // color: Colors.yellow,
-                  child: Text(text,style: TextStyle(fontSize: 18,color: textcolor),)),
+                width: 220,
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: textcolor ,
+                        fontWeight: FontWeight.w600
+                    ),
+                  )
+              ),
             ],
           ),
         ),
@@ -201,7 +212,7 @@ class _SignUpState extends State<SignUp> {
 
 
   ///Apple Login
-  Future appleLogIn() async{
+  appleLogIn() async{
       // if(await AppleSignIn.isAvailable()) {
         final AuthorizationResult result = await
         AppleSignIn.performRequests([
@@ -209,11 +220,51 @@ class _SignUpState extends State<SignUp> {
         ]);
         switch (result.status) {
           case AuthorizationStatus.authorized:
-            print("Name :${Scope.fullName.toString()}");
-            print("email: ${Scope.email.toString()}");
-            print("")
             print(result.credential.user);
             //All the required credentials
+
+            final AppleIdCredential _auth = result.credential;
+            final OAuthProvider oAuthProvider = new OAuthProvider(providerId: "apple.com");
+
+            final AuthCredential credential = oAuthProvider.getCredential(
+              idToken: String.fromCharCodes(_auth.identityToken),
+              accessToken: String.fromCharCodes(_auth.authorizationCode),
+            );
+
+            await _firebaseAuth.signInWithCredential(credential);
+
+            // update the user information
+            if (_auth.fullName != null) {
+              _firebaseAuth.currentUser().then( (value) async {
+                UserUpdateInfo user = UserUpdateInfo();
+                print("Email: ${_auth.email}");
+                print("User: ${_auth.user}");
+                print('${_auth.fullName.givenName}');
+                print('${_auth.fullName.familyName}');
+                Map<String, dynamic> body;
+                if (_auth.email ==null){
+                  body = {
+                    'APPLE_SID' : _auth.user.toString(),
+                    'first_name' : _auth.fullName.givenName.toString(),
+                    'last_name' : _auth.fullName.familyName.toString(),
+                  };
+                }else{
+                  body = {
+                    'APPLE_SID' : _auth.user.toString(),
+                    'first_name' : _auth.fullName.givenName.toString(),
+                    'last_name' : _auth.fullName.familyName.toString(),
+                    'email' : _auth.email.toString(),
+                  };
+                }
+                await value.updateProfile(user);
+                isloading =true;
+                setState(() {
+                  SocialSignUp(body);
+                });
+
+              });
+            }
+
           break;
           case AuthorizationStatus.error:
             GFunction.showError("Sign in failed: ${result.error.localizedDescription}", context);
@@ -342,6 +393,7 @@ class _SignUpState extends State<SignUp> {
                 }else{
                   if( responseJson['success']['user']['onboading_status'].toString() == '0'){
                     UserSession.authToken =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
+                    await prf.saveSocketId(socketId: responseJson['success']['user']['soc_id']);
                     await prf.set(UserSession.authTokenkey,UserSession.authToken);
                     await prf.set(UserSession.signUp,true);
                     await prf.set(UserSession.name,responseJson['success']['user']['name'].toString());

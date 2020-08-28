@@ -57,106 +57,75 @@ class _ProfileState extends State<Profile> {
       body: (!loading)? SafeArea(
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               // Upper Body
+              SizedBox(height: 50,),
               Stack(
                   children: <Widget>[
-                    //Gradient Background...
-                    Container(
-                      height: (30/100)*height,
-                      width: width,
-                       //color: Colors.white,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [
-                              Colors.white,
-                              Colors.white
-                            ]
-                        ),
+                    CircleAvatar(
+                      radius: 60,
+                      child: ClipOval(
+                        child: Image.asset('images/conor.jpg',height: 120,width: 120,fit: BoxFit.cover,),
                       ),
                     ),
-                    //Overlay
-                    Container(
-                      height: (30/100)*height,
-                      width: width,
-                      color: Colors.white,
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Text(
-                          (UserSession.userData != null) ?UserSession.userData.firstName+" "+UserSession.userData.lastName : "",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20
-                          ),
-                        ),
-                      ),
-                    ),
-
                     Positioned(
-                      top: ((30/100)*height) / 2 - 70,
-                      left: width / 2 - 60,
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 120,
-                        width: 120,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: (image == null)? AssetImage('images/conor.jpg'): FileImage(image) ,
-                              fit: BoxFit.fitHeight
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    Positioned(
-                      top: ((55/100)*height) / 2 - 70,
-                      left: width / 1.6 - 30,
+                      bottom: 1,
+                      right: 1,
                       child: InkWell(
                         onTap: (){
-
-                            showDialog(
-                                barrierDismissible: true,
-                                context: context,
-                                builder: (context) {
-                                  return CameraDialog();
-                                }
-                            ).then((value){
-                              print("Value is: $value");
-                              if (value != null){
-                                switch (value){
-                                  case "gallery":
-                                    openGallery();
-                                    break;
-                                  case "camera":
-                                    openCamera();
-                                    break;
-                                }
+                          showDialog(
+                              barrierDismissible: true,
+                              context: context,
+                              builder: (context) {
+                                return CameraDialog();
+                              }
+                          ).then((value){
+                            print("Value is: $value");
+                            if (value != null){
+                              switch (value){
+                                case "gallery":
+                                  openGallery();
+                                  break;
+                                case "camera":
+                                  openCamera();
+                                  break;
+                              }
 //                                selectedImage=value;
 //                              UpdateProfileImage(value);
-                              }
+                            }
 
 
-                              setState(() {});
-                            });
+                            setState(() {});
+                          });
 
                         },
                         child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(360))
-                            ),
-                            child: Icon(Icons.camera_alt,color: GlobalColors.firstColor,)),
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                            color: GlobalColors.firstColor,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Icon(
+                            Icons.add_a_photo,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
-                    )
-
+                    ),
                   ]
               ),
-              SizedBox(height: 8,),
+              SizedBox(height: 16,),
+              Text(
+                (UserSession.userData != null) ?UserSession.userData.firstName+" "+UserSession.userData.lastName : "",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20
+                ),
+              ),
+              SizedBox(height: 30,),
               ProfileListItems("Basic Info",Icons.info_outline,1),
               ProfileListItems("General Settings",Icons.settings,3),
               ProfileListItems("Notifications",Icons.notifications,4),
@@ -172,32 +141,32 @@ class _ProfileState extends State<Profile> {
   InkWell ProfileListItems(String text,IconData icon,int screenNo) {
     return InkWell(
       onTap: (){
-          switch(screenNo){
-            case 1:
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
-              break;
-            case 2:
+        switch(screenNo){
+          case 1:
+            Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+            break;
+          case 2:
 //              Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
-              break;
-            case 3:
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => GeneralSettings()));
-              break;
-            case 4:
+            break;
+          case 3:
+            Navigator.push(context, CupertinoPageRoute(builder: (context) => GeneralSettings()));
+            break;
+          case 4:
 //              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
-              break;
-            case 5:
+            break;
+          case 5:
 //              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
-              break;
-            case 6:
-              loading = true;
-              setState(() {
-                logoutUserSession();
-              });
-              break;
-            default:
-              print("Nothing to do");
-              break;
-          }
+            break;
+          case 6:
+            loading = true;
+            setState(() {
+              logoutUserSession();
+            });
+            break;
+          default:
+            print("Nothing to do");
+            break;
+        }
 
       },
       child: Column(
@@ -207,18 +176,18 @@ class _ProfileState extends State<Profile> {
             child: Container(
               height: 50,
               margin: EdgeInsets.all(16),
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(width: 12,),
-                    Icon(icon,color: GlobalColors.firstColor,size: 28,),
-                    SizedBox(width: 12,),
-                    Expanded(child: Text(text,style: TextStyle(fontSize: GlobalFont.textFontSize, fontWeight: FontWeight.w500),)),
-                    SizedBox(width: 8,),
-                    Icon(Icons.edit,size: 20,color: Colors.blueGrey,),
-                    SizedBox(width: 8,),
-                  ],
-                ),
+              child: Row(
+                children: <Widget>[
+                  SizedBox(width: 12,),
+                  Icon(icon,color: GlobalColors.firstColor,size: 28,),
+                  SizedBox(width: 12,),
+                  Expanded(child: Text(text,style: TextStyle(fontSize: GlobalFont.textFontSize, fontWeight: FontWeight.w500),)),
+                  SizedBox(width: 8,),
+                  Icon(Icons.edit,size: 20,color: Colors.blueGrey,),
+                  SizedBox(width: 8,),
+                ],
               ),
+            ),
           ),
         ],
       ),
@@ -226,7 +195,7 @@ class _ProfileState extends State<Profile> {
   }
 
 
-///Image Picker
+  ///Image Picker
 
 
   Future openCamera() async {
@@ -250,44 +219,44 @@ class _ProfileState extends State<Profile> {
   ///Logout Api Call
   logoutUserSession(){
 
-      Map<String, dynamic> body = {};
-      try {
-        ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: true, url: WebService.logout,body: body,isFormData: true).then(
-                (response) async {
+    Map<String, dynamic> body = {};
+    try {
+      ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: true, url: WebService.logout,body: body,isFormData: true).then(
+              (response) async {
 
-              if (response.statusCode == 200){
-                Map<String, dynamic> responseJson = json.decode(response.body);
-                if(responseJson.containsKey('success')) {
-                  if (await prf.containKey(UserSession.authTokenkey)){
-                    AnswersGlobal.questions.clear();
-                    AnswersGlobal.answers.clear();
-                    AnswersGlobal.questionIndex = -1;
-                    await prf.remove(UserSession.authTokenkey);
-                    await prf.remove(UserSession.answers);
-                    await prf.remove(UserSession.question);
-                    await prf.remove(UserSession.email);
-                    Navigator.of(context).pushReplacementNamed('/Login');
-                  }
-                } else{
+            if (response.statusCode == 200){
+              Map<String, dynamic> responseJson = json.decode(response.body);
+              if(responseJson.containsKey('success')) {
+                if (await prf.containKey(UserSession.authTokenkey)){
+                  AnswersGlobal.questions.clear();
+                  AnswersGlobal.answers.clear();
+                  AnswersGlobal.questionIndex = -1;
+                  await prf.remove(UserSession.authTokenkey);
+                  await prf.remove(UserSession.answers);
+                  await prf.remove(UserSession.question);
+                  await prf.remove(UserSession.email);
+                  Navigator.of(context).pushReplacementNamed('/Login');
                 }
-
-              }else if (response.statusCode == 401){
-                loading=false;
-                setState(() {});
-                GFunction.showError(response.body["error"].toString(), context);
-              }else{
-                loading=false;
-                setState(() {});
-                GFunction.showError(response.reasonPhrase.toString(), context);
+              } else{
               }
-            });
 
-      } on FetchDataException catch(e) {
-        loading=false;
-        setState(() {});
-        GFunction.showError(e.toString(), context);
-      }
+            }else if (response.statusCode == 401){
+              loading=false;
+              setState(() {});
+              GFunction.showError(response.body["error"].toString(), context);
+            }else{
+              loading=false;
+              setState(() {});
+              GFunction.showError(response.reasonPhrase.toString(), context);
+            }
+          });
+
+    } on FetchDataException catch(e) {
+      loading=false;
+      setState(() {});
+      GFunction.showError(e.toString(), context);
     }
+  }
 
   ///UserDetails
   FetchUserDetails() {

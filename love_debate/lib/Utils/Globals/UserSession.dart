@@ -11,6 +11,7 @@ class UserSession{
   static String answers = "answers";
   static bool isSignup = false;
   static String fcmToken = "";
+  static String socketId = 'socketId';
   static UserDetail userData = UserDetail();
 
 }

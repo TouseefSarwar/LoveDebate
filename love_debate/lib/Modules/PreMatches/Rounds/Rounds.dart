@@ -1,7 +1,6 @@
 
 import 'package:app_push_notifications/Models/PreMatches.dart';
 import 'package:app_push_notifications/Models/RoundsModel.dart';
-import 'package:app_push_notifications/Modules/Chat/UserChatList.dart';
 import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
 import 'package:app_push_notifications/Utils/Constants/WebService.dart';
 import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
@@ -365,10 +364,10 @@ class _RoundsState extends State<Rounds> {
               height: 80,
               width: 100,
               decoration:BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: (isMe)? [Colors.orange, Colors.black]:[Colors.green, Colors.grey]),
+//                gradient: LinearGradient(
+//                    begin: Alignment.topRight,
+//                    end: Alignment.bottomLeft,
+//                    colors: (isMe)? [Colors.orange, Colors.black]:[Colors.green, Colors.grey]),
                 borderRadius: (isMe)?BorderRadius.only(
                   topRight: Radius.circular(40.0),
                   bottomRight: Radius.circular(40.0),
