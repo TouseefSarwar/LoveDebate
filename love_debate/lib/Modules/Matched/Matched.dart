@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:app_push_notifications/Models/MatchedModel.dart';
+import 'package:app_push_notifications/Modules/OtherProfile/OtherProfile.dart';
 import 'package:app_push_notifications/Utils/Constants/WebService.dart';
 import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
+import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
 import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
 import 'package:http/http.dart' as http;
-import 'package:app_push_notifications/Models/ListModel.dart';
+
 import 'package:app_push_notifications/Screens/SubViews/RoundsListingCell.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 import 'package:app_push_notifications/Screens/TabBarcontroller.dart';
@@ -22,18 +24,9 @@ class Matched extends StatefulWidget {
 
 class _MatchedState extends State<Matched> {
 
-  List<ListModel> list = [ ListModel(title: "Completed Round: " ,colorCell: Colors.blue ),
-    ListModel(title: "Completed Round: " ,colorCell: Colors.green),
-    ListModel(title: "Completed Round: " ,colorCell: Colors.redAccent),
-    ListModel(title: "Completed Round: " ,colorCell: Colors.purple),
-    ListModel(title: "Completed Round: " ,colorCell: Colors.yellow),
-    ListModel(title: "Completed Round: " ,colorCell: Colors.pink),
-    ListModel(title: "Completed Round: " ,colorCell: Colors.indigo)
-  ];
 
   int apiCall = 0;
   List<MatchedModel> matchedUsers = List<MatchedModel>();
-
   //For Avatar Colors
   List<int> colorsR = [0xFF9055A2,0xFFF7C548,0xFFFF66D8,0xFFDC493A,0xFF4392F1,0xFF3D0814,0xFFF7EC59,0xFFFF66D8,0xFFA98743,0xFFEEEBD3,0xFF011638];
 
@@ -55,9 +48,9 @@ class _MatchedState extends State<Matched> {
     return Scaffold(
       appBar: CustomAppbar.setNavigationWithOutBack("Matched"),
 
-      body: SafeArea(
-        child:ListView.builder(
-          itemCount: list.length,
+      body: apiCall == 0 ? SafeArea(
+        child: matchedUsers.length > 0 ? ListView.builder(
+          itemCount: matchedUsers.length,
           itemBuilder: (context,index){
             return RoundListingCell(
               title: "Completed Round: 1",
@@ -66,19 +59,28 @@ class _MatchedState extends State<Matched> {
               personHeight: "5'4",
               height: _itemheight,
               width: width,
-              data: "A",
+              data: matchedUsers[index].userName[0],
               avatarColor: Color(colorsR[Random().nextInt(colorsR.length)]),
               address: "N/A",
               iconColor: GlobalColors.firstColor,
               index: index,
 //              img: WebService.baseURL+"/"+matchedUsers[index].profilePic,
               action: (){
-//                Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
+               Navigator.push(context, CupertinoPageRoute(builder: (context) => OtherProfile(userId: matchedUsers[index].userId.toString(),)));
               },
             );
           },
+        ): Center(
+          child: Text(
+            'No Matches Found.',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+              fontSize: 19
+            ),
+          ),
         ),
-      ),
+      ):Center(child: Loading(),),
     );
   }
 
@@ -228,7 +230,8 @@ class _MatchedState extends State<Matched> {
                     buttonText: 'Request another',
                     cornerRadius: 5,
                     textColor: Colors.white,
-                    backgroundColor:GlobalColors.firstColor,                    borderWith: 0,
+                    backgroundColor:GlobalColors.firstColor,
+                    borderWith: 0,
                     action: (){
                       setState(() {
                         Navigator.push(context, CupertinoPageRoute(builder: (context) => TabBarControllerPage()));
@@ -265,20 +268,20 @@ class _MatchedState extends State<Matched> {
 
   getMatchedData(){
     Map<String, dynamic> body= {};
+    apiCall = 1;
     try {
-      ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: true, url: WebService.chatUsersList,body: body,isFormData: true).then(
+      ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.chatUsersList,body: body,isFormData: true).then(
               (response) async{
-
             var res = response as http.Response;
             if (res.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(res.body);
               if(responseJson.containsKey('success')){
-                print("response is =====> "+responseJson['success']);
+               print("response is =====> ${responseJson['success']}");
                 responseJson["success"].forEach((v) {
-                MatchedModel item = MatchedModel.fromJson(v);
-                matchedUsers.add(MatchedModel.fromJson(v));
+                  MatchedModel item = MatchedModel.fromJson(v);
+                  matchedUsers.add(MatchedModel.fromJson(v));
                 });
-                apiCall=0;
+                apiCall = 0;
                 setState(() {});
               }else{
                 apiCall = 0;

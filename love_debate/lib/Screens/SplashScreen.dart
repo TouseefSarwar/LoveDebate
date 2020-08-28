@@ -197,7 +197,9 @@ class _SplashScreenState extends State<SplashScreen> {
 //      prf.remove("isNotification");
 //      Get.to(Rounds(idNoti: id,catId: cate,));
 //    }else{
+
       if (await prf.containKey(UserSession.authTokenkey)){
+        print("Available:"+await prf.getBy(UserSession.authTokenkey));
         UserSession.authToken = await prf.getBy(UserSession.authTokenkey);
         Navigator.of(context).pushReplacementNamed('/TabBarControllerPage');
       }else{

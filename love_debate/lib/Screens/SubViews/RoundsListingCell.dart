@@ -36,35 +36,38 @@ class RoundListingCell extends StatelessWidget {
             children: <Widget>[
               ///Circle Word/ Image
               SizedBox(width: 8,),
-              Stack(
-                children: <Widget>[
-                  Container(
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                        width: 75,
+                        height: 75,
+                        // margin: EdgeInsets.only(left: 24),
+                        decoration: new BoxDecoration(
+                          color: avatarColor,
+                          shape: BoxShape.circle,
+                        )
+                    ),
+                    Container(
+                        width: 75,
+                        height: 75,
+                        decoration: new BoxDecoration(
+                          color: Colors.black.withOpacity(0.2),
+                          shape: BoxShape.circle,
+                        )
+                    ),
+                    Container(
                       width: 75,
                       height: 75,
-                      // margin: EdgeInsets.only(left: 24),
-                      decoration: new BoxDecoration(
-                        color: avatarColor,
-                        shape: BoxShape.circle,
-                      )
-                  ),
-                  Container(
-                      width: 75,
-                      height: 75,
-                      decoration: new BoxDecoration(
-                        color: Colors.black.withOpacity(0.2),
-                        shape: BoxShape.circle,
-                      )
-                  ),
-                  Container(
-                    width: 75,
-                    height: 75,
-                    child: Center(
-                      child: Text(
-                        (data != null || data!="")?data:"",style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.bold),
+                      child: Center(
+                        child: Text(
+                          (data != null || data!="")?data:"",style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
 
               ///Rounds Heading and Sub Headings....
@@ -111,7 +114,7 @@ class RoundListingCell extends StatelessWidget {
                         children: <Widget>[
                           Icon(Icons.pin_drop, color: iconColor,size: 20,),
                           SizedBox(width: 4,),
-                          Text((address != null || address != "")?address:"Address not found",style: TextStyle(fontSize: GlobalFont.textFontSize,color:Color(0xff2E3022))),
+                          Text((address != null || address != "")?address:"Address not found",style: TextStyle(fontSize: GlobalFont.textFontSize,color:Color(0xff2E3022)), overflow: TextOverflow.clip,),
                         ],
                       )
                     ],

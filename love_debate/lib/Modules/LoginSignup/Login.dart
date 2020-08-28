@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:app_push_notifications/Modules/ForgotPassword/forgotPassword.dart';
+import 'package:app_push_notifications/Modules/Preferences/PreferencesOnBoarding.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:app_push_notifications/Models/LoginModel.dart';
@@ -193,19 +194,33 @@ class _LoginState extends State<Login> {
             var res = response as http.Response;
             if (res.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(res.body);
+              print('Responseee======>${responseJson["success"]['user']}');
               if(responseJson.containsKey('success')){
-                var loginResponse = LoginModel.fromJson(responseJson["success"]);
+                if( responseJson['success']['user']['onboading_status'].toString() == '0'){
+                  UserSession.authToken =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
+                  // await prf.set(UserSession.authTokenkey,UserSession.authToken);
+                  await prf.saveSocketId(socketId: responseJson['success']['user']['soc_id']);
+                  await prf.set(UserSession.signUp,true);
+                  await prf.set(UserSession.name,responseJson['success']['user']['name'].toString());
+                  UserSession.isSignup = await prf.getBy(UserSession.signUp);
+                  Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
 
-                UserSession.authToken =  loginResponse.token == null? "": "Bearer ${loginResponse.token}";
-                await prf.saveSocketId(socketId: loginResponse.user.socketId);
-                await prf.set(UserSession.authTokenkey,UserSession.authToken);
-                await prf.set(UserSession.name,loginResponse.user.name);
-                await prf.set(UserSession.signUp,false);
-                UserSession.isSignup = await prf.getBy(UserSession.signUp);
-                await prf.remove(UserSession.answers);
-                await prf.remove(UserSession.question);
-                apiCall =0;
-                Navigator.of(context).pushReplacementNamed('/TabBarControllerPage');
+                }else{
+
+                  var loginResponse = LoginModel.fromJson(responseJson["success"]);
+                  UserSession.authToken =  loginResponse.token == null? "": "Bearer ${loginResponse.token}";
+                  await prf.saveSocketId(socketId: loginResponse.user.socketId);
+                  await prf.set(UserSession.authTokenkey,UserSession.authToken);
+                  await prf.set(UserSession.name,loginResponse.user.name);
+                  await prf.set(UserSession.signUp,false);
+                  UserSession.isSignup = await prf.getBy(UserSession.signUp);
+                  await prf.remove(UserSession.answers);
+                  await prf.remove(UserSession.question);
+                  apiCall =0;
+                  Navigator.of(context).pushReplacementNamed('/TabBarControllerPage');
+
+                }
+
               }else{
                 apiCall =0;
                 setState(() {});

@@ -61,7 +61,6 @@ class _CatagoriesViewState extends State<CatagoriesView> {
   InkWell catagoryItem(CatagoryModel cat,BuildContext context) {
     return InkWell(
       onTap: (){
-        print(widget.roundDetail.prUserId);
         Navigator.push(context, CupertinoPageRoute(builder: (context) => Rounds(catId: cat.cId.toString(), perMatch: widget.roundDetail)));
 
       },

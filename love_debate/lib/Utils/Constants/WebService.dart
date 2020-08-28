@@ -11,6 +11,7 @@ class WebService{
   static var test = "test";
   static var prematches = "prematches";
   static var userAnswers = "userDetail";
+
   static var socialLogin = "social_login";
   static var updateProfile = "update_profile";
   static var updatePassword = "update_password";
@@ -27,6 +28,7 @@ class WebService{
   static var chatUsersList = 'conv_list';
   static var conversationList = 'user_chat';
 
+  static var uploadProfileImage = "image_upload";
 
 }
 

@@ -1,3 +1,4 @@
+import 'package:app_push_notifications/Modules/Notifications/Notifications.dart';
 import 'package:app_push_notifications/Modules/Preferences/PreferencesOnBoarding.dart';
 import 'package:app_push_notifications/Modules/Profile/Profile.dart';
 import 'package:app_push_notifications/Modules/Matched/Matched.dart';
@@ -21,7 +22,7 @@ class _TabBarControllerPageState extends State<TabBarControllerPage> {
     Matched(),
     UsersChatList(),
     PreMatches(),
-    PreferencesOnBoarding(),
+    Notifications(),
     Profile(),
   ];
 
@@ -84,7 +85,7 @@ class _TabBarControllerPageState extends State<TabBarControllerPage> {
         barItem(icon:Icons.person_outline,title: 'Matched'),
         barItem(icon:Icons.chat,title: 'Chat'),
         barItem( title: ""),
-        barItem(icon: Icons.filter_list, title:'Preferences', ),
+        barItem(icon: Icons.notifications_active, title:'Notifications', ),
         barItem(icon:Icons.menu, title:'More'),
       ]
   );

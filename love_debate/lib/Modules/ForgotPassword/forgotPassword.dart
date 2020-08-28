@@ -3,6 +3,7 @@ import 'package:app_push_notifications/Screens/TabBarcontroller.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomButtons.dart';
 import 'package:app_push_notifications/Utils/Designables/CustomTextFeilds.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
+import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -81,7 +82,13 @@ class _ForgotPasswoprdState extends State<ForgotPasswoprd> {
                               backgroundColor:GlobalColors.firstColor,
                               borderWith: 0,
                               action: (){
-                                Navigator.push(context, CupertinoPageRoute(builder: (context) => EmailVerification()));
+                                if (txtEmail.text.isEmpty){
+                                  GFunction.showError("Enter email address", context);
+                                }else{
+                                  ///Call Forgot Password Api hereeee.....
+                                  Navigator.push(context, CupertinoPageRoute(builder: (context) => EmailVerification()));
+                                }
+
                               },
                             ),
                           ),

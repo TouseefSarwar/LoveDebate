@@ -364,10 +364,10 @@ class _RoundsState extends State<Rounds> {
               height: 80,
               width: 100,
               decoration:BoxDecoration(
-//                gradient: LinearGradient(
-//                    begin: Alignment.topRight,
-//                    end: Alignment.bottomLeft,
-//                    colors: (isMe)? [Colors.orange, Colors.black]:[Colors.green, Colors.grey]),
+               gradient: LinearGradient(
+                   begin: Alignment.topRight,
+                   end: Alignment.bottomLeft,
+                   colors: (isMe)? [Colors.orange, Colors.black]:[Colors.green, Colors.grey]),
                 borderRadius: (isMe)?BorderRadius.only(
                   topRight: Radius.circular(40.0),
                   bottomRight: Radius.circular(40.0),
@@ -712,7 +712,6 @@ class _RoundsState extends State<Rounds> {
                 }else{
                   check = "first";
                 }
-
                 if (roundsQuestion.rStatus != 0){
                   if (roundsQuestion.rUserAnsThree != null || roundsQuestion.rPlayerAnsThree != null){
                     currentIndex = 2;

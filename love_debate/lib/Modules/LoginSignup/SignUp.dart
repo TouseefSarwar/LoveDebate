@@ -96,14 +96,14 @@ class _SignUpState extends State<SignUp> {
           SignupMethod(context,_signupButtonheight,"email", width,'Continue with Email',true,GlobalColors.firstColor,'images/mail.png',Colors.white),
           SignupMethod(context,_signupButtonheight, "fb",width,'Continue with Facebook',true,Color(0xff0072CD),'images/icons8-facebook-f-48.png',Colors.white),
           SignupMethod(context,_signupButtonheight,"google", width,'Continue with Google',true,Colors.white,'images/googleicon.png',Colors.black),
-          Padding(
+          (Platform.isIOS)?Padding(
             padding: const EdgeInsets.only(left: 16,right: 16),
             child: AppleSignInButton(
-//              style: ButtonStyle.black,
+              style: ButtonStyle.black,
               type: ButtonType.continueButton,
               onPressed: appleLogIn,
             ),
-          ),
+          ): Container(),
 
 
 
@@ -380,7 +380,10 @@ class _SignUpState extends State<SignUp> {
               (response) async {
             if (response.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(response.body);
+
               if(responseJson.containsKey('success')) {
+                print('Response=====> ${responseJson['success']}');
+                print('Response=====> ${responseJson['success']["user"]}');
                 isloading = false;
                 if(responseJson['success']['already_exist'] == false){
                   UserSession.authToken =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
@@ -394,7 +397,7 @@ class _SignUpState extends State<SignUp> {
                   if( responseJson['success']['user']['onboading_status'].toString() == '0'){
                     UserSession.authToken =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
                     await prf.saveSocketId(socketId: responseJson['success']['user']['soc_id']);
-                    await prf.set(UserSession.authTokenkey,UserSession.authToken);
+                    // await prf.set(UserSession.authTokenkey,UserSession.authToken);
                     await prf.set(UserSession.signUp,true);
                     await prf.set(UserSession.name,responseJson['success']['user']['name'].toString());
                     UserSession.isSignup = await prf.getBy(UserSession.signUp);

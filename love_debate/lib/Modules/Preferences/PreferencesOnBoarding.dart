@@ -697,6 +697,7 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
 
 ///Save Answers.
   saveAnswers(){
+
     Map<String, dynamic> body = {
       'answers' : AnswersGlobal.answers,
       'profile_completion_status' : "1",
@@ -707,7 +708,9 @@ class _PreferencesOnBoardingState extends State<PreferencesOnBoarding> {
             if (response.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(response.body);
               if(responseJson.containsKey('success')) {
-
+                //edited
+                await prf.set(UserSession.authTokenkey,UserSession.authToken);
+                //end
                 await prf.remove(UserSession.question);
                 Map<String, dynamic> resp = {
                   'success': AnswersGlobal.questions,

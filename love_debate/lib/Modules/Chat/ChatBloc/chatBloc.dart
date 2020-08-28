@@ -60,7 +60,7 @@ class ChatBloc implements Bloc{
 
     _socket.on("connect", (_) async {
       print('Socket Connect');
-      registerUser();
+      // registerUser();
     });
     _socket.on("connect_error", (_){
       print('connect_error');

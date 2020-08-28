@@ -237,7 +237,7 @@ class _SUAcountInfoState extends State<SUAcountInfo> {
               if(responseJson.containsKey('success')){
                 UserSession.authToken =  responseJson["success"]["token"] == null? "": "Bearer ${responseJson["success"]["token"]}";
                 print(UserSession.authToken);
-                await prf.set(UserSession.authTokenkey,UserSession.authToken);
+                // await prf.set(UserSession.authTokenkey,UserSession.authToken);
                 await prf.set(UserSession.signUp,true);
                 await prf.set(UserSession.name,SignUpGlobal.f_name+" "+SignUpGlobal.l_name);
                 UserSession.isSignup = await prf.getBy(UserSession.signUp);

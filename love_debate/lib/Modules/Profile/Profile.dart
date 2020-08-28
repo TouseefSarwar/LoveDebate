@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:app_push_notifications/Models/UserDetailModel.dart';
+import 'package:app_push_notifications/Modules/Preferences/PreferencesOnBoarding.dart';
 import 'package:app_push_notifications/Modules/Profile/GeneralSettings.dart';
 import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
 import 'package:app_push_notifications/Utils/Constants/WebService.dart';
@@ -9,6 +10,7 @@ import 'package:app_push_notifications/Utils/Controllers/AppExceptions.dart';
 import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
 import 'package:app_push_notifications/Utils/Globals/AnswersGlobals.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:app_push_notifications/Modules/Profile/BasicInfo.dart';
@@ -28,9 +30,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   SharedPref prf = SharedPref();
   bool loading = false;
-
-//  dynamic selectedImage;
-
+ dynamic selectedImage;
 
   File image;
   final picker = ImagePicker();
@@ -65,9 +65,9 @@ class _ProfileState extends State<Profile> {
                   children: <Widget>[
                     CircleAvatar(
                       radius: 60,
-                      child: ClipOval(
-                        child: Image.asset('images/conor.jpg',height: 120,width: 120,fit: BoxFit.cover,),
-                      ),
+                      backgroundImage:  ( UserSession.userData.profilePic == null)? NetworkImage("${UserSession.userData.profilePic}")
+                          :AssetImage('images/dummy.png'),
+                      backgroundColor: Colors.transparent,
                     ),
                     Positioned(
                       bottom: 1,
@@ -91,8 +91,7 @@ class _ProfileState extends State<Profile> {
                                   openCamera();
                                   break;
                               }
-//                                selectedImage=value;
-//                              UpdateProfileImage(value);
+                              selectedImage=value;
                             }
 
 
@@ -128,9 +127,10 @@ class _ProfileState extends State<Profile> {
               SizedBox(height: 30,),
               ProfileListItems("Basic Info",Icons.info_outline,1),
               ProfileListItems("General Settings",Icons.settings,3),
-              ProfileListItems("Notifications",Icons.notifications,4),
-              ProfileListItems("Deactivate Account",Icons.cancel,5),
-              ProfileListItems("Logout",Icons.power_settings_new,6),
+              // ProfileListItems("Notifications",Icons.notifications,4),
+              ProfileListItems("Preferences",Icons.filter_list,5),
+              ProfileListItems("Deactivate Account",Icons.cancel,6),
+              ProfileListItems("Logout",Icons.power_settings_new,7),
             ],
           ),
         ),
@@ -155,9 +155,12 @@ class _ProfileState extends State<Profile> {
 //              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
             break;
           case 5:
-//              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+             Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
             break;
           case 6:
+//              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+            break;
+          case 7:
             loading = true;
             setState(() {
               logoutUserSession();
@@ -202,6 +205,7 @@ class _ProfileState extends State<Profile> {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
     if(pickedFile != null){
       image = File(pickedFile.path);
+      UpdateProfileImage(image);
       setState(() {});
     }
   }
@@ -209,6 +213,7 @@ class _ProfileState extends State<Profile> {
     final pickedFile = await picker.getImage(source: ImageSource.gallery,imageQuality: 50);
     if(pickedFile != null){
       image = File(pickedFile.path);
+      UpdateProfileImage(image);
       setState(() {});
     }
 
@@ -273,6 +278,7 @@ class _ProfileState extends State<Profile> {
               if(responseJson.containsKey('success')) {
                 UserSession.userData = null;
                 UserSession.userData = UserDetail.fromJson(responseJson["success"]);
+                print(UserSession.userData.profilePic);
                 loading =false;
                 setState(() {});
               } else{
@@ -301,39 +307,32 @@ class _ProfileState extends State<Profile> {
 
   ///Upload Profile Photo.... Set Profile Image
 
-  UpdateProfileImage(File imgFile){
 
-    try{
-      ApiBaseHelper().uploadFile(imgFile).then((response) async {
-        print(response);
-        if (response.statusCode == 200){
-          print("Uploaded Successfully....");
-//          Map<String, dynamic> responseJson = json.decode(response.body);
-//          if(responseJson.containsKey('success')) {
-//          } else{
-//            print("Oh no response");
-//          }
 
-        }else if (response.statusCode == 401){
-          loading =false;
-          setState(() {});
-          GFunction.showError(response.body["error"].toString(), context);
+  UpdateProfileImage(File imageFile) async{
+    Response response;
+    FormData formData = new FormData.fromMap({
+      "type": "profile",
+      "file": await MultipartFile.fromFile(imageFile.path,filename: "${DateTime.now().toString()}-${imageFile.path.split('/').last}"),
+    });
 
-        }else{
-          loading =false;
-          setState(() {});
-          GFunction.showError(response.reasonPhrase.toString(), context);
-        }
-
-      });
-
-    }on FetchDataException catch(e) {
-      setState(() {
-        GFunction.showError(e.toString(), context);
-      });
-    }
-
+    Dio dio = new Dio();
+    print(WebService.baseURL+WebService.uploadProfileImage);
+    response = await dio.post(WebService.baseURL+WebService.uploadProfileImage,
+      data: formData,
+      options :Options(
+        headers: {
+          Headers.wwwAuthenticateHeader:"Bearer ${UserSession.authToken}", // set content-length
+        },
+      ),
+      onSendProgress: (int send, int total){print("Send: ${send}, Total: ${total} ");},
+    );
+    print("The result is: ${response.statusCode}");
+    print("The response is: ${response}");
   }
+
+
+
 
 
 }

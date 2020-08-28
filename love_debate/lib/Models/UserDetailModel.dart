@@ -8,6 +8,7 @@ class UserDetail {
   String password;
   String dob;
   String height;
+  String profilePic;
   String gender;
   String address;
   String state;
@@ -61,6 +62,7 @@ class UserDetail {
         this.password,
         this.dob,
         this.height,
+        this.profilePic,
         this.gender,
         this.address,
         this.state,
@@ -113,6 +115,7 @@ class UserDetail {
     email = json['email'].toString();
     password = json['password'].toString();
     dob = json['dob'].toString();
+    profilePic = json["profile_pic"].toString();
     height = json['height'].toString();
     gender = json['gender'].toString();
     address = json['address'].toString();
