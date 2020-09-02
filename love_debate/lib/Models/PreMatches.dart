@@ -62,6 +62,7 @@ class Matches {
   String prHobbiesOutdoorDislikes;
   String prHobbiesIndoor;
   String prHobbiesIndoorDislikes;
+  String roundNo;
 
   Matches(
       {this.firstName,
@@ -103,7 +104,9 @@ class Matches {
         this.prHobbiesOutdoor,
         this.prHobbiesOutdoorDislikes,
         this.prHobbiesIndoor,
-        this.prHobbiesIndoorDislikes});
+        this.prHobbiesIndoorDislikes,
+        this.roundNo,
+      });
 
   Matches.fromJson(Map<String, dynamic> json) {
     firstName = json['first_name'];
@@ -146,6 +149,8 @@ class Matches {
     prHobbiesOutdoorDislikes = json['pr_hobbies_outdoor_dislikes'];
     prHobbiesIndoor = json['pr_hobbies_indoor'];
     prHobbiesIndoorDislikes = json['pr_hobbies_indoor_dislikes'];
+    roundNo = json['roundNo'];
+
   }
 
   Map<String, dynamic> toJson() {
@@ -190,6 +195,7 @@ class Matches {
     data['pr_hobbies_outdoor_dislikes'] = this.prHobbiesOutdoorDislikes;
     data['pr_hobbies_indoor'] = this.prHobbiesIndoor;
     data['pr_hobbies_indoor_dislikes'] = this.prHobbiesIndoorDislikes;
+    data['roundNo'] = this.roundNo;
     return data;
   }
 }
