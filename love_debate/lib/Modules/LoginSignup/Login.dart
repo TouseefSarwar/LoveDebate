@@ -203,10 +203,9 @@ class _LoginState extends State<Login> {
                   await prf.set(UserSession.signUp,true);
                   await prf.set(UserSession.name,responseJson['success']['user']['name'].toString());
                   UserSession.isSignup = await prf.getBy(UserSession.signUp);
+                  apiCall =0;
                   Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
-
                 }else{
-
                   var loginResponse = LoginModel.fromJson(responseJson["success"]);
                   UserSession.authToken =  loginResponse.token == null? "": "Bearer ${loginResponse.token}";
                   await prf.saveSocketId(socketId: loginResponse.user.socketId);

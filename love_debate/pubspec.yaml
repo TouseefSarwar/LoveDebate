@@ -39,7 +39,6 @@ dependencies:
   #this sdks are used for apple Login.....
   firebase_auth: ^0.15.3
   apple_sign_in: ^0.1.0
-
 #  provider: ^4.0.1
 #  get:
   flutter_launcher_icons: ^0.7.5

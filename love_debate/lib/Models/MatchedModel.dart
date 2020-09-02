@@ -3,7 +3,7 @@ class MatchedModel {
   String socketId;
   int userId;
   String userName;
-  Null profilePic;
+  String profilePic;
   String lastMsg;
   String lastMsgDate;
 

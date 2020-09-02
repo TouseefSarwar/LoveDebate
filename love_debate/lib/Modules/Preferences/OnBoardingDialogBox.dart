@@ -52,8 +52,6 @@ class _OnBoardingDialogBoxState extends State<OnBoardingDialogBox> {
         }
       }
     }
-
-
   }
 
   @override

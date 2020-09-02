@@ -20,7 +20,10 @@ import 'Rounds/Rounds.dart';
 // ignore: must_be_immutable
 class CatagoriesView extends StatefulWidget {
   Matches roundDetail;
-  CatagoriesView({this.roundDetail});
+  String userId;
+  String firstName;
+
+  CatagoriesView({this.roundDetail,this.userId, this.firstName});
 
   @override
   _CatagoriesViewState createState() => _CatagoriesViewState();
@@ -29,6 +32,7 @@ class CatagoriesView extends StatefulWidget {
 class _CatagoriesViewState extends State<CatagoriesView> {
   int apiCall = 0;
   List<CatagoryModel> catData = List<CatagoryModel>();
+
 
   @override
   void initState() {
@@ -61,7 +65,12 @@ class _CatagoriesViewState extends State<CatagoriesView> {
   InkWell catagoryItem(CatagoryModel cat,BuildContext context) {
     return InkWell(
       onTap: (){
-        Navigator.push(context, CupertinoPageRoute(builder: (context) => Rounds(catId: cat.cId.toString(), perMatch: widget.roundDetail)));
+        if(widget.userId == null){
+          Navigator.push(context, CupertinoPageRoute(builder: (context) => Rounds(catId: cat.cId.toString(), perMatch: widget.roundDetail)));
+        }else{
+          Navigator.push(context, CupertinoPageRoute(builder: (context) => Rounds(catId: cat.cId.toString(), idNoti: widget.userId,firstName: widget.firstName,)));
+        }
+
 
       },
       child: Container(

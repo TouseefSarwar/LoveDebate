@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:app_push_notifications/Models/MatchedModel.dart';
 import 'package:app_push_notifications/Modules/OtherProfile/OtherProfile.dart';
+import 'package:app_push_notifications/Screens/SubViews/MatchListingCell.dart';
 import 'package:app_push_notifications/Utils/Constants/WebService.dart';
 import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
 import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
 import 'package:app_push_notifications/Utils/Globals/GlobalFunctions.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:app_push_notifications/Screens/SubViews/RoundsListingCell.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 import 'package:app_push_notifications/Screens/TabBarcontroller.dart';
@@ -66,7 +66,7 @@ class _MatchedState extends State<Matched> {
               index: index,
 //              img: WebService.baseURL+"/"+matchedUsers[index].profilePic,
               action: (){
-               Navigator.push(context, CupertinoPageRoute(builder: (context) => OtherProfile(userId: matchedUsers[index].userId.toString(),)));
+               Navigator.push(context, MaterialPageRoute(builder: (context) => OtherProfile(userId: matchedUsers[index].userId.toString(),)));
               },
             );
           },
@@ -286,7 +286,6 @@ class _MatchedState extends State<Matched> {
               }else{
                 apiCall = 0;
                 setState(() {});
-                print("Oh no response");
               }
             }else if (res.statusCode == 401){
               apiCall = 0;

@@ -11,6 +11,7 @@ import 'package:app_push_notifications/Utils/Controllers/Loader.dart';
 import 'package:app_push_notifications/Utils/Globals/AnswersGlobals.dart';
 import 'package:app_push_notifications/Utils/Globals/Colors.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:app_push_notifications/Modules/Profile/BasicInfo.dart';
@@ -28,6 +29,10 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+
+  // FirebaseMessaging
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
   SharedPref prf = SharedPref();
   bool loading = false;
  dynamic selectedImage;
@@ -65,8 +70,8 @@ class _ProfileState extends State<Profile> {
                   children: <Widget>[
                     CircleAvatar(
                       radius: 60,
-                      backgroundImage:  ( UserSession.userData.profilePic == null)? NetworkImage("${UserSession.userData.profilePic}")
-                          :AssetImage('images/dummy.png'),
+                      backgroundImage:  (UserSession.userData.profilePic != null)? NetworkImage("https://lovedebate.co/public/assets/images/profile/${UserSession.userData.profilePic}")
+                          :(image != null)? FileImage(image) :AssetImage('images/dummy.png'),
                       backgroundColor: Colors.transparent,
                     ),
                     Positioned(
@@ -140,16 +145,18 @@ class _ProfileState extends State<Profile> {
 
   InkWell ProfileListItems(String text,IconData icon,int screenNo) {
     return InkWell(
-      onTap: (){
+      onTap: ()async{
         switch(screenNo){
           case 1:
-            Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+            await Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
+            setState(() {});
             break;
           case 2:
 //              Navigator.push(context, CupertinoPageRoute(builder: (context) => PreferencesOnBoarding()));
             break;
           case 3:
-            Navigator.push(context, CupertinoPageRoute(builder: (context) => GeneralSettings()));
+            await Navigator.push(context, CupertinoPageRoute(builder: (context) => GeneralSettings()));
+            setState(() {});
             break;
           case 4:
 //              Navigator.push(context, CupertinoPageRoute(builder: (context) => BasicInfo()));
@@ -200,7 +207,6 @@ class _ProfileState extends State<Profile> {
 
   ///Image Picker
 
-
   Future openCamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
     if(pickedFile != null){
@@ -228,7 +234,6 @@ class _ProfileState extends State<Profile> {
     try {
       ApiBaseHelper().fetchService(method: HttpMethod.get,authorization: true, url: WebService.logout,body: body,isFormData: true).then(
               (response) async {
-
             if (response.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(response.body);
               if(responseJson.containsKey('success')) {
@@ -240,6 +245,7 @@ class _ProfileState extends State<Profile> {
                   await prf.remove(UserSession.answers);
                   await prf.remove(UserSession.question);
                   await prf.remove(UserSession.email);
+                  // _firebaseMessaging.deleteInstanceID();
                   Navigator.of(context).pushReplacementNamed('/Login');
                 }
               } else{
@@ -306,33 +312,39 @@ class _ProfileState extends State<Profile> {
 
 
   ///Upload Profile Photo.... Set Profile Image
-
-
-
   UpdateProfileImage(File imageFile) async{
+    loading = true;
+    setState(() {});
     Response response;
     FormData formData = new FormData.fromMap({
       "type": "profile",
-      "file": await MultipartFile.fromFile(imageFile.path,filename: "${DateTime.now().toString()}-${imageFile.path.split('/').last}"),
+      "image": await MultipartFile.fromFile(imageFile.path,filename: "${DateTime.now().toString()}-${imageFile.path.split('/').last}"),
     });
 
     Dio dio = new Dio();
     print(WebService.baseURL+WebService.uploadProfileImage);
+    dio.options.headers["Authorization"] = "${UserSession.authToken}";
     response = await dio.post(WebService.baseURL+WebService.uploadProfileImage,
       data: formData,
-      options :Options(
-        headers: {
-          Headers.wwwAuthenticateHeader:"Bearer ${UserSession.authToken}", // set content-length
-        },
-      ),
-      onSendProgress: (int send, int total){print("Send: ${send}, Total: ${total} ");},
+//       options:Options(
+//         headers: {
+//           Headers.wwwAuthenticateHeader: "Bearer ${UserSession.authToken}",
+// // set content-length
+//         },
+//       ),
+      onSendProgress: (int send, int total){
+        print("Send: ${send}, Total: ${total} ");
+        if(send == total){
+          loading = false;
+        }
+      },
     );
     print("The result is: ${response.statusCode}");
-    print("The response is: ${response}");
+    if (response.statusCode == 200){
+      UserSession.userData.profilePic = response.data['success'];
+      setState(() {});
+    }
+
   }
-
-
-
-
 
 }

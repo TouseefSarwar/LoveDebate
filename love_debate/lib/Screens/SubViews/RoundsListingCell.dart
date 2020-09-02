@@ -37,7 +37,7 @@ class RoundListingCell extends StatelessWidget {
               ///Circle Word/ Image
               SizedBox(width: 8,),
               Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.only(left: 12,top: 12,bottom: 12,),
                 child: Stack(
                   children: <Widget>[
                     Container(
@@ -69,7 +69,6 @@ class RoundListingCell extends StatelessWidget {
                   ],
                 ),
               ),
-
               ///Rounds Heading and Sub Headings....
               Expanded(
                 child: Container(

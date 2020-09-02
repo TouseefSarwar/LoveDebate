@@ -52,6 +52,15 @@ class UserDetail {
   String prHobbiesIndoor;
   String prHobbiesIndoorDislikes;
 
+  String kidsStr;
+  String faithStr;
+  String ethnicityStr;
+  String professionsStr;
+  String faithDislikeStr;
+  String ethnicityDislikeStr;
+  String roundNo;
+  int cateId;
+
   UserDetail(
       {this.id,
         this.socialLoginId,
@@ -104,7 +113,16 @@ class UserDetail {
         this.prHobbiesOutdoor,
         this.prHobbiesOutdoorDislikes,
         this.prHobbiesIndoor,
-        this.prHobbiesIndoorDislikes});
+        this.prHobbiesIndoorDislikes,
+        this.kidsStr,
+        this.faithStr,
+        this.ethnicityStr,
+        this.professionsStr,
+        this.faithDislikeStr,
+        this.ethnicityDislikeStr,
+        this.roundNo,
+        this.cateId,
+      });
 
   UserDetail.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -159,6 +177,14 @@ class UserDetail {
     prHobbiesOutdoorDislikes = json['pr_hobbies_outdoor_dislikes'].toString();
     prHobbiesIndoor = json['pr_hobbies_indoor'].toString();
     prHobbiesIndoorDislikes = json['pr_hobbies_indoor_dislikes'].toString();
+    kidsStr = json['kids_str'];
+    faithStr = json['faith_str'];
+    ethnicityStr = json['ethnicity_str'];
+    professionsStr = json['professions_str'];
+    faithDislikeStr = json['faith_dislike_str'];
+    ethnicityDislikeStr = json['ethnicity_dislike_str'];
+    roundNo = json['roundNo'];
+    cateId = json['cate_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -214,6 +240,14 @@ class UserDetail {
     data['pr_hobbies_outdoor_dislikes'] = this.prHobbiesOutdoorDislikes;
     data['pr_hobbies_indoor'] = this.prHobbiesIndoor;
     data['pr_hobbies_indoor_dislikes'] = this.prHobbiesIndoorDislikes;
+    data['kids_str'] = this.kidsStr;
+    data['faith_str'] = this.faithStr;
+    data['ethnicity_str'] = this.ethnicityStr;
+    data['professions_str'] = this.professionsStr;
+    data['faith_dislike_str'] = this.faithDislikeStr;
+    data['ethnicity_dislike_str'] = this.ethnicityDislikeStr;
+    data['roundNo'] = this.roundNo;
+    data['cate_id'] = this.cateId;
     return data;
   }
 }

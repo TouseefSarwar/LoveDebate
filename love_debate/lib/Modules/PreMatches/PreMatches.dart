@@ -2,9 +2,8 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:app_push_notifications/Modules/Chat/ChatBloc/blocProvider.dart';
 import 'package:app_push_notifications/Modules/Chat/ChatBloc/chatBloc.dart';
+import 'package:app_push_notifications/Modules/PreMatches/Rounds/Rounds.dart';
 import 'package:http/http.dart' as http;
-
-import 'package:app_push_notifications/Models/ListModel.dart';
 import 'package:app_push_notifications/Models/PreMatches.dart';
 import 'package:app_push_notifications/Screens/SubViews/RoundsListingCell.dart';
 import 'package:app_push_notifications/Utils/Constants/WebService.dart';
@@ -67,7 +66,8 @@ class _PreMatchesState extends State<PreMatches> {
               index: index,
               avatarColor: Color(colorsR[Random().nextInt(colorsR.length)]),
               action: (){
-                Navigator.push(context, CupertinoPageRoute(builder: (context) => CatagoriesView(roundDetail:  matches[index],)));
+                pushSetUp(index: index);
+                // Navigator.push(context, CupertinoPageRoute(builder: (context) => CatagoriesView(roundDetail:  matches[index],)));
               },
             );
           },
@@ -94,6 +94,18 @@ class _PreMatchesState extends State<PreMatches> {
 
   }
 
+
+  pushSetUp({int index}){
+    if(matches[index].roundNo == null && matches[index].cateId == null){
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => CatagoriesView(roundDetail:  matches[index],)));
+    }else{
+      //TODO:catId is hardcoded... when this is setup in the api we need to change with that id...
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => Rounds(catId: matches[index].cateId.toString(), perMatch: matches[index])));
+    }
+
+  }
+
+
   void funPreMatches(){
     Map<String, dynamic> body = {
 
@@ -109,7 +121,6 @@ class _PreMatchesState extends State<PreMatches> {
                 print("HEre is yourrr response : ${responseJson["success"]}");
                 responseJson["success"].forEach((v) {
                   Matches item = Matches.fromJson(v);
-                  print(item.height);
                   data.add(Matches.fromJson(v));
                 });
                 setState(() {
@@ -133,86 +144,6 @@ class _PreMatchesState extends State<PreMatches> {
     }
   }
 
-
-}
-
-InkWell PreMatchesItem(double itemheight, double width, String text, Color background,BuildContext context) {
-  return InkWell(
-    onTap: (){
-      Navigator.push(context, CupertinoPageRoute(builder: (context) => CatagoriesView()));
-    },
-
-    child: Container(
-      height: itemheight,
-      width: width,
-// color: Colors.black,
-      child: Card(
-        elevation: 5,
-        child: Row(
-          children: <Widget>[
-            SizedBox(width: 8,),
-            Stack(
-              children: <Widget>[
-                Container(
-                    width: 75,
-                    height: 75,
-// margin: EdgeInsets.only(left: 24),
-                    decoration: new BoxDecoration(
-                      color: background,
-                      shape: BoxShape.circle,
-                    )
-                ),
-                Container(
-                    width: 75,
-                    height: 75,
-                    decoration: new BoxDecoration(
-                      color: Colors.black.withOpacity(0.2),
-                      shape: BoxShape.circle,
-                    )
-                ),
-                Container(
-                  width: 75,
-                  height: 75,
-                  child: Center(
-                    child: Text(
-                      text,style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-
-              ],
-            ),
-            Expanded(
-              child: Container(
-                height: itemheight,
-                margin: EdgeInsets.only(left: 16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text("Start Round", maxLines: 2,style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold ,color:Color(0xff2E3032)),),
-                    SizedBox(height: 4,),
-                    Text("This is a start round description.... it is test for double line",style: TextStyle(fontSize: 15,color:Color(0xff2E3022)))
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(width: 8,),
-            Container(
-              height: itemheight,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Icon(Icons.navigate_next,size: 35,color: GlobalColors.firstColor),
-                ],
-              ),
-            ),
-          ],
-        ),
-
-      ),
-    ),
-  );
 }
 
 

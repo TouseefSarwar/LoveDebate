@@ -73,8 +73,6 @@ class ApiBaseHelper {
       onSendProgress: (int send, int total){print("Send: ${send}, Total: ${total} ");},
     );
 
-
-
     print("The result is: ${response.statusCode}");
     print("The response is: ${response}");
 //    print(jsonDecode(response["result"]["userdata"]));

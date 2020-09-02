@@ -37,7 +37,7 @@ class _TabBarControllerPageState extends State<TabBarControllerPage> {
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.favorite,size: 30,),
+        child: Icon(Icons.favorite,size: 24,),
         backgroundColor: FloatingbtnSelected,
         onPressed: (){
           setState(() {
@@ -92,8 +92,8 @@ class _TabBarControllerPageState extends State<TabBarControllerPage> {
 
   BottomNavigationBarItem barItem({IconData icon , String title}){
     return BottomNavigationBarItem(
-      icon: Icon(icon, size: 30,),
-      title: Text(title),
+      icon: Icon(icon, size: 24,),
+      title: Text(title,style: TextStyle(fontSize: 12),),
     );
   }
 

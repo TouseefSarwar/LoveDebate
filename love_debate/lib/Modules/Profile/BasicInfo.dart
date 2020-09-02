@@ -232,6 +232,7 @@ class _BasicInfoState extends State<BasicInfo> {
     heightTF.text = UserSession.userData.height;
     dobTF.text = UserSession.userData.dob;
     addressTF.text = UserSession.userData.city +", "+UserSession.userData.state;
+    val = {"city" : UserSession.userData.city, "state" :UserSession.userData.state , "formatted_address":UserSession.userData.address,"lat":UserSession.userData.lat,"lng":UserSession.userData.lng};
     selectedradio = int.parse(UserSession.userData.gender);
 
   }
@@ -475,7 +476,7 @@ class _BasicInfoState extends State<BasicInfo> {
     try {
 
       ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.updateProfile,body: body,isFormData: false).then(
-              (response){
+              (response) {
 
             var res = response as http.Response;
             if (res.statusCode == 200){
@@ -485,10 +486,10 @@ class _BasicInfoState extends State<BasicInfo> {
                 UserSession.userData.firstName = fnameTF.text;
                 UserSession.userData.lastName = lnameTF.text;
                 UserSession.userData.city = val['city'];
-                UserSession.userData.city = val['state'];
-                UserSession.userData.city = val['formatted_address'];
-                UserSession.userData.city = val['lat'];
-                UserSession.userData.city = val['lng'];
+                UserSession.userData.state = val['state'];
+                UserSession.userData.address = val['formatted_address'];
+                UserSession.userData.lat = val['lat'];
+                UserSession.userData.lng = val['lng'];
                 UserSession.userData.dob = dobTF.text;
                 UserSession.userData.height = heightTF.text;
                 apiCall =0;

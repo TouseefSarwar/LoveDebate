@@ -165,14 +165,13 @@ class _SignUpState extends State<SignUp> {
         if(socialtype == "fb"){
           _faceBooklogin();
         }else if (socialtype == "google"){
-            _googleSignIn();
+          _googleSignIn();
         }else if(socialtype == "email"){
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => SUPersonalInfo()),
           );
         }
-
       },
       child: Container(
         height: 55,
@@ -207,13 +206,12 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
-
   }
 
 
   ///Apple Login
   appleLogIn() async{
-      // if(await AppleSignIn.isAvailable()) {
+      if(await AppleSignIn.isAvailable()) {
         final AuthorizationResult result = await
         AppleSignIn.performRequests([
           AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
@@ -274,9 +272,9 @@ class _SignUpState extends State<SignUp> {
             print('User cancelled');
             break;
         }
-      // }else{
-      //   print('Apple SignIn is not available for your device');
-      // }
+      }else{
+        print('Apple SignIn is not available for your device');
+      }
   }
 
 

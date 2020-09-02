@@ -1,6 +1,7 @@
 
 import 'package:app_push_notifications/Models/PreMatches.dart';
 import 'package:app_push_notifications/Models/RoundsModel.dart';
+import 'package:app_push_notifications/Modules/Matched/Matched.dart';
 import 'package:app_push_notifications/Utils/Constants/SharedPref.dart';
 import 'package:app_push_notifications/Utils/Constants/WebService.dart';
 import 'package:app_push_notifications/Utils/Controllers/ApiBaseHelper.dart';
@@ -25,7 +26,8 @@ class Rounds extends StatefulWidget {
   String catId;
   Matches perMatch;
   String idNoti;
-  Rounds({this.catId, this.perMatch, this.idNoti});
+  String firstName;
+  Rounds({this.catId, this.perMatch, this.idNoti,this.firstName});
   @override
   _RoundsState createState() => _RoundsState();
 }
@@ -47,6 +49,9 @@ class _RoundsState extends State<Rounds> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    if (widget.firstName!=null){
+      myName =widget.firstName;
+    }
     getData();
 
   }
@@ -375,7 +380,7 @@ class _RoundsState extends State<Rounds> {
                   topLeft: Radius.circular(40.0),
                   bottomLeft: Radius.circular(40.0),
                 ),),
-              child: Center(child: Text((isMe)?myName[0]:widget.perMatch.firstName[0],style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold, color: Colors.white),)),
+              child: Center(child: Text((isMe)?myName[0]:(widget.idNoti==null)?widget.perMatch.firstName[0]:widget.firstName[0],style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold, color: Colors.white),)),
             );
   }
 
@@ -644,7 +649,6 @@ class _RoundsState extends State<Rounds> {
       ),
     );
   }
-
   ///Accept and Decline Status Buttons
   Widget StatusButton({Color backgroundColor, IconData icon,Color iconColor , double radius, double size, VoidCallback action}){
     return CupertinoButton(
@@ -683,7 +687,6 @@ class _RoundsState extends State<Rounds> {
   }
   ///Send My Answer action
   void SendAnswer(){
-
     if (answerTF.text.isNotEmpty){
       AnswerQuestion();
     }else{
@@ -696,6 +699,7 @@ class _RoundsState extends State<Rounds> {
       "cate_id":"${widget.catId}",
       "id" :  (widget.idNoti == null)?"${widget.perMatch.prUserId}":"${widget.idNoti}",  //player_id
     };
+    print(body);
     try {
       ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.rounds,body: body,isFormData: true).then(
               (response) async{
@@ -705,13 +709,25 @@ class _RoundsState extends State<Rounds> {
               if(responseJson.containsKey('success')){
                 roundsQuestion = RoundsModel.fromJson(responseJson['success']);
                 print("Response: ${responseJson['success']}");
-                if(widget.perMatch.prUserId == roundsQuestion.rUserId && roundsQuestion.rUserId!=null){
-                  check = "user";
-                }else if (widget.perMatch.prUserId == roundsQuestion.rPlayerId && roundsQuestion.rPlayerId!=null){
-                  check = "player";
+                if (widget.idNoti==null){
+                  if(widget.perMatch.prUserId == roundsQuestion.rUserId && roundsQuestion.rUserId!=null){
+                    check = "user";
+                  }else if (widget.perMatch.prUserId == roundsQuestion.rPlayerId && roundsQuestion.rPlayerId!=null){
+                    check = "player";
+                  }else{
+                    check = "first";
+                  }
                 }else{
-                  check = "first";
+                  if(widget.idNoti == roundsQuestion.rUserId && roundsQuestion.rUserId!=null){
+                    check = "user";
+                  }else if (widget.idNoti == roundsQuestion.rPlayerId && roundsQuestion.rPlayerId!=null){
+                    check = "player";
+                  }else{
+                    check = "first";
+                  }
                 }
+                print("Round status:${roundsQuestion.rStatus}");
+
                 if (roundsQuestion.rStatus != 0){
                   if (roundsQuestion.rUserAnsThree != null || roundsQuestion.rPlayerAnsThree != null){
                     currentIndex = 2;
@@ -780,8 +796,10 @@ class _RoundsState extends State<Rounds> {
               Map<String, dynamic> responseJson = json.decode(res.body);
               if(responseJson.containsKey('success')){
                 print("Response ====> "+ responseJson['success']);
+                roundsQuestion.rStatus = int.parse(status) ;
                 apiCall = 0;
-                // Navigator.pop(context);
+                setState(() {});
+                Navigator.pop(context);
               }else{
                 apiCall = 0;
                 setState(() {});
@@ -805,7 +823,7 @@ class _RoundsState extends State<Rounds> {
     }
   }
 
-  ///API Call Round AnswerQuestion....
+  ///API Call Round AnswerQuestion....a
   void AnswerQuestion(){
     Map<String, dynamic> body = {
       'cate_id' : "${widget.catId}",
@@ -872,12 +890,12 @@ class _RoundsState extends State<Rounds> {
   ///API Call Make Connection => currentIndex:2....
   void makeConnection(){
     Map<String, dynamic> body = {
-      'user_id' : "${roundsQuestion.rUserId}",
+      'user_id' : (widget.idNoti == null)?"${widget.perMatch.prUserId}":"${widget.idNoti}",
+      'round_id' : "${roundsQuestion.rId}",
     };
     try {
       ApiBaseHelper().fetchService(method: HttpMethod.post,authorization: true, url: WebService.makeConnection,body: body,isFormData: true).then(
               (response) async{
-
             var res = response as http.Response;
             if (res.statusCode == 200){
               Map<String, dynamic> responseJson = json.decode(res.body);
@@ -885,7 +903,7 @@ class _RoundsState extends State<Rounds> {
                 print("Response ====> "+ responseJson['success']);
                 apiCall = 0;
                 setState(() {});
-                // Navigator.push(context, CupertinoPageRoute(builder: Bui))
+                Navigator.push(context, CupertinoPageRoute(builder: (context) => Matched()));
               }else{
                 apiCall = 0;
                 setState(() {});
@@ -908,4 +926,5 @@ class _RoundsState extends State<Rounds> {
       GFunction.showError(e.toString(), context);
     }
   }
+
 }
